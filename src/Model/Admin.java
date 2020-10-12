@@ -10,13 +10,11 @@ package Model;
  * @author HansNotFound
  */
 public class Admin extends Person{
-    boolean admin;
 
     public Admin() {
     }
 
-    public Admin(boolean admin, String username, String password) {
+    public Admin(String username, String password) {
         super(username, password);
-        this.admin = admin;
     }
 }
