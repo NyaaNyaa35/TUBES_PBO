@@ -19,4 +19,11 @@ public class Controller {
     public void TimeLine(){
     
     }
+    public void deleteAccount(){
+        
+    }
+    public void recoverPassword(){
+        
+    }
+    
 }
