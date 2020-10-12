@@ -10,14 +10,22 @@ package Model;
  * @author NealsonW
  */
 public class Comment {
-    String nicknameComment;
-    String isiComment;
+    private String nicknameComment;
+    private String isiComment;
 
     public Comment() {
     }
 
     public Comment(String nicknameComment, String isiComment) {
         this.nicknameComment = nicknameComment;
+        this.isiComment = isiComment;
+    }
+
+    public String getIsiComment() {
+        return isiComment;
+    }
+
+    public void setIsiComment(String isiComment) {
         this.isiComment = isiComment;
     }
 
@@ -29,13 +37,4 @@ public class Comment {
         this.nicknameComment = nicknameComment;
     }
 
-    public String getIsiComment() {
-        return isiComment;
-    }
-
-    public void setIsiComment(String isiComment) {
-        this.isiComment = isiComment;
-    }
-    
-    
 }

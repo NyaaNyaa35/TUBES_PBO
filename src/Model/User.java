@@ -12,11 +12,11 @@ import java.util.ArrayList;
  * @author HansNotFound
  */
 public class User extends Person{
-    String nickname;
-    String email;
-    int jumlahTeman;
-    String profilePict;
-    ArrayList<User> listTeman = new ArrayList<>();
+    private String nickname;
+    private String email;
+    private int jumlahTeman;
+    private String profilePict;
+    private ArrayList<User> listTeman = new ArrayList<>();
     
     public User() {
     }
@@ -26,6 +26,14 @@ public class User extends Person{
         this.nickname = nickname;
         this.email = email;
         this.jumlahTeman = jumlahTeman;
+        this.profilePict = profilePict;
+    }
+
+    public String getProfilePict() {
+        return profilePict;
+    }
+
+    public void setProfilePict(String profilePict) {
         this.profilePict = profilePict;
     }
 
@@ -53,14 +61,6 @@ public class User extends Person{
         this.jumlahTeman = jumlahTeman;
     }
 
-    public String getProfilePict() {
-        return profilePict;
-    }
-
-    public void setProfilePict(String profilePict) {
-        this.profilePict = profilePict;
-    }
-
     public ArrayList<User> getListTeman() {
         return listTeman;
     }
@@ -68,5 +68,12 @@ public class User extends Person{
     public void setListTeman(ArrayList<User> listTeman) {
         this.listTeman = listTeman;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + "nickname=" + nickname + ", email=" + email + ", jumlahTeman=" + jumlahTeman + ", profilePict=" + profilePict + ", listTeman=" + listTeman + '}';
+    }
+
+    
     
 }
