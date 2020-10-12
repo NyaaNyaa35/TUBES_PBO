@@ -6,6 +6,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -17,11 +18,13 @@ public class Post {
     private String postUsername;
     private ArrayList<Comment> listComment = new ArrayList<>();
     private ArrayList<Liker> listLiker = new ArrayList<>();
-
-    public Post(int idPost, String imagepath, String postUsername) {
+    private Date waktuPost;
+    
+    public Post(int idPost, String imagepath, String postUsername, Date waktuPost) {
         this.idPost = idPost;
         this.imagepath = imagepath;
         this.postUsername = postUsername;
+        this.waktuPost = waktuPost;
     }
 
     public String getPostUsername() {
@@ -64,9 +67,19 @@ public class Post {
         this.listLiker = listLiker;
     }
 
+    public Date getWaktuPost() {
+        return waktuPost;
+    }
+
+    public void setWaktuPost(Date waktuPost) {
+        this.waktuPost = waktuPost;
+    }
+    
     @Override
     public String toString() {
         return "Post{" + "idPost=" + idPost + ", imagepath=" + imagepath + ", postUsername=" + postUsername + ", listComment=" + listComment + ", listLiker=" + listLiker + '}';
     }
+
+
     
 }
