@@ -10,5 +10,7 @@ package View;
  * @author HansNotFound
  */
 public class LoginScreen {
-    
+    public LoginScreen(){
+        
+    }
 }

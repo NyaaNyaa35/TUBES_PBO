@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Main;
+package Model;
 
-import View.MainMenuScreen;
-import Controller.Koneksi;
 /**
  *
  * @author HansNotFound
  */
-public class Main {
-    public static void main(String[] args) {
-        new Koneksi();
-        new MainMenuScreen();
+public class DummyData {
+    public DummyData(){
+        Admin admin = new Admin("Admin12345","12345");
     }
 }
