@@ -5,6 +5,8 @@
  */
 package Model;
 
+import java.util.Date;
+
 /**
  *
  * @author NealsonW
@@ -12,7 +14,8 @@ package Model;
 public class Comment {
     private String nicknameComment;
     private String isiComment;
-
+    private Date waktuComment;
+    
     public Comment() {
     }
 
@@ -36,5 +39,14 @@ public class Comment {
     public void setNicknameComment(String nicknameComment) {
         this.nicknameComment = nicknameComment;
     }
+
+    public Date getWaktuComment() {
+        return waktuComment;
+    }
+
+    public void setWaktuComment(Date waktuComment) {
+        this.waktuComment = waktuComment;
+    }
+    
 
 }

@@ -5,11 +5,16 @@
  */
 package Controller;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author HansNotFound
  */
 public class Controller {
+    public void ValidasiAccount(){
+        
+    }
     public void upload(){
     
     }
@@ -23,7 +28,9 @@ public class Controller {
         
     }
     public void recoverPassword(){
-        
+        System.out.println("Void Recover Password");
     }
-    
+    public void LoginSuccess(String username, String Password){
+        JOptionPane.showMessageDialog(null, "Username = " + username + " password = " + Password);
+    }
 }

@@ -5,6 +5,8 @@
  */
 package View;
 
+import javax.swing.JOptionPane;
+import Controller.Interface;
 /**
  *
  * @author HansNotFound
@@ -15,6 +17,10 @@ public class MainMenuScreen {
     }
     
     private void showMainMenu() {
-        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MainMenuJFrame().setVisible(true);
+            }
+        });
     }
 }
