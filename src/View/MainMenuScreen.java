@@ -17,8 +17,10 @@ public class MainMenuScreen {
     }
     
     private void showMainMenu() {
-        JOptionPane.showMessageDialog(null,"Selamat Datang di-"+Interface.namaApp);
-        int menuChoise = Integer.parseInt(JOptionPane.showInputDialog("Silahkan Pilih Menu\n1. Login\n2.Register"));
-        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MainMenuJFrame().setVisible(true);
+            }
+        });
     }
 }
