@@ -19,13 +19,29 @@ public class Post {
     private ArrayList<Comment> listComment = new ArrayList<>();
     private ArrayList<Liker> listLiker = new ArrayList<>();
     private Date waktuPost;
+    private String caption;
+    private int jumlahLike;
     
-    public Post(int idPost, String imagepath, String postUsername, Date waktuPost) {
+    public Post() {
+    }
+
+    public Post(int idPost, String imagepath, String postUsername, Date waktuPost, String caption, int jumlahLike) {
         this.idPost = idPost;
         this.imagepath = imagepath;
         this.postUsername = postUsername;
         this.waktuPost = waktuPost;
+        this.caption = caption;
+        this.jumlahLike = jumlahLike;
     }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
 
     public String getPostUsername() {
         return postUsername;
@@ -78,6 +94,14 @@ public class Post {
     @Override
     public String toString() {
         return "Post{" + "idPost=" + idPost + ", imagepath=" + imagepath + ", postUsername=" + postUsername + ", listComment=" + listComment + ", listLiker=" + listLiker + '}';
+    }
+
+    public int getJumlahLike() {
+        return jumlahLike;
+    }
+
+    public void setJumlahLike(int jumlahLike) {
+        this.jumlahLike = jumlahLike;
     }
 
 

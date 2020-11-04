@@ -10,14 +10,12 @@ package Model;
  * @author NealsonW
  */
 public class Liker {
-    private int jumlahLike;
     private String nicknameLike;
 
     public Liker() {
     }
 
-    public Liker(int jumlahLike, String nicknameLike) {
-        this.jumlahLike = jumlahLike;
+    public Liker(String nicknameLike) {
         this.nicknameLike = nicknameLike;
     }
 
@@ -28,15 +26,6 @@ public class Liker {
     public void setNicknameLike(String nicknameLike) {
         this.nicknameLike = nicknameLike;
     }
-
-    public int getJumlahLike() {
-        return jumlahLike;
-    }
-
-    public void setJumlahLike(int jumlahLike) {
-        this.jumlahLike = jumlahLike;
-    }
-
-    
+   
     
 }
