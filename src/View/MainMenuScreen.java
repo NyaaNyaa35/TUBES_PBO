@@ -5,22 +5,21 @@
  */
 package View;
 
-import javax.swing.JOptionPane;
+import java.awt.Font;
 import Controller.Interface;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.WindowConstants;
 /**
  *
  * @author HansNotFound
  */
-public class MainMenuScreen {
+public class MainMenuScreen extends JFrame{
+    
     public MainMenuScreen() {
         showMainMenu();     
     }
     
     private void showMainMenu() {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainMenuJFrame().setVisible(true);
-            }
-        });
     }
 }

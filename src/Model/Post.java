@@ -21,7 +21,7 @@ public class Post {
     private Date waktuPost;
     private String caption;
     private int jumlahLike;
-    
+
     public Post() {
     }
 
@@ -41,7 +41,6 @@ public class Post {
     public void setCaption(String caption) {
         this.caption = caption;
     }
-
 
     public String getPostUsername() {
         return postUsername;

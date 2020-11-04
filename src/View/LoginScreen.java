@@ -14,11 +14,5 @@ public class LoginScreen {
         Logins();
     }
     private void Logins(){
-    java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TestLoginJFrame().setVisible(true);
-            }
-        });
-    new TestLoginJFrame();
     }
 }

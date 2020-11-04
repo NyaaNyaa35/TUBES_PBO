@@ -17,4 +17,9 @@ public class Admin extends Person{
     public Admin(String username, String password) {
         super(username, password);
     }
+
+    @Override
+    public boolean Login(String Username, String Password) {
+        return Username.equals("Admin12345") && Password.equals("12345");
+    }
 }
