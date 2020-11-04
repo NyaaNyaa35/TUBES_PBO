@@ -15,6 +15,10 @@ public class Liker {
     public Liker() {
     }
 
+    public Liker(String nicknameLike) {
+        this.nicknameLike = nicknameLike;
+    }
+
     public String getNicknameLike() {
         return nicknameLike;
     }
@@ -22,11 +26,8 @@ public class Liker {
     public void setNicknameLike(String nicknameLike) {
         this.nicknameLike = nicknameLike;
     }
-
     @Override
     public String toString() {
         return "Liker{" + "nicknameLike=" + nicknameLike + '}';
     }
-
-    
 }
