@@ -19,6 +19,9 @@ public class Post {
     private ArrayList<Comment> listComment = new ArrayList<>();
     private ArrayList<Liker> listLiker = new ArrayList<>();
     private Date waktuPost;
+
+    public Post() {
+    }
     
     public Post(int idPost, String imagepath, String postUsername, Date waktuPost) {
         this.idPost = idPost;
