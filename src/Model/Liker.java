@@ -10,15 +10,9 @@ package Model;
  * @author NealsonW
  */
 public class Liker {
-    private int jumlahLike;
     private String nicknameLike;
 
     public Liker() {
-    }
-
-    public Liker(int jumlahLike, String nicknameLike) {
-        this.jumlahLike = jumlahLike;
-        this.nicknameLike = nicknameLike;
     }
 
     public String getNicknameLike() {
@@ -29,14 +23,10 @@ public class Liker {
         this.nicknameLike = nicknameLike;
     }
 
-    public int getJumlahLike() {
-        return jumlahLike;
+    @Override
+    public String toString() {
+        return "Liker{" + "nicknameLike=" + nicknameLike + '}';
     }
 
-    public void setJumlahLike(int jumlahLike) {
-        this.jumlahLike = jumlahLike;
-    }
-
-    
     
 }

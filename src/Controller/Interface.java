@@ -10,7 +10,8 @@ package Controller;
  * @author HansNotFound
  */
 public interface Interface {
-    final String namaApp= "UnOfficial MedSos";
+    final String namaApp = "UnOfficial MedSos";
     
+    boolean Login(String Username, String Password);
     //Abstract void 
 }
