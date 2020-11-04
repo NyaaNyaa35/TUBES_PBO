@@ -15,20 +15,20 @@ import java.util.Date;
 public class Post {
     private int idPost;
     private String imagepath;
-    private String postUsername;
+    private String postNickname;
     private ArrayList<Comment> listComment = new ArrayList<>();
     private ArrayList<Liker> listLiker = new ArrayList<>();
-    private Date waktuPost;
+    private String waktuPost;
     private String caption;
     private int jumlahLike;
 
     public Post() {
     }
 
-    public Post(int idPost, String imagepath, String postUsername, Date waktuPost, String caption, int jumlahLike) {
+    public Post(int idPost, String imagepath, String postNickname, String waktuPost, String caption, int jumlahLike) {
         this.idPost = idPost;
         this.imagepath = imagepath;
-        this.postUsername = postUsername;
+        this.postNickname = postNickname;
         this.waktuPost = waktuPost;
         this.caption = caption;
         this.jumlahLike = jumlahLike;
@@ -42,12 +42,12 @@ public class Post {
         this.caption = caption;
     }
 
-    public String getPostUsername() {
-        return postUsername;
+    public String getPostNickname() {
+        return postNickname;
     }
 
-    public void setPostUsername(String postUsername) {
-        this.postUsername = postUsername;
+    public void setPostNickname(String postNickname) {
+        this.postNickname = postNickname;
     }
 
     public int getIdPost() {
@@ -82,17 +82,17 @@ public class Post {
         this.listLiker = listLiker;
     }
 
-    public Date getWaktuPost() {
+    public String getWaktuPost() {
         return waktuPost;
     }
 
-    public void setWaktuPost(Date waktuPost) {
+    public void setWaktuPost(String waktuPost) {
         this.waktuPost = waktuPost;
     }
     
     @Override
     public String toString() {
-        return "Post{" + "idPost=" + idPost + ", imagepath=" + imagepath + ", postUsername=" + postUsername + ", listComment=" + listComment + ", listLiker=" + listLiker + '}';
+        return "Post{" + "idPost=" + idPost + ", imagepath=" + imagepath + ", postUsername=" + postNickname + ", listComment=" + listComment + ", listLiker=" + listLiker + '}';
     }
 
     public int getJumlahLike() {

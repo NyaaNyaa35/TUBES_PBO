@@ -40,7 +40,7 @@ public class ViewPost extends JFrame implements ActionListener{
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
-        userPost = new JLabel(post.getPostUsername());
+        userPost = new JLabel(post.getPostNickname());
         
         caption = new JLabel(post.getCaption());
         

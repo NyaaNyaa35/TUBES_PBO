@@ -7,12 +7,16 @@ package Controller;
 
 import Model.Post;
 import Model.User;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import sun.security.util.Password;
 
 /**
  *
@@ -55,8 +59,8 @@ public class Controller {
             while (rs.next()) {
                 Post post = new Post();
                 post.setIdPost(rs.getInt("IdPost"));
-                post.setPostUsername(rs.getString("PostUsername"));
-                post.setWaktuPost(rs.getDate("WaktuPost"));
+                post.setPostNickname(rs.getString("PostNickname"));
+                post.setWaktuPost(rs.getString("WaktuPost"));
                 post.setImagepath(rs.getString("Imagepath"));
                 posts.add(post);
             }
@@ -155,17 +159,9 @@ public class Controller {
             return (false);
         }
     }
-    public boolean ValidasiAccount(String Username, String Password){
-        ArrayList<User> listUsers = getAllUsers();
-        for(int i = 0; i < listUsers.size(); i++){
-            if(listUsers.get(i).getUsername().equals(Username) && listUsers.get(i).getPassword().equals(Password)){
-                return(true);
-            }
-        }
+    
+    public static boolean insertNewPost(Post post){
         return false;
-    }
-    public void insertNewPost(){
-        
     }
     public static boolean deletePost(int idPost){
         conn.connect();
@@ -183,12 +179,32 @@ public class Controller {
     public void TimeLine(){ //nanti
         
     }
-    public void recoverPassword(String Username, String password, String email){
+    public boolean recoverPassword(String Username, String Password){
         conn.connect();
         
+        String query = "Update user set Password = '" + Password +"' where Username = '" + Username+ "';";
         
+        try{
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return(true);
+        } catch (SQLException ex){
+            ex.printStackTrace();
+            return(false);
+        }
     }
     public void LoginSuccess(String username, String Password){
         JOptionPane.showMessageDialog(null, "Username = " + username + " password = " + Password);
     }
+    public static String getTanggal() {  
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");  
+        Date date = new Date();  
+        return dateFormat.format(date);  
+    }  
+     
+    public static String getWaktu() {  
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");  
+        Date date = new Date();  
+        return dateFormat.format(date);  
+    } 
 }
