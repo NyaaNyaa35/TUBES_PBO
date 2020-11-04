@@ -6,7 +6,7 @@
 package Model;
 
 import java.util.ArrayList;
-
+import Controller.Controller;
 /**
  *
  * @author HansNotFound
@@ -17,6 +17,7 @@ public class User extends Person{
     private int jumlahTeman;
     private String profilePict;
     private ArrayList<User> listTeman = new ArrayList<>();
+    private ArrayList<Post> listPost = new ArrayList<>();
     
     public User() {
     }
@@ -72,6 +73,25 @@ public class User extends Person{
     @Override
     public String toString() {
         return "User{" + "nickname=" + nickname + ", email=" + email + ", jumlahTeman=" + jumlahTeman + ", profilePict=" + profilePict + ", listTeman=" + listTeman + '}';
+    }
+
+    public ArrayList<Post> getListPost() {
+        return listPost;
+    }
+
+    public void setListPost(ArrayList<Post> listPost) {
+        this.listPost = listPost;
+    }
+
+    @Override
+    public boolean Login(String Username, String Password) {
+        ArrayList<User> listUser = Controller.getAllUsers();
+        for(int i = 0; i < listUser.size(); i++){
+            if(Username.equals(listUser.get(i).getUsername()) && Password.equals(listUser.get(i).getPassword())){
+                return true;
+            }
+        }
+        return false;
     }
 
     
