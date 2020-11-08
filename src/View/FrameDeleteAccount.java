@@ -5,15 +5,12 @@
  */
 package View;
 
-import Model.User;
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author HansNotFound
  */
-public class ViewProfile {
-    public ViewProfile(User user){
-        JOptionPane.showMessageDialog(null, "Masuk View Profile");
+public class FrameDeleteAccount {
+    public FrameDeleteAccount(){
+        
     }
 }

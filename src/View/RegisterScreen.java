@@ -111,12 +111,12 @@ public class RegisterScreen extends JFrame implements ActionListener {
                 if(Controller.isValidEmail(TF_Email.getText())){
                     user.setEmail(TF_Email.getText());
                     for(int i = 0; i < listUser.size(); i++){
-                        if(TF_Nickname.getText().equals(listUser.get(i).getNickname())){
-                            JOptionPane.showMessageDialog(null, "Nickname ini sudah terpakai!!");
-                            break;
-                        } else if(TF_Username.getText().equals(listUser.get(i).getUsername())){
+                        if(TF_Username.getText().equals(listUser.get(i).getUsername())){
                             JOptionPane.showMessageDialog(null, "Username ini sudah terpakai!!");
                             break;
+                        } else if(TF_Nickname.getText().equals(listUser.get(i).getNickname())){
+                            JOptionPane.showMessageDialog(null, "Nickname ini sudah terpakai!!");
+                            break; 
                         } else if(TF_Email.getText().equals(listUser.get(i).getEmail())){
                             JOptionPane.showMessageDialog(null, "Email ini sudah terpakai!!");
                             break;
@@ -125,21 +125,21 @@ public class RegisterScreen extends JFrame implements ActionListener {
                             break;
                         }
                     }
+                    boolean insert_berhasil;
+                    if(valid){
+                        insert_berhasil = Controller.insertNewUser(user);
+                        if(insert_berhasil){
+                            JOptionPane.showMessageDialog(null,"Register Berhasil, Anda akan dialihkan ke Login Screen!");
+                            frame.setVisible(false);
+                            new LoginScreen();
+                        } else {
+                            JOptionPane.showMessageDialog(null,"Register Gagal!");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Register tidak valid!");
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Email tidak valid!");
-                }
-                boolean insert_berhasil = false;
-                if(valid){
-                    insert_berhasil = Controller.insertNewUser(user);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Register tidak valid!");
-                }
-                if(insert_berhasil){
-                    JOptionPane.showMessageDialog(null,"Register Berhasil, Anda akan dialihkan ke Login Screen!");
-                    frame.setVisible(false);
-                    new LoginScreen();
-                } else {
-                    JOptionPane.showMessageDialog(null,"Register Gagal!");
                 }
                 break;
             case "Sudah Punya Akun? Login Sekarang!":

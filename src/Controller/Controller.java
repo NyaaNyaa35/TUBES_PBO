@@ -111,20 +111,23 @@ public class Controller {
     }
     
     // INSERT
-    public static boolean insertNewUser(User user) {
+    public static boolean insertPerson(User user){
         conn.connect();
-        String query_InsertToUser = "INSERT INTO user VALUES(?,?,?,?,?,?)";
         String query_InsertToPerson = "INSERT INTO person VALUES (?,?)";
-        boolean valid_1 = false,valid_2 = false;
         try {
             PreparedStatement stmt = conn.con.prepareStatement(query_InsertToPerson);
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
             stmt.executeUpdate();
-            valid_1 = true;
+            return(true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return(false);
+    }
+    public static boolean insertUser(User user) {
+        conn.connect();
+        String query_InsertToUser = "INSERT INTO user VALUES(?,?,?,?,?,?)";
         try{
             PreparedStatement stmt_2 = conn.con.prepareStatement(query_InsertToUser);
             ArrayList<User> listUser = getAllUsers();
@@ -135,10 +138,16 @@ public class Controller {
             stmt_2.setInt(5, user.getJumlahTeman());
             stmt_2.setString(6, user.getProfilePict());
             stmt_2.executeUpdate();
-            valid_2 = true;
+            return(true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return(false);
+    }
+    public static boolean insertNewUser(User user){
+        boolean valid_1,valid_2;
+        valid_1 = insertPerson(user);
+        valid_2 = insertUser(user);
         return(valid_1 && valid_2);
     }
 
@@ -243,7 +252,7 @@ public class Controller {
  
         if (email.matches(emailPattern)) {
             validate = true;
-        } else validate = email.matches(emailPattern2);
+        } else {validate = email.matches(emailPattern2);}
         return validate;
     }
 }

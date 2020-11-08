@@ -56,6 +56,7 @@ public class TimeLine extends JFrame implements Interface{
             button_Profile.setBorderPainted(false);
             //button_Profile.setContentAreaFilled(false);
             button_Profile.setActionCommand("ViewProfile");
+            button_Profile.addActionListener(action);
         
             button_Prev = new JButton("Prev Post");
             button_Prev.setBounds(20, 610, 100, 30);
@@ -110,8 +111,65 @@ public class TimeLine extends JFrame implements Interface{
             frame_TimeLine.add(label_NicknameUser);
             frame_TimeLine.setLayout(null);
             frame_TimeLine.setVisible(true);
+        } else if(person instanceof Admin){
+            Action action = new Action();
+            frame_TimeLine = new JFrame(Interface.namaApp);
+            frame_TimeLine.setSize(600, 700);
+            frame_TimeLine.setLocationRelativeTo(null);
+            frame_TimeLine.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            
+            label_NicknameUser = new JLabel("ADMIN");
+            label_NicknameUser.setBounds(75, 20, 100, 30);
+            label_NicknameUser.setFont(new Font("Serif",0,15));
+            
+            button_Prev = new JButton("Prev Post");
+            button_Prev.setBounds(20, 610, 100, 30);
+            button_Prev.addActionListener(action);
+        
+            button_Next = new JButton("Next Post");
+            button_Next.setBounds(460, 610, 100, 30);
+            button_Next.addActionListener(action);
+        
+            button_SeeComment = new JButton("Comment");
+            button_SeeComment.setBounds(460, 545, 100, 30);
+            button_SeeComment.addActionListener(action);
+            
+            button_LogOut = new JButton("LogOut");
+            button_LogOut.setBounds(460, 20, 100, 30);
+            button_LogOut.addActionListener(action);
+            
+            button_Upload = new JButton("DeletePost");
+            button_Upload.setBounds(240, 610, 100, 30);
+            button_Upload.addActionListener(action);
+        
+            panel_Gambar = new JPanel();
+            panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            panel_Gambar.setBounds(20, 75, 550, 430);
+            
+            label_NicknamePoster = new JLabel("Nickname Poster");
+            label_NicknamePoster.setBounds(65,540,100,20);
+        
+            label_KumulatifLike = new JLabel("99999+");
+            label_KumulatifLike.setBounds(65,555,50,30);
+        
+            String panjang = "" + test.length();
+        
+            label_Caption = new JLabel(test);
+            label_Caption.setBounds(25, 505, 550, 30);
+        
+            frame_TimeLine.add(label_Caption);
+            frame_TimeLine.add(label_KumulatifLike);
+            frame_TimeLine.add(label_NicknamePoster);
+            frame_TimeLine.add(panel_Gambar);
+            frame_TimeLine.add(button_SeeComment);
+            frame_TimeLine.add(button_Next);
+            frame_TimeLine.add(button_Prev);
+            frame_TimeLine.add(button_LogOut);
+            frame_TimeLine.add(label_NicknameUser);
+            frame_TimeLine.setLayout(null);
+            frame_TimeLine.setVisible(true);
         }
-    }
+    } 
 
     class Action implements ActionListener{
         @Override
@@ -139,6 +197,7 @@ public class TimeLine extends JFrame implements Interface{
                     //new FrameComment();
                     break;
                 case "ViewProfile":
+                    frame_TimeLine.setVisible(false);
                     new ViewProfile(user);
                     break;
                 default:
