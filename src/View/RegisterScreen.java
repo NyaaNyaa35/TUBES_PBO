@@ -110,20 +110,24 @@ public class RegisterScreen extends JFrame implements ActionListener {
                 ArrayList<User> listUser = Controller.getAllUsers();
                 if(Controller.isValidEmail(TF_Email.getText())){
                     user.setEmail(TF_Email.getText());
-                    for(int i = 0; i < listUser.size(); i++){
-                        if(TF_Username.getText().equals(listUser.get(i).getUsername())){
-                            JOptionPane.showMessageDialog(null, "Username ini sudah terpakai!!");
-                            break;
-                        } else if(TF_Nickname.getText().equals(listUser.get(i).getNickname())){
-                            JOptionPane.showMessageDialog(null, "Nickname ini sudah terpakai!!");
-                            break; 
-                        } else if(TF_Email.getText().equals(listUser.get(i).getEmail())){
-                            JOptionPane.showMessageDialog(null, "Email ini sudah terpakai!!");
-                            break;
-                        } else {
-                            valid = true;
-                            break;
+                    if(!listUser.isEmpty()){
+                        for(int i = 0; i < listUser.size(); i++){
+                            if(TF_Username.getText().equals(listUser.get(i).getUsername())){
+                                JOptionPane.showMessageDialog(null, "Username ini sudah terpakai!!");
+                                break;
+                            } else if(TF_Nickname.getText().equals(listUser.get(i).getNickname())){
+                                JOptionPane.showMessageDialog(null, "Nickname ini sudah terpakai!!");
+                                break; 
+                            } else if(TF_Email.getText().equals(listUser.get(i).getEmail())){
+                                JOptionPane.showMessageDialog(null, "Email ini sudah terpakai!!");
+                                break;
+                            } else {
+                                valid = true;
+                                break;
+                            }
                         }
+                    } else {
+                        valid = true;
                     }
                     boolean insert_berhasil;
                     if(valid){

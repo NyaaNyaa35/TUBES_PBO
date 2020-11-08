@@ -50,11 +50,12 @@ public class TimeLine extends JFrame implements Interface{
             label_NicknameUser.setFont(new Font("Serif",0,15));
         
             button_Profile = new JButton();
-            button_Profile.setBounds(23, 20, 35, 25);
+            button_Profile.setBounds(20, 10, 50, 50);
             button_Profile.setIcon(new ImageIcon(user.getProfilePict()));
             button_Profile.setFocusPainted(false);
             button_Profile.setBorderPainted(false);
-            //button_Profile.setContentAreaFilled(false);
+            button_Profile.setContentAreaFilled(false);
+            button_Profile.setOpaque(false);
             button_Profile.setActionCommand("ViewProfile");
             button_Profile.addActionListener(action);
         
@@ -190,7 +191,7 @@ public class TimeLine extends JFrame implements Interface{
                     break;
                 case"UploadPost":
                     frame_TimeLine.setVisible(false);
-                    //new CreatePost();
+                    new CreatePost(user);
                     break;
                 case"Comment":
                     frame_TimeLine.setVisible(false);
