@@ -5,7 +5,10 @@
  */
 package Main;
 
+import Controller.Controller;
+import Model.*;
 import View.MainMenuScreen;
+import java.util.ArrayList;
 /**
  *
  * @author HansNotFound
@@ -13,5 +16,11 @@ import View.MainMenuScreen;
 public class Main {
     public static void main(String[] args) {
         MainMenuScreen mainMenuScreen = new MainMenuScreen();
+        ArrayList<User> listUser = Controller.getAllUsers();
+        for(int i = 0; i < listUser.size(); i++){
+            System.out.println(listUser.get(i).toString());
+        }
+        Admin admin = new Admin();
+        System.out.println(admin.toString());
     }
 }

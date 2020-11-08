@@ -99,5 +99,4 @@ public class ViewPost extends JFrame implements ActionListener{
                 break;
         }
     }
-    
 }

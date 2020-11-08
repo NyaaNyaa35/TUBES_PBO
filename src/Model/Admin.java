@@ -5,6 +5,8 @@
  */
 package Model;
 
+import Controller.Interface;
+
 /**
  *
  * @author HansNotFound
@@ -19,7 +21,13 @@ public class Admin extends Person{
     }
 
     @Override
-    public boolean Login(String Username, String Password) {
-        return Username.equals("Admin12345") && Password.equals("12345");
+    public boolean Login(String Username, String Password){
+        return Username.equals(Interface.unameAdmin) && Password.equals(Interface.passAdmin);
     }
+
+    @Override
+    public String toString() {
+        return "Admin{"+ super.getUsername() + super.getPassword() + '}';
+    }
+    
 }

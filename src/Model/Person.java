@@ -38,6 +38,8 @@ public abstract class Person implements Interface{
         this.username = username;
     }
 
-    
+    boolean Login(String Username, String Password){
+        return false;
+    }
     
 }

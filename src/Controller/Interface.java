@@ -12,6 +12,7 @@ package Controller;
 public interface Interface {
     final String namaApp = "UnOfficial MedSos";
     
-    boolean Login(String Username, String Password);
+    final String unameAdmin = "admin";
+    final String passAdmin = "12345";
     //Abstract void 
 }

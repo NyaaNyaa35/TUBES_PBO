@@ -72,7 +72,7 @@ public class User extends Person{
 
     @Override
     public String toString() {
-        return "User{" + "nickname=" + nickname + ", email=" + email + ", jumlahTeman=" + jumlahTeman + ", profilePict=" + profilePict + ", listTeman=" + listTeman + '}';
+        return "User{" +"password="+super.getPassword()+", Username="+super.getUsername() +", nickname=" + nickname + ", email=" + email + ", jumlahTeman=" + jumlahTeman + ", profilePict=" + profilePict + ", listTeman=" + listTeman + ", listPost=" + listPost + '}';
     }
 
     public ArrayList<Post> getListPost() {

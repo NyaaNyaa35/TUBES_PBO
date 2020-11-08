@@ -51,11 +51,6 @@ public class MainMenuScreen extends JFrame implements Interface {
         frame_Main.setLayout(null);
         frame_Main.setVisible(true);
     }
-
-    @Override
-    public boolean Login(String Username, String Password) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     class Action implements ActionListener{
 

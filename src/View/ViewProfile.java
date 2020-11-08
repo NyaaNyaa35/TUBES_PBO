@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package View;
+
+import Model.User;
 
 /**
  *
  * @author HansNotFound
  */
-public class DummyData {
-    public DummyData(){
-        Admin admin = new Admin("Admin12345","12345");
+public class ViewProfile {
+    public ViewProfile(User user){
+        System.out.println("INI FRAME VIEW PROFILE");
     }
 }

@@ -100,29 +100,46 @@ public class RegisterScreen extends JFrame implements ActionListener {
         switch(command){
             case "Register":
                 User user = new User();
-                user.setNickname(TF_Nickname.getText());
-                user.setPassword(passwordfield.getText());
-                user.setEmail(TF_Email.getText());
-                user.setUsername(TF_Username.getText());
-                ArrayList<User> listUser = Controller.getAllUsers();
+                String pathDefaultProfilePict = "src/Image/default_profile_pict.png";
                 boolean valid = false;
-                for(int i = 0; i < listUser.size(); i++){
-                    if(TF_Nickname.getText().equals(listUser.get(i).getNickname())){
-                        JOptionPane.showMessageDialog(null, "Nickname ini sudah terpakai!!");
-                        break;
-                    } else if(TF_Username.getText().equals(listUser.get(i).getUsername())){
-                        JOptionPane.showMessageDialog(null, "Username ini sudah terpakai!!");
-                        break;
-                    }else if(TF_Email.getText().equals(listUser.get(i).getEmail())){
-                        JOptionPane.showMessageDialog(null, "Email ini sudah terpakai!!");
-                        break;
-                    } else {
-                        valid = true;
-                        break;
+                user.setNickname(TF_Nickname.getText());
+                user.setUsername(TF_Username.getText());
+                user.setPassword(passwordfield.getText());
+                user.setJumlahTeman(0);
+                user.setProfilePict(pathDefaultProfilePict);
+                ArrayList<User> listUser = Controller.getAllUsers();
+                if(Controller.isValidEmail(TF_Email.getText())){
+                    user.setEmail(TF_Email.getText());
+                    for(int i = 0; i < listUser.size(); i++){
+                        if(TF_Nickname.getText().equals(listUser.get(i).getNickname())){
+                            JOptionPane.showMessageDialog(null, "Nickname ini sudah terpakai!!");
+                            break;
+                        } else if(TF_Username.getText().equals(listUser.get(i).getUsername())){
+                            JOptionPane.showMessageDialog(null, "Username ini sudah terpakai!!");
+                            break;
+                        } else if(TF_Email.getText().equals(listUser.get(i).getEmail())){
+                            JOptionPane.showMessageDialog(null, "Email ini sudah terpakai!!");
+                            break;
+                        } else {
+                            valid = true;
+                            break;
+                        }
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Email tidak valid!");
                 }
+                boolean insert_berhasil = false;
                 if(valid){
-                    Controller.insertNewUser(user);
+                    insert_berhasil = Controller.insertNewUser(user);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Register tidak valid!");
+                }
+                if(insert_berhasil){
+                    JOptionPane.showMessageDialog(null,"Register Berhasil, Anda akan dialihkan ke Login Screen!");
+                    frame.setVisible(false);
+                    new LoginScreen();
+                } else {
+                    JOptionPane.showMessageDialog(null,"Register Gagal!");
                 }
                 break;
             case "Sudah Punya Akun? Login Sekarang!":

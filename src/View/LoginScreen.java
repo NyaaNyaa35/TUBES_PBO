@@ -19,11 +19,13 @@ import javax.swing.WindowConstants;
 import Controller.Controller;
 import Model.Admin;
 import Model.User;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 /**
  *
  * @author HansNotFound
  */
-public class LoginScreen extends JFrame implements ActionListener{
+public class LoginScreen extends JFrame implements ActionListener {
     public LoginScreen(){
         Logins();
     }
@@ -85,9 +87,11 @@ public class LoginScreen extends JFrame implements ActionListener{
                 Admin admin = new Admin();
                 User user = new User();
                 if (admin.Login(uname, pass)) {
-                    JOptionPane.showMessageDialog(null, "login as Admin");
+                    frame.setVisible(false);
+                    TimeLine timeLine = new TimeLine(admin);
                 } else if(user.Login(uname, pass)){
-                    JOptionPane.showMessageDialog(null, "Login as User");
+                    frame.setVisible(false);
+                    TimeLine timeLine = new TimeLine(Controller.getUser(uname));
                 } else{
                     JOptionPane.showMessageDialog(null, "Incorrect login or password",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -105,14 +109,25 @@ public class LoginScreen extends JFrame implements ActionListener{
                 break;
         }
     }
-    
+    //INI PERCOBAAN HANS PATRICK JANGAN D GANGGU!!!! NGERTI GK KAU??!!
+    /*class KeyLis implements KeyListener{
 
-    /**
-     *
-     * @param args
-     */
-/*public static void main(String[] args) {
-        LoginScreen loginScreen = new LoginScreen();
+        @Override
+        public void keyTyped(KeyEvent ke) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void keyPressed(KeyEvent ke) {
+            if(ke.getKeyCode() == KeyEvent.VK_ENTER){
+                actionPerformed("Login");
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent ke) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }*/
 }
 

@@ -15,11 +15,9 @@ import javax.swing.WindowConstants;
  * @author HansNotFound
  */
 public class RecoverPasswordScreen extends JFrame implements ActionListener{
-    public RecoverPasswordScreen(){
-        Recover();
-    }
+    
     JFrame frame_Recover;
-    private void Recover(){
+    public RecoverPasswordScreen(){
         frame_Recover = new JFrame();
         frame_Recover.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame_Recover.setLocationRelativeTo(null);
