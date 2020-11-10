@@ -33,6 +33,7 @@ public class RegisterScreen extends JFrame implements ActionListener {
     JButton button_Register,button_Login;
     JTextField TF_Username,TF_Nickname,TF_Email;
     JPasswordField passwordfield;
+    Boolean Username_filled = false, Nickname_filled = false, Email_filled = false,Pass_filled = false;
     private void register(){
         frame = new JFrame("Register Form");
         frame.setSize(600, 400);
@@ -46,25 +47,25 @@ public class RegisterScreen extends JFrame implements ActionListener {
         label_Username = new JLabel("Username ");
         label_Username.setBounds(80, 70, 200, 30);
         
-        TF_Username = new JTextField();
+        TF_Username = new JTextField(20);
         TF_Username.setBounds(300, 70, 200, 30);
         
         label_Nickname = new JLabel("Nickname ");
         label_Nickname.setBounds(80, 110, 200, 30);
         
-        TF_Nickname = new JTextField();
+        TF_Nickname = new JTextField(20);
         TF_Nickname.setBounds(300, 110, 200, 30);
         
         label_email = new JLabel("Email ");
         label_email.setBounds(80, 150, 200, 30);
         
-        TF_Email = new JTextField();
+        TF_Email = new JTextField(20);
         TF_Email.setBounds(300, 150, 200, 30);
         
         label_Password = new JLabel("Password ");
         label_Password.setBounds(80, 190, 200, 30);
         
-        passwordfield = new JPasswordField();
+        passwordfield = new JPasswordField(20);
         passwordfield.setBounds(300, 190, 200, 30);
         
         button_Register = new JButton("Register");
@@ -100,11 +101,15 @@ public class RegisterScreen extends JFrame implements ActionListener {
         switch(command){
             case "Register":
                 User user = new User();
-                String pathDefaultProfilePict = "src/Image/default_profile_pict.png";
                 boolean valid = false;
-                user.setNickname(TF_Nickname.getText());
-                user.setUsername(TF_Username.getText());
-                user.setPassword(passwordfield.getText());
+                String pathDefaultProfilePict = "src/Image/default_profile_pict.png";
+                String Nickname = TF_Nickname.getText();
+                String Username = TF_Username.getText();
+                String Password = passwordfield.getText();
+            if(!Nickname.equals("") && !Username.equals("") && !Password.equals("")){
+                user.setNickname(Nickname);
+                user.setUsername(Username);
+                user.setPassword(Password);
                 user.setJumlahTeman(0);
                 user.setProfilePict(pathDefaultProfilePict);
                 ArrayList<User> listUser = Controller.getAllUsers();
@@ -145,6 +150,9 @@ public class RegisterScreen extends JFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(null, "Email tidak valid!");
                 }
+            } else {
+                JOptionPane.showMessageDialog(null, "Data Tidak Boleh Kosong!!");
+            }
                 break;
             case "Sudah Punya Akun? Login Sekarang!":
                 frame.setVisible(false);

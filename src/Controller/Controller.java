@@ -8,6 +8,7 @@ package Controller;
 import Model.Comment;
 import Model.Person;
 import Model.Post;
+import Model.Teman;
 import Model.User;
 import java.util.Date;
 import java.sql.PreparedStatement;
@@ -17,6 +18,8 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,7 +29,6 @@ import javax.swing.JOptionPane;
 public class Controller {
     static DatabaseHandler conn = new DatabaseHandler();
 
-    // SELECT ALL from table users
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
         conn.connect();
@@ -49,7 +51,6 @@ public class Controller {
         }
         return (users);
     }
-    
     public static ArrayList<Person> getAllPerson() {
         ArrayList<Person> users = new ArrayList<>();
         conn.connect();
@@ -67,8 +68,6 @@ public class Controller {
         }
         return (users);
     }
-    
-    //SELECT ALL FROM TABLE POST
     public static ArrayList<Post> getAllPost() {
         ArrayList<Post> posts = new ArrayList<>();
         conn.connect();
@@ -91,8 +90,6 @@ public class Controller {
         }
         return (posts);
     }
-
-    // SELECT WHERE
     public static User getUser(String Username) {
         conn.connect();
         String query = "SELECT * FROM user WHERE Username='" + Username + "'";
@@ -112,8 +109,6 @@ public class Controller {
         }
         return (user);
     }
-    
-    // INSERT
     public static boolean insertPerson(User user){
         conn.connect();
         String query_InsertToPerson = "INSERT INTO person VALUES (?,?)";
@@ -185,42 +180,6 @@ public class Controller {
         }
         return false;
     }
-    // UPDATE
-    /*public static boolean updateUser(User user, Boolean filechooserFoto, Boolean filechooserTT) {
-        conn.connect();
-        String query = null;
-        if(filechooserFoto == true && filechooserTT == true){
-            query = "UPDATE datauser SET Nama='" + user.getNama() + "', "
-                + "TempatLahir='" + user.getTempatLahir() + "', "
-                + "Tanggallahir='" + user.getTanggallahir() + "', "
-                + "JenisKelamin='" + user.getJenisKelamin() + "', "
-                + "GolonganDarah='" + user.getGolonganDarah() + "', "
-                + "alamat='" + user.getAlamat() + "', "
-                + "RTRW='" + user.getRTRW() + "', "
-                + "Kecamatan='" + user.getKecamatan() + "', "
-                + "KelDesa='" + user.getKelDesa() + "', "
-                + "Agama='" + user.getAgama() + "', "
-                + "StatusPerkawinan='" + user.getStatusPerkawinan() + "', "
-                + "Pekerjaan='" + user.getPekerjaan() + "', "
-                + "Kewarganegaraan='" + user.getKewarganegaraan() + "', "
-                + "Foto='" + user.getFoto() + "', "
-                + "TandaTangan='" + user.getTandaTangan() + "', "
-                + "TempatPembuatKTP='" + user.getTempatPembuatKTP() + "', "
-                + "BerlakuHingga='" + user.getBerlakuHingga() + "', "
-                + "TanggalPembuatKTP='" + user.getTanggalPembuatKTP() + "' "
-                + " WHERE NIK='" + user.getNIK() + "'";
-        }
-        try {
-            Statement stmt = conn.con.createStatement();
-            stmt.executeUpdate(query);
-            return (true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return (false);
-        }
-    }*/
-
-    // DELETE
     public static boolean deleteUser(String Username) {
         conn.connect();
 
@@ -234,8 +193,6 @@ public class Controller {
             return (false);
         }
     }
-    
-
     public static boolean deletePost(int idPost){
         conn.connect();
 
@@ -270,8 +227,7 @@ public class Controller {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");  
         Date date = new Date();  
         return dateFormat.format(date);  
-    }  
-     
+    }
     public static String getWaktu() {  
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");  
         Date date = new Date();  
@@ -287,6 +243,68 @@ public class Controller {
         } else {validate = email.matches(emailPattern2);}
         return validate;
     }
-    
-
+    public static ArrayList<Teman> getAllTeman(String username){
+        conn.connect();
+        ArrayList<Teman> listTeman = new ArrayList<>();
+        String query = "SELECT * FROM list_teman WHERE Username = '" + username + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                Teman teman = new Teman();
+                teman.setNickname_teman(rs.getString("Nickname_teman"));
+                teman.setUsername_user(rs.getString("Username"));
+                listTeman.add(teman);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listTeman;
+    }
+    public static boolean searchUser(User user, String nick){
+        conn.connect();
+        User user_teman;
+        boolean valid = false;
+        String Username_teman = null;
+        ArrayList<User> listUser = getAllUsers();
+        for(int i = 0; i < listUser.size();i++){
+            if(nick.equals(listUser.get(i).getNickname())){
+                Username_teman = listUser.get(i).getUsername();
+                valid = true;
+                break;
+            }
+        }
+        if(valid){
+            user_teman = getUser(Username_teman);
+            ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
+            String query = "INSERT INTO list_teman VALUES (?,?,?)";
+            String idTeman = "" + user.getUsername() + "_"+listTeman.size();
+            try{
+                PreparedStatement stmt = conn.con.prepareStatement(query);
+                stmt.setString(1, idTeman);
+                stmt.setString(2, user.getUsername());
+                stmt.setString(3, user_teman.getNickname());
+                stmt.executeUpdate();
+                return true;
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        return false;
+    }
+    public static boolean tambahJumlahTeman(User user){
+        conn.connect();
+        ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
+        int totalTeman = listTeman.size();
+        String query = "UPDATE user SET JumlahTeman = " + totalTeman +
+                " WHERE Username = '" + user.getUsername() + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
 }

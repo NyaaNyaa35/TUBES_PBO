@@ -25,7 +25,7 @@ public class FrameComment extends JFrame implements ActionListener{
         
         int width = 20;
         JLabel label = new JLabel();
-        String strLabel = "";
+        String strLabel = "label_";
         for(int i = 0; i < /*listComm.size()*/ 3 ; i++){
             
         }
