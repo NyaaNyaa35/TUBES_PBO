@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.Comment;
 import Model.Person;
 import Model.Post;
 import Model.User;
@@ -77,10 +78,12 @@ public class Controller {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 Post post = new Post();
-                post.setIdPost(rs.getInt("IdPost"));
+                post.setIdPost(rs.getInt("IdPostingan"));
+                post.setCaption(rs.getString("Caption"));
                 post.setPostNickname(rs.getString("PostNickname"));
+                post.setJumlahLike(rs.getInt("Likes"));
                 post.setWaktuPost(rs.getString("WaktuPost"));
-                post.setImagepath(rs.getString("Imagepath"));
+                post.setImagepath(rs.getString("GambarPost"));
                 posts.add(post);
             }
         } catch (SQLException e) {
@@ -150,7 +153,38 @@ public class Controller {
         valid_2 = insertUser(user);
         return(valid_1 && valid_2);
     }
-
+    public static boolean insertNewPost(Post post){
+        conn.connect();
+        String query_InsertNewPost = "INSERT INTO postingan VALUES(?,?,?,?,?,?)";
+        try{
+            PreparedStatement stmt = conn.con.prepareStatement(query_InsertNewPost);
+            stmt.setInt(1, post.getIdPost());
+            stmt.setString(2, post.getCaption());
+            stmt.setString(3, post.getImagepath());
+            stmt.setInt(4, post.getJumlahLike());
+            stmt.setString(5, post.getWaktuPost());
+            stmt.setString(6, post.getPostNickname());
+            stmt.executeUpdate();
+            return(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }       
+        return false;
+    }
+    public static boolean insertNewComments(Comment comment){
+        conn.connect();;
+        String query_InsertToComment = "INSERT INTO comment VALUES(?,?,?)";
+        try{
+            PreparedStatement stmt = conn.con.prepareStatement(query_InsertToComment);
+            stmt.setString(1, comment.getIsiComment());
+            stmt.setString(2, comment.getNicknameComment());
+            stmt.setString(3, comment.getWaktuComment());
+            return true;
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
     // UPDATE
     /*public static boolean updateUser(User user, Boolean filechooserFoto, Boolean filechooserTT) {
         conn.connect();
@@ -201,9 +235,7 @@ public class Controller {
         }
     }
     
-    public static boolean insertNewPost(Post post){
-        return false;
-    }
+
     public static boolean deletePost(int idPost){
         conn.connect();
 
@@ -255,4 +287,6 @@ public class Controller {
         } else {validate = email.matches(emailPattern2);}
         return validate;
     }
+    
+
 }

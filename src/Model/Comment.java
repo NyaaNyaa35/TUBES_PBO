@@ -14,7 +14,7 @@ import java.util.Date;
 public class Comment {
     private String nicknameComment;
     private String isiComment;
-    private Date waktuComment;
+    private String waktuComment;
     
     public Comment() {
     }
@@ -40,11 +40,11 @@ public class Comment {
         this.nicknameComment = nicknameComment;
     }
 
-    public Date getWaktuComment() {
+    public String getWaktuComment() {
         return waktuComment;
     }
 
-    public void setWaktuComment(Date waktuComment) {
+    public void setWaktuComment(String waktuComment) {
         this.waktuComment = waktuComment;
     }
     

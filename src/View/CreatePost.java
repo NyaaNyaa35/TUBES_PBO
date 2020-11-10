@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import Controller.Controller;
+import javafx.animation.Timeline;
 import javax.swing.JOptionPane;
 
 /**
@@ -27,7 +28,7 @@ import javax.swing.JOptionPane;
  */
 public class CreatePost extends JFrame implements ActionListener{
     
-    JFrame frame;
+    JFrame frame,framePreview;
     JButton chooseFile,upload,confirm_yes,confirm_no;
     JTextField caption;
     JLabel lCaption,previewPhotos;
@@ -37,52 +38,58 @@ public class CreatePost extends JFrame implements ActionListener{
     int idPost;
     String postNickname,tanggalPost="";
     User user_cadangan;
-    
+    Post post = new Post();
     public CreatePost(User user) {
         user_cadangan = user;
-        frame = new JFrame();
-        frame.setSize(500, 500);
+        frame = new JFrame("Create Post");
+        frame.setSize(600,400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
         postNickname = user.getNickname();
         
         tanggalPost += Controller.getTanggal() + " " + Controller.getWaktu();
-        
+
         chooseFile = new JButton("Choose File...");
+        chooseFile.setBounds(40, 40, 120, 30);
         chooseFile.addActionListener(this);
         
         lCaption = new JLabel("Caption");
         caption = new JTextField();
+        lCaption.setBounds(40, 100, 50, 30);
+        caption.setBounds(40, 125, 500, 100);
         
         upload = new JButton("Upload");
+        upload.setBounds(445,300,80,30);
         upload.addActionListener(this);
+        
         
         frame.add(chooseFile);
         frame.add(lCaption);
         frame.add(caption);
         frame.add(upload);
         
-        frame.setVisible(true);
+
         frame.setLayout(null);
+        frame.setVisible(true);
     }
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        Post post = new Post();
-        String input = ae.getActionCommand();        
+        String input = ae.getActionCommand();   
         switch(input){
             case "Upload":
-                idPost = post.getIdPost()+1;
                 post.setCaption(caption.getText());
-                post.setIdPost(idPost);
-                previewPhotos = new JLabel(new ImageIcon(pathPhotos));
                 post.setPostNickname(postNickname);
                 post.setWaktuPost(tanggalPost);
-                frame = new JFrame();
-                frame.setSize(500, 500);
-                frame.setLocationRelativeTo(null);
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
+                post.setIdPost(Post.countPost());
+                
+                framePreview = new JFrame();
+                framePreview.setSize(500, 500);
+                framePreview.setLocationRelativeTo(null);
+                framePreview.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
+                
+                previewPhotos = new JLabel(new ImageIcon(pathPhotos));
                 previewPhotos.setBounds(10, 10, 200, 300);
                 
                 confirm_yes = new JButton("Confirm");
@@ -90,16 +97,15 @@ public class CreatePost extends JFrame implements ActionListener{
                 confirm_yes.addActionListener(this);
                 
                 confirm_no = new JButton("Re-Upload");
-                confirm_no.setBounds(300, 350, 100, 50);
+                confirm_no.setBounds(320, 350, 100, 50);
                 confirm_no.addActionListener(this);
                 
-                frame.add(previewPhotos); 
-                frame.add(confirm_yes);
-                frame.add(confirm_no);
+                framePreview.add(previewPhotos); 
+                framePreview.add(confirm_yes);
+                framePreview.add(confirm_no);
                 
-                frame.setVisible(true);
-                frame.setLayout(null);                
-                
+                framePreview.setLayout(null);                 
+                framePreview.setVisible(true);             
                 
                 break;
             case "Choose File...":
@@ -112,9 +118,11 @@ public class CreatePost extends JFrame implements ActionListener{
             case "Confirm":
                 boolean insertPost = Controller.insertNewPost(post);
                 if(insertPost){
-                    JOptionPane.showMessageDialog(null, "Upload Post Berhasi");
+                    JOptionPane.showMessageDialog(null, "Upload Post Berhasil");
+                    new TimeLine(user_cadangan);
                 } else {
                     JOptionPane.showMessageDialog(null, "Upload Post Gagal");
+                    new CreatePost(user_cadangan);
                 }
                 break;
             case "Re-Upload":
