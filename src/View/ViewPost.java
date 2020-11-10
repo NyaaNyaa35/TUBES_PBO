@@ -5,9 +5,13 @@
  */
 package View;
 
+import Controller.Controller;
+import Model.Admin;
 import Model.Comment;
 import Model.Liker;
 import Model.Post;
+import Model.User;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,6 +19,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
@@ -22,81 +28,76 @@ import javax.swing.WindowConstants;
  *
  * @author NealsonW
  */
-public class ViewPost extends JFrame implements ActionListener{
+public class ViewPost extends JFrame{
     
-    Post post = new Post();
-    ArrayList<Comment> listComment = new ArrayList<>();
-    ArrayList<Liker> listLiker = new ArrayList<>();
+    ArrayList<Post> listPost = Controller.getAllPost();
     JFrame frame;
-    JLabel postImage,userPost,caption,comment,likes;
-    JButton postComment,likePost;
-    JTextField fComment;
-    int jumlahLike;
-    String suka;
+    JButton button_Next,button_Prev,button_Upload,button_DeletePost,button_DeleteUser,
+            button_LogOut,button_SeeComment, button_Like, button_Profile;
+    JLabel label_NicknameUser,label_NicknamePoster,label_KumulatifLike, label_Caption, postImage;
+    JPanel panel_Gambar;
+    String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
     
-    public ViewPost() {
+    public ViewPost(User user) {
+        Action action = new Action();
         frame = new JFrame();
-        frame.setSize(500, 500);
+        frame.setSize(600, 700);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
-        userPost = new JLabel(post.getPostNickname());
-        
-        caption = new JLabel(post.getCaption());
-        
-        postImage = new JLabel();
-        postImage.setIcon(new ImageIcon(post.getImagepath()));
-        
-        suka = Integer.toString(post.getJumlahLike());
-        likes = new JLabel(suka);
-        
-        likePost = new JButton("<3");
-        likePost.addActionListener(this);
+        label_NicknameUser = new JLabel(user.getNickname());
+        label_NicknameUser.setBounds(75, 20, 100, 30);
+        label_NicknameUser.setFont(new Font("Serif",0,15));        
 
-        postComment = new JButton();
-        postComment.addActionListener(this);
-        postComment.setVisible(false);
+        button_Prev = new JButton("Prev Post");
+        button_Prev.setBounds(20, 610, 100, 30);
+        button_Prev.addActionListener(action);
         
-        fComment = new JTextField("Make Your Comment!");
-        fComment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                postComment.setVisible(true);
-            }
-        });
-
+        button_Next = new JButton("Next Post");
+        button_Next.setBounds(460, 610, 100, 30);
+        button_Next.addActionListener(action);
         
-        for(int i=0; i<listComment.size();i++){
-            comment = new JLabel();
-        }
+        button_SeeComment = new JButton("Comment");
+        button_SeeComment.setBounds(460, 545, 100, 30);
+        button_SeeComment.addActionListener(action);
         
-        frame.add(userPost);
-        frame.add(caption);
-        frame.add(postImage);
+        label_NicknamePoster = new JLabel("Nickname Poster");
+        label_NicknamePoster.setBounds(65,540,100,20);
         
-        frame.setVisible(true);
+        label_KumulatifLike = new JLabel("99999+");
+        label_KumulatifLike.setBounds(65,555,50,30);
+        
+        label_Caption = new JLabel(test);
+        label_Caption.setBounds(25, 505, 550, 30);
+            
+        frame.add(label_NicknameUser);
+        frame.add(button_Prev);
+        frame.add(button_Next);
+        frame.add(button_SeeComment);
+        frame.add(label_NicknamePoster);
+        frame.add(label_KumulatifLike);
+        frame.add(label_Caption);
+        
         frame.setLayout(null);
+        frame.setVisible(true);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        String input = ae.getActionCommand();
-        
-        switch(input){
-            case "<3":
-                Liker userLike = new Liker();
-                userLike.setNicknameLike("");
-                listLiker.add(userLike);
-                post.setListLiker(listLiker);
-                jumlahLike = post.getJumlahLike()+1;
-                post.setJumlahLike(jumlahLike);
-                break;
-            case "Make Your Comment!": 
-                Comment comment = new Comment();
-                comment.setIsiComment(fComment.getText());
-                listComment.add(comment);
-                post.setListComment(listComment);
-                break;
+    class Action implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            String command = ae.getActionCommand();
+            switch(command){
+                case"Prev Post":
+                    break;
+                case"Next Post":
+                    break;
+                case"Comment":
+                    frame.setVisible(false);
+                    //new FrameComment();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

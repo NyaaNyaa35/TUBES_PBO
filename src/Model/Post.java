@@ -7,7 +7,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.Date;
-
+import Controller.Controller;
 /**
  *
  * @author HansNotFound
@@ -25,7 +25,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(int idPost, String imagepath, String postNickname, String waktuPost, String caption, int jumlahLike) {
+    public Post(int idPost,String imagepath, String postNickname, String waktuPost, String caption, int jumlahLike) {
         this.idPost = idPost;
         this.imagepath = imagepath;
         this.postNickname = postNickname;
@@ -50,13 +50,6 @@ public class Post {
         this.postNickname = postNickname;
     }
 
-    public int getIdPost() {
-        return idPost;
-    }
-
-    public void setIdPost(int idPost) {
-        this.idPost = idPost;
-    }
 
     public String getImagepath() {
         return imagepath;
@@ -90,11 +83,6 @@ public class Post {
         this.waktuPost = waktuPost;
     }
     
-    @Override
-    public String toString() {
-        return "Post{" + "idPost=" + idPost + ", imagepath=" + imagepath + ", postUsername=" + postNickname + ", listComment=" + listComment + ", listLiker=" + listLiker + '}';
-    }
-
     public int getJumlahLike() {
         return jumlahLike;
     }
@@ -103,6 +91,31 @@ public class Post {
         this.jumlahLike = jumlahLike;
     }
 
+    public int getIdPost() {
+        return idPost;
+    }
+
+    public void setIdPost(int idPost) {
+        this.idPost = idPost;
+    }
+    
+    @Override
+    public String toString() {
+        return "Post{" + "idPost=" + idPost + ", imagepath=" + imagepath + ", postNickname=" + postNickname + ", listComment=" + listComment + ", listLiker=" + listLiker + ", waktuPost=" + waktuPost + ", caption=" + caption + ", jumlahLike=" + jumlahLike + '}';
+    }
+    
+    public static int countPost(){
+        int count = 0;
+        ArrayList<Post> listPost = Controller.getAllPost();
+        if(listPost == null){
+            return 0;
+        }else if (listPost != null){
+            count += listPost.size();
+        }
+        return count;
+    }
+
+    
 
     
 }
