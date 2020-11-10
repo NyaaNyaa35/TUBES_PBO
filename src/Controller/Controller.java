@@ -148,38 +148,6 @@ public class Controller {
         valid_2 = insertUser(user);
         return(valid_1 && valid_2);
     }
-    public static boolean insertNewPost(Post post){
-        conn.connect();
-        String query_InsertNewPost = "INSERT INTO postingan VALUES(?,?,?,?,?,?)";
-        try{
-            PreparedStatement stmt = conn.con.prepareStatement(query_InsertNewPost);
-            stmt.setInt(1, post.getIdPost());
-            stmt.setString(2, post.getCaption());
-            stmt.setString(3, post.getImagepath());
-            stmt.setInt(4, post.getJumlahLike());
-            stmt.setString(5, post.getWaktuPost());
-            stmt.setString(6, post.getPostNickname());
-            stmt.executeUpdate();
-            return(true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }       
-        return false;
-    }
-    public static boolean insertNewComments(Comment comment){
-        conn.connect();;
-        String query_InsertToComment = "INSERT INTO comment VALUES(?,?,?)";
-        try{
-            PreparedStatement stmt = conn.con.prepareStatement(query_InsertToComment);
-            stmt.setString(1, comment.getIsiComment());
-            stmt.setString(2, comment.getNicknameComment());
-            stmt.setString(3, comment.getWaktuComment());
-            return true;
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        return false;
-    }
     public static boolean deleteUser(String Username) {
         conn.connect();
 
@@ -206,11 +174,9 @@ public class Controller {
             return (false);
         }
     }
-    public boolean recoverPassword(String Username, String Password){
+    public static boolean recoverPassword(String Username, String Password){
         conn.connect();
-        
-        String query = "Update person set Password = '" + Password +"' where Username = '" + Username+ "';";
-        
+        String query = "Update person set Password = '" + Password +"' where Username = '" + Username+ "'";
         try{
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -306,5 +272,37 @@ public class Controller {
             e.printStackTrace();
             return (false);
         }
+    }
+    public static boolean insertNewPost(Post post){
+        conn.connect();
+        String query_InsertNewPost = "INSERT INTO postingan VALUES(?,?,?,?,?,?)";
+        try{
+            PreparedStatement stmt = conn.con.prepareStatement(query_InsertNewPost);
+            stmt.setInt(1, post.getIdPost());
+            stmt.setString(2, post.getCaption());
+            stmt.setString(3, post.getImagepath());
+            stmt.setInt(4, post.getJumlahLike());
+            stmt.setString(5, post.getWaktuPost());
+            stmt.setString(6, post.getPostNickname());
+            stmt.executeUpdate();
+            return(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }       
+        return false;
+    }
+    public static boolean insertNewComments(Comment comment){
+        conn.connect();
+        String query_InsertToComment = "INSERT INTO comment VALUES(?,?,?)";
+        try{
+            PreparedStatement stmt = conn.con.prepareStatement(query_InsertToComment);
+            stmt.setString(1, comment.getIsiComment());
+            stmt.setString(2, comment.getNicknameComment());
+            stmt.setString(3, comment.getWaktuComment());
+            return true;
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 }

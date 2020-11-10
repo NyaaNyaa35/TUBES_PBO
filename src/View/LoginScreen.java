@@ -110,7 +110,7 @@ public class LoginScreen extends JFrame implements ActionListener {
                 break;
             case "Recover Password":
                 frame.setVisible(false);
-                RecoverPasswordScreen recoverPasswordScreen = new RecoverPasswordScreen();
+        FormRecover formRecover = new FormRecover();
                 break;
             default:
                 break;
