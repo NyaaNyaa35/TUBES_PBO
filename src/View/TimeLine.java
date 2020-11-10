@@ -9,6 +9,7 @@ import Controller.Interface;
 import Model.Admin;
 import Model.Person;
 import Model.User;
+import Model.UserManager;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -34,24 +35,23 @@ public class TimeLine extends JFrame implements Interface{
     JLabel label_NicknameUser,label_NicknamePoster,label_KumulatifLike, label_Caption;
     JPanel panel_Gambar;
     String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
-    User user;
     Admin admin;
     public TimeLine(Person person){
         if(person instanceof User){
-            user = (User) person;
+            UserManager.getInstance().setUser((User) person);
             Action action = new Action();
             frame_TimeLine = new JFrame(Interface.namaApp);
             frame_TimeLine.setSize(600, 700);
             frame_TimeLine.setLocationRelativeTo(null);
             frame_TimeLine.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
-            label_NicknameUser = new JLabel(user.getNickname());
+            label_NicknameUser = new JLabel(UserManager.getInstance().getUser().getNickname());
             label_NicknameUser.setBounds(75, 20, 100, 30);
             label_NicknameUser.setFont(new Font("Serif",0,15));
         
             button_Profile = new JButton();
             button_Profile.setBounds(20, 10, 50, 50);
-            button_Profile.setIcon(new ImageIcon(user.getProfilePict()));
+            button_Profile.setIcon(new ImageIcon(UserManager.getInstance().getUser().getProfilePict()));
             button_Profile.setFocusPainted(false);
             button_Profile.setBorderPainted(false);
             button_Profile.setContentAreaFilled(false);
@@ -180,6 +180,7 @@ public class TimeLine extends JFrame implements Interface{
                 case"LogOut":
                     int tutup = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin LogOut?");
                     if(tutup == 0){
+                        UserManager.getInstance().setUser(null);
                         JOptionPane.showMessageDialog(null, "Anda berhasil LogOut");
                         frame_TimeLine.setVisible(false);
                         LoginScreen loginScreen = new LoginScreen();
@@ -191,15 +192,15 @@ public class TimeLine extends JFrame implements Interface{
                     break;
                 case"UploadPost":
                     frame_TimeLine.setVisible(false);
-                    new CreatePost(user);
+                    new CreatePost(UserManager.getInstance().getUser());
                     break;
                 case"Comment":
                     frame_TimeLine.setVisible(false);
-                    //new FrameComment();
+                    new FrameComment(UserManager.getInstance().getUser().getListPost().get(WIDTH).getListComment());
                     break;
                 case "ViewProfile":
                     frame_TimeLine.setVisible(false);
-                    new ViewProfile(user);
+                    new ViewProfile(UserManager.getInstance().getUser());
                     break;
                 default:
                     break;

@@ -16,7 +16,7 @@ public class User extends Person{
     private String email;
     private int jumlahTeman;
     private String profilePict;
-    private ArrayList<User> listTeman = new ArrayList<>();
+    private ArrayList<Teman> listTeman = new ArrayList<>();
     private ArrayList<Post> listPost = new ArrayList<>();
     
     public User() {
@@ -62,11 +62,11 @@ public class User extends Person{
         this.jumlahTeman = jumlahTeman;
     }
 
-    public ArrayList<User> getListTeman() {
+    public ArrayList<Teman> getListTeman() {
         return listTeman;
     }
 
-    public void setListTeman(ArrayList<User> listTeman) {
+    public void setListTeman(ArrayList<Teman> listTeman) {
         this.listTeman = listTeman;
     }
 
