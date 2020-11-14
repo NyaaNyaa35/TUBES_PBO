@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import Controller.Controller;
+import Controller.ControllerUser;
 
 /**
  *
@@ -29,14 +29,15 @@ public class ViewProfile extends JFrame implements ActionListener{
     JLabel  label_Nickname, label_Email, label_ProfilePict, label_KeteranganPict;
     JFileChooser file_ProfilePict;
     JButton button_back, button_RecoverPassword, button_Save, button_seeTeman, 
-            button_seeAddTeman, button_seeRequestTeman,button_PickFile;
+            button_seeAddTeman, button_seeRequestTeman,button_PickFile, button_viewpost;
     JTextField TF_Nickname,TF_Email;
     String pathFriendImage = "src/Image/friend_Image_35_x35.PNG";
     User user;
-    public ViewProfile(User users){
-        VP(users);
+    int counter;
+    public ViewProfile(User users,int counter_post){
+        VP(users, counter_post);
     }
-    private void VP(User users){
+    private void VP(User users,int counter_post){
         user = users;
         frame_Profile = new JFrame("Your Profile");
         frame_Profile.setSize(400, 450);
@@ -82,6 +83,10 @@ public class ViewProfile extends JFrame implements ActionListener{
         button_seeTeman.setActionCommand("SeeFriend");
         button_seeTeman.addActionListener(this);
         
+        button_viewpost = new JButton("View Post");
+        button_viewpost.setBounds(263, 60, 100, 30);
+        button_viewpost.addActionListener(this);
+        
         button_seeAddTeman = new JButton("Add Friend");
         button_seeAddTeman.setBounds(50,240,100,30);
         button_seeAddTeman.addActionListener(this);
@@ -102,6 +107,7 @@ public class ViewProfile extends JFrame implements ActionListener{
         button_RecoverPassword.setBounds(20, 360, 350, 30);
         button_RecoverPassword.addActionListener(this);
         
+        frame_Profile.add(button_viewpost);
         frame_Profile.add(button_PickFile);
         frame_Profile.add(button_back);
         frame_Profile.add(button_RecoverPassword);
@@ -125,22 +131,22 @@ public class ViewProfile extends JFrame implements ActionListener{
         switch(command){
             case"Back":
                 frame_Profile.setVisible(false);
-        TimeLine timeLine = new TimeLine(user);
+        TimeLine timeLine = new TimeLine(user, counter);
                 break;
             case"Save":
                 break;
             case"Recover Password":
                 frame_Profile.setVisible(false);
-        RecoverPasswordScreen recoverPasswordScreen = new RecoverPasswordScreen();
+        FormRecover formRecover = new FormRecover();
                 break;
             case"Add Friend":
                 String nick = JOptionPane.showInputDialog("Silahkan masukkan Nickname user = ");
-                boolean berhasil = Controller.searchUser(user,nick);
+                boolean berhasil = ControllerUser.searchUser(user,nick);
                 if(berhasil){
-                    if(Controller.tambahJumlahTeman(user)){
+                    if(ControllerUser.tambahJumlahTeman(user)){
                         JOptionPane.showMessageDialog(null, "Sekarang " +nick+ " sudah menjadi teman anda!");
                         frame_Profile.setVisible(false);
-                        ViewProfile viewProfile = new ViewProfile(user);
+                        ViewProfile viewProfile = new ViewProfile(user, counter);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Silahkan cek kembali nickname yang anda masukkan",
@@ -151,6 +157,8 @@ public class ViewProfile extends JFrame implements ActionListener{
                 break;
             case"SeeFriend":
                 JOptionPane.showMessageDialog(null,"See Friend Button");
+                break;
+            case"View Post":
                 break;
             default:
                 break;

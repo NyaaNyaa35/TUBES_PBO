@@ -27,9 +27,9 @@ public class MainMenuScreen extends JFrame implements Interface {
     JButton button_Exit,button_Begin;
     private void showMainMenu() {
         frame_Main = new JFrame(Interface.namaApp);
+        frame_Main.setSize(300, 300);
         frame_Main.setLocationRelativeTo(null);
         frame_Main.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame_Main.setSize(300, 300);
         
         label_namaApp = new JLabel("Welcome to "+Interface.namaApp);
         label_namaApp.setBounds(50,30,200,30);

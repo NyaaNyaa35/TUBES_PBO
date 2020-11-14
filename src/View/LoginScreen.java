@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.ControllerPost;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -16,11 +17,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import Controller.Controller;
+import Controller.ControllerUser;
 import Model.Admin;
+import Model.Post;
 import Model.User;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 /**
  *
@@ -55,8 +58,13 @@ public class LoginScreen extends JFrame implements ActionListener {
         button_Login.addActionListener(this);
         button_RecoverPass = new JButton("Recover Password");
         button_RecoverPass.addActionListener(this);
-        button_Register = new JButton("Belum punya akun? Ayo daftar Sekarang");
+        button_Register = new JButton("Belum punya akun? Ayo daftar Sekarang Klik di sini");
         button_Register.addActionListener(this);
+        button_Register.setFocusPainted(false);
+        button_Register.setBorderPainted(false);
+        button_Register.setContentAreaFilled(false);
+        button_Register.setOpaque(false);
+        button_Register.setActionCommand("To Regis Screen");
 
         label_Login.setBounds(100, 30, 400, 30);
         label_username.setBounds(80, 70, 200, 30);
@@ -64,8 +72,8 @@ public class LoginScreen extends JFrame implements ActionListener {
         textfield_Username.setBounds(300, 70, 200, 30);
         passwordfield.setBounds(300, 110, 200, 30);
         button_Login.setBounds(100, 160, 100, 30);
-        button_RecoverPass.setBounds(250, 160, 200, 30);
-        button_Register.setBounds(130, 200, 300, 30);
+        button_RecoverPass.setBounds(250, 160, 150, 30);
+        button_Register.setBounds(110, 200, 350, 30);
 
         frame.add(label_Login);
         frame.add(label_username);
@@ -92,10 +100,16 @@ public class LoginScreen extends JFrame implements ActionListener {
                 if (!uname.equals("") && !pass.equals("")) {
                     if (admin.Login(uname, pass)) {
                         frame.setVisible(false);
-                        TimeLine timeLine = new TimeLine(admin);
+                        TimeLine timeLine = new TimeLine(admin,1);
                     } else if (user.Login(uname, pass)) {
                         frame.setVisible(false);
-                        TimeLine timeLine = new TimeLine(Controller.getUser(uname));
+                        user = ControllerUser.getUser(uname);
+                        ArrayList<Post> listPost = ControllerPost.getListPostByUser(uname);
+                        if(!listPost.isEmpty()){
+                            TimeLine timeLine = new TimeLine(user,1);
+                        } else {
+                            TimeLine timeLine = new TimeLine(user,0);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Incorrect login or password",
                                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -104,7 +118,7 @@ public class LoginScreen extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Data Tidak Boleh Kosong!!");
                 }
                 break;
-            case "Belum punya akun? Ayo daftar Sekarang":
+            case "To Regis Screen":
                 frame.setVisible(false);
                 RegisterScreen registerScreen = new RegisterScreen();
                 break;

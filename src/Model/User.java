@@ -6,7 +6,7 @@
 package Model;
 
 import java.util.ArrayList;
-import Controller.Controller;
+import Controller.ControllerUser;
 /**
  *
  * @author HansNotFound
@@ -85,7 +85,7 @@ public class User extends Person{
 
     @Override
     public boolean Login(String Username, String Password) {
-        ArrayList<User> listUser = Controller.getAllUsers();
+        ArrayList<User> listUser = ControllerUser.getAllUsers();
         for(int i = 0; i < listUser.size(); i++){
             if(Username.equals(listUser.get(i).getUsername()) && Password.equals(listUser.get(i).getPassword())){
                 return true;
@@ -94,6 +94,15 @@ public class User extends Person{
         return false;
     }
 
-    
+    public static int countUser(){
+        int count = 0;
+        ArrayList<User> listUser = ControllerUser.getAllUsers();
+        if(listUser == null){
+            return 0;
+        }else {
+            count += listUser.size();
+        }
+        return count;
+    }
     
 }

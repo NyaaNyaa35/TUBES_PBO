@@ -7,7 +7,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import Controller.Controller;
+import Controller.ControllerPost;
 /**
  *
  * @author HansNotFound
@@ -16,6 +16,7 @@ public class Post {
     private int idPost;
     private String imagepath;
     private String postNickname;
+    private String username_user;
     private ArrayList<Comment> listComment = new ArrayList<>();
     private ArrayList<Liker> listLiker = new ArrayList<>();
     private String waktuPost;
@@ -106,13 +107,21 @@ public class Post {
     
     public static int countPost(){
         int count = 0;
-        ArrayList<Post> listPost = Controller.getAllPost();
+        ArrayList<Post> listPost = ControllerPost.getAllPost();
         if(listPost == null){
             return 0;
-        }else if (listPost != null){
+        }else {
             count += listPost.size();
         }
         return count;
+    }
+
+    public String getUsername_user() {
+        return username_user;
+    }
+
+    public void setUsername_user(String username_user) {
+        this.username_user = username_user;
     }
 
     

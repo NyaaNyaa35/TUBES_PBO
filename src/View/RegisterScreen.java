@@ -16,7 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import Controller.Controller;
+import Controller.ControllerUser;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -49,17 +49,19 @@ public class RegisterScreen extends JFrame implements ActionListener {
         
         TF_Username = new JTextField(20);
         TF_Username.setBounds(300, 70, 200, 30);
+        TF_Username.setColumns(20);
         
         label_Nickname = new JLabel("Nickname ");
         label_Nickname.setBounds(80, 110, 200, 30);
         
         TF_Nickname = new JTextField(20);
         TF_Nickname.setBounds(300, 110, 200, 30);
+        TF_Nickname.setColumns(20);
         
         label_email = new JLabel("Email ");
         label_email.setBounds(80, 150, 200, 30);
         
-        TF_Email = new JTextField(20);
+        TF_Email = new JTextField();
         TF_Email.setBounds(300, 150, 200, 30);
         
         label_Password = new JLabel("Password ");
@@ -67,14 +69,20 @@ public class RegisterScreen extends JFrame implements ActionListener {
         
         passwordfield = new JPasswordField(20);
         passwordfield.setBounds(300, 190, 200, 30);
+        passwordfield.setColumns(20);
         
         button_Register = new JButton("Register");
         button_Register.setBounds(240,250,100,30);
         button_Register.addActionListener(this);
         
-        button_Login = new JButton("Sudah Punya Akun? Login Sekarang!");
-        button_Login.setBounds(150,300,300,30);
+        button_Login = new JButton("Sudah Punya Akun? Login Sekarang! Klik di sini");
+        button_Login.setBounds(125,300,350,30);
         button_Login.addActionListener(this);
+        button_Login.setFocusPainted(false);
+        button_Login.setBorderPainted(false);
+        button_Login.setContentAreaFilled(false);
+        button_Login.setOpaque(false);
+        button_Login.setActionCommand("To Login Screen");
         
         frame.add(button_Register);
         frame.add(button_Login);
@@ -112,8 +120,8 @@ public class RegisterScreen extends JFrame implements ActionListener {
                 user.setPassword(Password);
                 user.setJumlahTeman(0);
                 user.setProfilePict(pathDefaultProfilePict);
-                ArrayList<User> listUser = Controller.getAllUsers();
-                if(Controller.isValidEmail(TF_Email.getText())){
+                ArrayList<User> listUser = ControllerUser.getAllUsers();
+                if(ControllerUser.isValidEmail(TF_Email.getText())){
                     user.setEmail(TF_Email.getText());
                     if(!listUser.isEmpty()){
                         for(int i = 0; i < listUser.size(); i++){
@@ -136,7 +144,7 @@ public class RegisterScreen extends JFrame implements ActionListener {
                     }
                     boolean insert_berhasil;
                     if(valid){
-                        insert_berhasil = Controller.insertNewUser(user);
+                        insert_berhasil = ControllerUser.insertNewUser(user);
                         if(insert_berhasil){
                             JOptionPane.showMessageDialog(null,"Register Berhasil, Anda akan dialihkan ke Login Screen!");
                             frame.setVisible(false);
@@ -154,7 +162,7 @@ public class RegisterScreen extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Data Tidak Boleh Kosong!!");
             }
                 break;
-            case "Sudah Punya Akun? Login Sekarang!":
+            case "To Login Screen":
                 frame.setVisible(false);
                 new LoginScreen();
                 break;

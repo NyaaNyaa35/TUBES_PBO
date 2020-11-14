@@ -5,7 +5,7 @@
  */
 package Main;
 
-import Controller.Controller;
+import Controller.ControllerUser;
 import Model.*;
 import View.MainMenuScreen;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         MainMenuScreen mainMenuScreen = new MainMenuScreen();
-        ArrayList<User> listUser = Controller.getAllUsers();
+        ArrayList<User> listUser = ControllerUser.getAllUsers();
         for(int i = 0; i < listUser.size(); i++){
             System.out.println(listUser.get(i).toString());
         }

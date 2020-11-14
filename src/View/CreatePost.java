@@ -18,7 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import Controller.Controller;
+import Controller.ControllerPost;
+import Controller.ControllerUser;
 import javafx.animation.Timeline;
 import javax.swing.JOptionPane;
 
@@ -39,7 +40,9 @@ public class CreatePost extends JFrame implements ActionListener{
     String postNickname,tanggalPost="";
     User user_cadangan;
     Post post = new Post();
-    public CreatePost(User user) {
+    int counter_post;
+    public CreatePost(User user, int counter) {
+        counter_post = counter;
         user_cadangan = user;
         frame = new JFrame("Create Post");
         frame.setSize(600,400);
@@ -48,7 +51,7 @@ public class CreatePost extends JFrame implements ActionListener{
         
         postNickname = user.getNickname();
         
-        tanggalPost += Controller.getTanggal() + " " + Controller.getWaktu();
+        tanggalPost += ControllerUser.getTanggal() + " " + ControllerUser.getWaktu();
 
         chooseFile = new JButton("Choose File...");
         chooseFile.setBounds(40, 40, 120, 30);
@@ -83,6 +86,7 @@ public class CreatePost extends JFrame implements ActionListener{
                 post.setPostNickname(postNickname);
                 post.setWaktuPost(tanggalPost);
                 post.setIdPost(Post.countPost());
+                post.setUsername_user(user_cadangan.getUsername());
                 
                 framePreview = new JFrame();
                 framePreview.setSize(500, 500);
@@ -116,18 +120,22 @@ public class CreatePost extends JFrame implements ActionListener{
                 post.setImagepath(pathPhotos);
                 break;
             case "Confirm":
-                boolean insertPost = Controller.insertNewPost(post);
+                boolean insertPost = ControllerPost.insertNewPost(post);
                 if(insertPost){
                     JOptionPane.showMessageDialog(null, "Upload Post Berhasil");
-                    new TimeLine(user_cadangan);
+                    counter_post = ControllerPost.getListPostByUser(user_cadangan.getUsername()).size();
+            TimeLine timeLine = new TimeLine(user_cadangan, counter_post);
+                frame.setVisible(false);
+                framePreview.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Upload Post Gagal");
-                    new CreatePost(user_cadangan);
+            CreatePost createPost = new CreatePost(user_cadangan, counter_post);
                 }
                 break;
             case "Re-Upload":
-                new CreatePost(user_cadangan);
-                break;    
+                framePreview.setVisible(false);
+        CreatePost createPost = new CreatePost(user_cadangan, counter_post);
+                break;        
             default:
                 break;
         }

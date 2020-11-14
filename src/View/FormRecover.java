@@ -6,7 +6,7 @@ package View;
  * and open the template in the editor.
  */
 
-import Controller.Controller;
+import Controller.ControllerUser;
 import Model.User;
 import java.awt.Color;
 import java.awt.Font;
@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 /**
  *
  * @author Davjd
@@ -26,11 +27,14 @@ import javax.swing.JTextField;
 public class FormRecover extends JFrame implements ActionListener {
     JLabel label_IsiForm, label_Username, label_Email, label_Nickname;
     JTextField tf_Username, tf_Email, tf_Nickname;
-    JButton btn1;
+    JButton button_verify, button_back;
     JFrame frame;
  
     public FormRecover() {
         frame = new JFrame("Isi Form Recover Password");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setSize(700, 350);
+        frame.setLocationRelativeTo(null);
         label_IsiForm = new JLabel("Isi Form");
         label_IsiForm.setForeground(Color.blue);
         label_IsiForm.setFont(new Font("Serif", Font.BOLD, 20));
@@ -41,8 +45,10 @@ public class FormRecover extends JFrame implements ActionListener {
         tf_Username = new JTextField();
         tf_Email = new JTextField();
         tf_Nickname = new JTextField();
-        btn1 = new JButton("Verify");
-        btn1.addActionListener(this);
+        button_verify = new JButton("Verify");
+        button_verify.addActionListener(this);
+        button_back = new JButton("Back to MainMenu");
+        button_back.addActionListener(this);
 
         label_IsiForm.setBounds(100, 30, 400, 30);
         label_Username.setBounds(80, 70, 200, 30);
@@ -51,8 +57,10 @@ public class FormRecover extends JFrame implements ActionListener {
         tf_Username.setBounds(300, 70, 200, 30);
         tf_Email.setBounds(300, 110, 200, 30);
         tf_Nickname.setBounds(300, 150, 200, 30);
-        btn1.setBounds(80, 200, 100, 30);
+        button_verify.setBounds(80, 200, 100, 30);
+        button_back.setBounds(280, 200, 200, 30);
 
+        frame.add(button_back);
         frame.add(label_IsiForm);
         frame.add(label_Username);
         frame.add(tf_Email);
@@ -60,9 +68,8 @@ public class FormRecover extends JFrame implements ActionListener {
         frame.add(tf_Username);
         frame.add(label_Nickname);
         frame.add(tf_Nickname);
-        frame.add(btn1);
+        frame.add(button_verify);
 
-        frame.setSize(700, 350);
         frame.setLayout(null);
         frame.setVisible(true);
     }
@@ -76,7 +83,7 @@ public class FormRecover extends JFrame implements ActionListener {
              String uname = tf_Username.getText();
              String nname = tf_Nickname.getText();
              String email = tf_Email.getText();
-             ArrayList<User> listUser = Controller.getAllUsers();
+             ArrayList<User> listUser = ControllerUser.getAllUsers();
              for(int i = 0; i < listUser.size() ; i++){
                  if(uname.equals(listUser.get(i).getUsername())){
                      if(nname.equals(listUser.get(i).getNickname())){
@@ -94,6 +101,10 @@ public class FormRecover extends JFrame implements ActionListener {
                  }
              }
             break;
+            case "Back to MainMenu":
+                frame.setVisible(false);
+                new MainMenuScreen();
+                break;
         }
     }
 }

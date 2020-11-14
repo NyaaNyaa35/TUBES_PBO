@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.ControllerPost;
 import Controller.Interface;
 import Model.Admin;
 import Model.Person;
@@ -12,6 +13,7 @@ import Model.User;
 import Model.UserManager;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -23,6 +25,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import Model.Post;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.util.ArrayList;
 
 /**
  *
@@ -32,14 +38,19 @@ public class TimeLine extends JFrame implements Interface{
     JFrame frame_TimeLine;
     JButton button_Next,button_Prev,button_Upload,button_DeletePost,button_DeleteUser,
             button_LogOut,button_SeeComment, button_Like, button_Profile;
-    JLabel label_NicknameUser,label_NicknamePoster,label_KumulatifLike, label_Caption;
-    JPanel panel_Gambar;
+    JLabel label_NicknameUser,label_NicknamePoster,label_KumulatifLike, label_Caption,panel_Gambar,
+            tempat_gambar;
     String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
+    String Nicknamepost = "";
+    String strCaption = "";
     Admin admin;
-    public TimeLine(Person person){
+    int counter;
+    public TimeLine(Person person,int counter_post){
         if(person instanceof User){
             UserManager.getInstance().setUser((User) person);
             Action action = new Action();
+            ArrayList<Post> listPost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
+            counter = counter_post;
             frame_TimeLine = new JFrame(Interface.namaApp);
             frame_TimeLine.setSize(600, 700);
             frame_TimeLine.setLocationRelativeTo(null);
@@ -62,10 +73,17 @@ public class TimeLine extends JFrame implements Interface{
             button_Prev = new JButton("Prev Post");
             button_Prev.setBounds(20, 610, 100, 30);
             button_Prev.addActionListener(action);
+            if((counter_post-1) <= 0){
+                button_Prev.setEnabled(false);
+            }
         
             button_Next = new JButton("Next Post");
             button_Next.setBounds(460, 610, 100, 30);
+            int pembatas = listPost.size();
             button_Next.addActionListener(action);
+            if((counter_post+1) > (pembatas)){
+                button_Next.setEnabled(false);
+            }
         
             button_SeeComment = new JButton("Comment");
             button_SeeComment.setBounds(460, 545, 100, 30);
@@ -79,25 +97,41 @@ public class TimeLine extends JFrame implements Interface{
             button_LogOut.setBounds(460, 20, 100, 30);
             button_LogOut.addActionListener(action);
         
-            panel_Gambar = new JPanel();
+            panel_Gambar = new JLabel();
             panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             panel_Gambar.setBounds(20, 75, 550, 430);
-        
+            
+            tempat_gambar = new JLabel();
+            tempat_gambar.setBounds(25, 80, 540, 420);
+
+            int x = panel_Gambar.getSize().width / 2 - tempat_gambar.getSize().width / 6;
+            int y = panel_Gambar.getSize().height / 2- tempat_gambar.getSize().height / 3;
+
+            tempat_gambar.setLocation(x, y);
+            tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
+            
+            int jumlahLike = 0;
+            if(counter_post != 0){
+                tempat_gambar.setIcon(new ImageIcon(listPost.get(counter_post-1).getImagepath()));
+                jumlahLike = listPost.get(counter_post-1).getJumlahLike();
+                Nicknamepost = listPost.get(counter_post-1).getPostNickname();
+                strCaption = listPost.get(counter_post-1).getCaption();
+            }
+            
             Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
             button_Like = new JButton(iconLike);
             button_Like.setBounds(20, 540, 40, 40);
         
-            label_NicknamePoster = new JLabel("Nickname Poster");
+            label_NicknamePoster = new JLabel(Nicknamepost);
             label_NicknamePoster.setBounds(65,540,100,20);
         
-            label_KumulatifLike = new JLabel("99999+");
+            label_KumulatifLike = new JLabel(""+jumlahLike);
             label_KumulatifLike.setBounds(65,555,50,30);
         
-            String panjang = "" + test.length();
-        
-            label_Caption = new JLabel(test);
+            label_Caption = new JLabel(strCaption);
             label_Caption.setBounds(25, 505, 550, 30);
         
+            frame_TimeLine.add(tempat_gambar);
             frame_TimeLine.add(button_Profile);
             frame_TimeLine.add(label_Caption);
             frame_TimeLine.add(label_KumulatifLike);
@@ -143,14 +177,17 @@ public class TimeLine extends JFrame implements Interface{
             button_Upload.setBounds(240, 610, 100, 30);
             button_Upload.addActionListener(action);
         
-            panel_Gambar = new JPanel();
+            
+            panel_Gambar = new JLabel();
             panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             panel_Gambar.setBounds(20, 75, 550, 430);
             
             label_NicknamePoster = new JLabel("Nickname Poster");
             label_NicknamePoster.setBounds(65,540,100,20);
         
-            label_KumulatifLike = new JLabel("99999+");
+            int jumlahLike = UserManager.getInstance().getUser().getListPost().get(counter).getJumlahLike();
+            
+            label_KumulatifLike = new JLabel("Like = " + jumlahLike);
             label_KumulatifLike.setBounds(65,555,50,30);
         
             String panjang = "" + test.length();
@@ -187,12 +224,16 @@ public class TimeLine extends JFrame implements Interface{
                     }
                     break;
                 case"Prev Post":
+                    frame_TimeLine.setVisible(false);
+                    new TimeLine(UserManager.getInstance().getUser(), counter-1);
                     break;
                 case"Next Post":
+                    frame_TimeLine.setVisible(false);
+                    new TimeLine(UserManager.getInstance().getUser(), counter+1);
                     break;
                 case"UploadPost":
                     frame_TimeLine.setVisible(false);
-                    new CreatePost(UserManager.getInstance().getUser());
+                    new CreatePost(UserManager.getInstance().getUser(), counter);
                     break;
                 case"Comment":
                     frame_TimeLine.setVisible(false);
@@ -200,7 +241,7 @@ public class TimeLine extends JFrame implements Interface{
                     break;
                 case "ViewProfile":
                     frame_TimeLine.setVisible(false);
-                    new ViewProfile(UserManager.getInstance().getUser());
+                    new ViewProfile(UserManager.getInstance().getUser(),counter);
                     break;
                 default:
                     break;

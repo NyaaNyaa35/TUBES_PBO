@@ -5,12 +5,9 @@
  */
 package Controller;
 
-import Model.Comment;
 import Model.Person;
-import Model.Post;
 import Model.Teman;
 import Model.User;
-import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,17 +15,16 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author HansNotFound
  */
-public class Controller {
+public class ControllerUser {
     static DatabaseHandler conn = new DatabaseHandler();
-
+//tambahin spasi, sama comment
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
         conn.connect();
@@ -67,28 +63,6 @@ public class Controller {
             e.printStackTrace();
         }
         return (users);
-    }
-    public static ArrayList<Post> getAllPost() {
-        ArrayList<Post> posts = new ArrayList<>();
-        conn.connect();
-        String query = "SELECT * FROM postingan";
-        try {
-            Statement stmt = conn.con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                Post post = new Post();
-                post.setIdPost(rs.getInt("IdPostingan"));
-                post.setCaption(rs.getString("Caption"));
-                post.setPostNickname(rs.getString("PostNickname"));
-                post.setJumlahLike(rs.getInt("Likes"));
-                post.setWaktuPost(rs.getString("WaktuPost"));
-                post.setImagepath(rs.getString("GambarPost"));
-                posts.add(post);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return (posts);
     }
     public static User getUser(String Username) {
         conn.connect();
@@ -129,7 +103,7 @@ public class Controller {
         try{
             PreparedStatement stmt_2 = conn.con.prepareStatement(query_InsertToUser);
             ArrayList<User> listUser = getAllUsers();
-            stmt_2.setInt(1, listUser.size() + 1);
+            stmt_2.setInt(1, User.countUser());
             stmt_2.setString(2, user.getUsername());
             stmt_2.setString(3, user.getNickname());
             stmt_2.setString(4, user.getEmail());
@@ -152,19 +126,6 @@ public class Controller {
         conn.connect();
 
         String query = "DELETE FROM person WHERE Username='" + Username + "'";
-        try {
-            Statement stmt = conn.con.createStatement();
-            stmt.executeUpdate(query);
-            return (true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return (false);
-        }
-    }
-    public static boolean deletePost(int idPost){
-        conn.connect();
-
-        String query = "DELETE FROM postingan WHERE idPost='" + idPost + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -244,10 +205,15 @@ public class Controller {
             user_teman = getUser(Username_teman);
             ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
             String query = "INSERT INTO list_teman VALUES (?,?,?)";
-            String idTeman = "" + user.getUsername() + "_"+listTeman.size();
+            int idTeman;
+            if(listTeman == null){
+                idTeman = 0;
+            } else {
+                idTeman = listTeman.size();
+            }
             try{
                 PreparedStatement stmt = conn.con.prepareStatement(query);
-                stmt.setString(1, idTeman);
+                stmt.setInt(1, idTeman);
                 stmt.setString(2, user.getUsername());
                 stmt.setString(3, user_teman.getNickname());
                 stmt.executeUpdate();
@@ -272,37 +238,5 @@ public class Controller {
             e.printStackTrace();
             return (false);
         }
-    }
-    public static boolean insertNewPost(Post post){
-        conn.connect();
-        String query_InsertNewPost = "INSERT INTO postingan VALUES(?,?,?,?,?,?)";
-        try{
-            PreparedStatement stmt = conn.con.prepareStatement(query_InsertNewPost);
-            stmt.setInt(1, post.getIdPost());
-            stmt.setString(2, post.getCaption());
-            stmt.setString(3, post.getImagepath());
-            stmt.setInt(4, post.getJumlahLike());
-            stmt.setString(5, post.getWaktuPost());
-            stmt.setString(6, post.getPostNickname());
-            stmt.executeUpdate();
-            return(true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }       
-        return false;
-    }
-    public static boolean insertNewComments(Comment comment){
-        conn.connect();
-        String query_InsertToComment = "INSERT INTO comment VALUES(?,?,?)";
-        try{
-            PreparedStatement stmt = conn.con.prepareStatement(query_InsertToComment);
-            stmt.setString(1, comment.getIsiComment());
-            stmt.setString(2, comment.getNicknameComment());
-            stmt.setString(3, comment.getWaktuComment());
-            return true;
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        return false;
     }
 }

@@ -5,7 +5,7 @@
  */
 package View;
 
-import Controller.Controller;
+import Controller.ControllerPost;
 import Model.Admin;
 import Model.Comment;
 import Model.Liker;
@@ -30,7 +30,7 @@ import javax.swing.WindowConstants;
  */
 public class ViewPost extends JFrame{
     
-    ArrayList<Post> listPost = Controller.getAllPost();
+    ArrayList<Post> listPost = ControllerPost.getAllPost();
     JFrame frame;
     JButton button_Next,button_Prev,button_Upload,button_DeletePost,button_DeleteUser,
             button_LogOut,button_SeeComment, button_Like, button_Profile;
