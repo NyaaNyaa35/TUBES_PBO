@@ -109,9 +109,6 @@ public class TimeLine extends JFrame implements Interface{
             tempat_gambar = new JLabel();
             tempat_gambar.setBounds(25, 80, 540, 420);
 
-//            int x = panel_Gambar.getSize().width / 2 - tempat_gambar.getSize().width / 6;
-//            int y = panel_Gambar.getSize().height / 2- tempat_gambar.getSize().height / 3;
-
             tempat_gambar.setBounds(panel_Gambar.getLocation().x+5, panel_Gambar.getLocation().y+5, 545, 415);
             tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
             
