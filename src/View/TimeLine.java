@@ -27,8 +27,13 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import Model.Post;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -104,18 +109,20 @@ public class TimeLine extends JFrame implements Interface{
             tempat_gambar = new JLabel();
             tempat_gambar.setBounds(25, 80, 540, 420);
 
-            int x = panel_Gambar.getSize().width / 2 - tempat_gambar.getSize().width / 6;
-            int y = panel_Gambar.getSize().height / 2- tempat_gambar.getSize().height / 3;
+//            int x = panel_Gambar.getSize().width / 2 - tempat_gambar.getSize().width / 6;
+//            int y = panel_Gambar.getSize().height / 2- tempat_gambar.getSize().height / 3;
 
-            tempat_gambar.setLocation(x, y);
+            tempat_gambar.setBounds(panel_Gambar.getLocation().x+5, panel_Gambar.getLocation().y+5, 545, 415);
             tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
             
             int jumlahLike = 0;
             if(counter_post != 0){
-                tempat_gambar.setIcon(new ImageIcon(listPost.get(counter_post-1).getImagepath()));
                 jumlahLike = listPost.get(counter_post-1).getJumlahLike();
                 Nicknamepost = listPost.get(counter_post-1).getPostNickname();
                 strCaption = listPost.get(counter_post-1).getCaption();
+                BufferedImage loadImg = loadImage(listPost.get(counter_post-1).getImagepath());
+                ImageIcon imageIcon = new ImageIcon(resize(loadImg,tempat_gambar.getWidth()-5, tempat_gambar.getHeight()-5));
+                tempat_gambar.setIcon(imageIcon); 
             }
             
             Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
@@ -248,4 +255,24 @@ public class TimeLine extends JFrame implements Interface{
             }
         }
     }
+    public static BufferedImage loadImage(String ref) {
+        BufferedImage bimg = null;
+        try {
+            bimg = ImageIO.read(new File(ref));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bimg;
+    }
+    //Method untuk Resize Image
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        BufferedImage dimg = new BufferedImage(newW, newH,img.getType());
+        Graphics2D g = dimg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(img, 0, 0, newW, newH, 0, 0, w, h, null);
+        g.dispose();
+        return dimg;
+    } 
 }

@@ -134,7 +134,6 @@ public class CreatePost extends JFrame implements ActionListener{
                 break;
             case "Re-Upload":
                 framePreview.setVisible(false);
-        CreatePost createPost = new CreatePost(user_cadangan, counter_post);
                 break;        
             default:
                 break;
