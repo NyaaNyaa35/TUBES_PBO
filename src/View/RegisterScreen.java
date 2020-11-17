@@ -25,8 +25,8 @@ import javax.swing.JOptionPane;
  * @author HansNotFound
  */
 public class RegisterScreen extends JFrame implements ActionListener {
-    public RegisterScreen(){
-        register();
+    public RegisterScreen(String uname, String Nickname, String Email){
+        register(uname, Nickname, Email);
     }
     JFrame frame;
     JLabel label_datadiri,label_Username,label_Nickname,label_email,label_Password;
@@ -34,7 +34,7 @@ public class RegisterScreen extends JFrame implements ActionListener {
     JTextField TF_Username,TF_Nickname,TF_Email;
     JPasswordField passwordfield;
     Boolean Username_filled = false, Nickname_filled = false, Email_filled = false,Pass_filled = false;
-    private void register(){
+    private void register(String uname, String Nickname, String Email){
         frame = new JFrame("Register Form");
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
@@ -47,21 +47,21 @@ public class RegisterScreen extends JFrame implements ActionListener {
         label_Username = new JLabel("Username ");
         label_Username.setBounds(80, 70, 200, 30);
         
-        TF_Username = new JTextField(20);
+        TF_Username = new JTextField(uname);
         TF_Username.setBounds(300, 70, 200, 30);
         TF_Username.setColumns(20);
         
         label_Nickname = new JLabel("Nickname ");
         label_Nickname.setBounds(80, 110, 200, 30);
         
-        TF_Nickname = new JTextField(20);
+        TF_Nickname = new JTextField(Nickname);
         TF_Nickname.setBounds(300, 110, 200, 30);
         TF_Nickname.setColumns(20);
         
         label_email = new JLabel("Email ");
         label_email.setBounds(80, 150, 200, 30);
         
-        TF_Email = new JTextField();
+        TF_Email = new JTextField(Email);
         TF_Email.setBounds(300, 150, 200, 30);
         
         label_Password = new JLabel("Password ");
@@ -108,42 +108,51 @@ public class RegisterScreen extends JFrame implements ActionListener {
         String command = ae.getActionCommand();
         switch(command){
             case "Register":
-                User user = new User();
                 boolean valid = false;
                 String pathDefaultProfilePict = "src/Image/default_profile_pict.png";
                 String Nickname = TF_Nickname.getText();
                 String Username = TF_Username.getText();
                 String Password = passwordfield.getText();
-            if(!Nickname.equals("") && !Username.equals("") && !Password.equals("")){
-                user.setNickname(Nickname);
-                user.setUsername(Username);
-                user.setPassword(Password);
-                user.setJumlahTeman(0);
-                user.setProfilePict(pathDefaultProfilePict);
+            if(Nickname.equals("") && Username.equals("") && Password.equals("")){
+                JOptionPane.showMessageDialog(null, "Data Tidak Boleh Kosong!!");
+            } else if(Nickname.length() > 20 || Username.length() > 20 || Password.length() > 20){
+                JOptionPane.showMessageDialog(null, "Input data maks = 20 karakter");
+            } else {
                 ArrayList<User> listUser = ControllerUser.getAllUsers();
-                if(ControllerUser.isValidEmail(TF_Email.getText())){
-                    user.setEmail(TF_Email.getText());
+                String Email = TF_Email.getText();
+                if(ControllerUser.isValidEmail(Email)){
                     if(!listUser.isEmpty()){
-                        for(int i = 0; i < listUser.size(); i++){
-                            if(TF_Username.getText().equals(listUser.get(i).getUsername())){
-                                JOptionPane.showMessageDialog(null, "Username ini sudah terpakai!!");
-                                break;
-                            } else if(TF_Nickname.getText().equals(listUser.get(i).getNickname())){
-                                JOptionPane.showMessageDialog(null, "Nickname ini sudah terpakai!!");
-                                break; 
-                            } else if(TF_Email.getText().equals(listUser.get(i).getEmail())){
-                                JOptionPane.showMessageDialog(null, "Email ini sudah terpakai!!");
-                                break;
-                            } else {
-                                valid = true;
-                                break;
-                            }
-                        }
-                    } else {
-                        valid = true;
-                    }
+                        int cekUsername = ControllerUser.cekDuplikatUsername(Username);
+                        int cekNickname = ControllerUser.cekDuplikatUsername(Nickname);
+                        int cekEmail = ControllerUser.cekDuplikatEmail(Email);
+                        if(cekUsername == 0 && cekNickname == 0 && cekEmail == 0){
+                            valid = true;
+                        } else if(cekUsername > 0){
+                            JOptionPane.showMessageDialog(null, "Username sudah terpakai! Silahkan Isi Ulang data anda","Error",JOptionPane.ERROR_MESSAGE);
+                            frame.setVisible(false);
+                            new RegisterScreen(Username, Nickname, Email);
+                            break;
+                        } else if(cekNickname > 0){
+                            JOptionPane.showMessageDialog(null, "Nickname sudah terpakai! Silahkan Isi Ulang data anda","Error",JOptionPane.ERROR_MESSAGE);
+                            frame.setVisible(false);
+                            new RegisterScreen(Username, Nickname, Email);
+                            break;
+                        } else if(cekEmail > 0){
+                            JOptionPane.showMessageDialog(null, "Email sudah terpakai! Silahkan Isi Ulang data anda","Error",JOptionPane.ERROR_MESSAGE);
+                            frame.setVisible(false);
+                            new RegisterScreen(Username, Nickname, Email);
+                            break;
+                        } 
+                    } 
                     boolean insert_berhasil;
                     if(valid){
+                        User user = new User();
+                        user.setNickname(Nickname);
+                        user.setUsername(Username);
+                        user.setPassword(Password);
+                        user.setJumlahTeman(0);
+                        user.setProfilePict(pathDefaultProfilePict);
+                        user.setEmail(Email);
                         insert_berhasil = ControllerUser.insertNewUser(user);
                         if(insert_berhasil){
                             JOptionPane.showMessageDialog(null,"Register Berhasil, Anda akan dialihkan ke Login Screen!");
@@ -158,8 +167,6 @@ public class RegisterScreen extends JFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(null, "Email tidak valid!");
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Data Tidak Boleh Kosong!!");
             }
                 break;
             case "To Login Screen":
