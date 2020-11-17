@@ -19,6 +19,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import Controller.ControllerUser;
+import Model.UserManager;
+import static View.TimeLine.loadImage;
+import static View.TimeLine.resize;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.file.Path;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -34,11 +43,14 @@ public class ViewProfile extends JFrame implements ActionListener{
     String pathFriendImage = "src/Image/friend_Image_35_x35.PNG";
     User user;
     int counter;
+    File fileFoto;
+    String pathFoto;
     public ViewProfile(User users,int counter_post){
         VP(users, counter_post);
     }
     private void VP(User users,int counter_post){
         user = users;
+        counter = counter_post;
         frame_Profile = new JFrame("Your Profile");
         frame_Profile.setSize(400, 450);
         frame_Profile.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -46,12 +58,15 @@ public class ViewProfile extends JFrame implements ActionListener{
         
         Icon icon = new ImageIcon(user.getProfilePict());
         label_ProfilePict = new JLabel();
-        label_ProfilePict.setIcon(icon);
+        BufferedImage loadImgProfile = loadImage(UserManager.getInstance().getUser().getProfilePict());
+        ImageIcon imageIconProfile = new ImageIcon(resize(loadImgProfile,100,100)) ;
+        label_ProfilePict.setIcon(imageIconProfile);
         label_ProfilePict.setBounds(20, 20, 100, 100);
         
         button_PickFile = new JButton("Choose File");
         button_PickFile.setBounds(130, 60, 100, 30);
         button_PickFile.addActionListener(this);
+        button_PickFile.setEnabled(false);
         
         label_KeteranganPict = new JLabel();
         label_KeteranganPict.setBounds(20, 120, 380, 20);
@@ -134,6 +149,25 @@ public class ViewProfile extends JFrame implements ActionListener{
         TimeLine timeLine = new TimeLine(user, counter);
                 break;
             case"Save":
+                String newNickname = TF_Nickname.getText();
+                if(newNickname.equals(user.getNickname())){
+                    JOptionPane.showMessageDialog(null, "Nothing Changes","Alert",JOptionPane.ERROR_MESSAGE);
+                } else{
+                    String getPassword =  JOptionPane.showInputDialog(null,"Masukkan Password anda","Password Vertification",JOptionPane.WARNING_MESSAGE);
+                    if(getPassword.equals(user.getPassword())){
+                        if(ControllerUser.updateNickname(user,newNickname)){
+                            if(ControllerUser.updateNicknameList_in_ListTeman(user, newNickname)){
+                                if(ControllerUser.updateNicknameList_in_Postingan(user, newNickname)){
+                                    JOptionPane.showMessageDialog(null, "Vertified!, Silahkan ReLogin!","Berhasil",JOptionPane.INFORMATION_MESSAGE);
+                                    frame_Profile.setVisible(false);
+                                    new LoginScreen();
+                                }
+                            }
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Password Salah!!","Error",JOptionPane.ERROR_MESSAGE);
+                    }
+                }
                 break;
             case"Recover Password":
                 frame_Profile.setVisible(false);
@@ -141,13 +175,10 @@ public class ViewProfile extends JFrame implements ActionListener{
                 break;
             case"Add Friend":
                 String nick = JOptionPane.showInputDialog("Silahkan masukkan Nickname user = ");
-                boolean berhasil = ControllerUser.searchUser(user,nick);
-                if(berhasil){
-                    if(ControllerUser.tambahJumlahTeman(user)){
+                if(ControllerUser.addFriend(user,nick)){
                         JOptionPane.showMessageDialog(null, "Sekarang " +nick+ " sudah menjadi teman anda!");
                         frame_Profile.setVisible(false);
                         ViewProfile viewProfile = new ViewProfile(user, counter);
-                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Silahkan cek kembali nickname yang anda masukkan",
                             "Error",JOptionPane.ERROR_MESSAGE);
@@ -156,12 +187,52 @@ public class ViewProfile extends JFrame implements ActionListener{
             case"Friend Request":
                 break;
             case"SeeFriend":
-                JOptionPane.showMessageDialog(null,"See Friend Button");
+                new FrameListTeman(user);
+                frame_Profile.setVisible(false);
                 break;
             case"View Post":
+                break;
+            case "Choose File":
+            file_ProfilePict =  new JFileChooser();
+            int status = file_ProfilePict.showOpenDialog(null);
+            if(status == JFileChooser.APPROVE_OPTION){
+                int option = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mengganti gambar profile anda?");
+                if(option == JOptionPane.YES_OPTION){
+                    fileFoto = file_ProfilePict.getSelectedFile();
+                    pathFoto = fileFoto.getAbsolutePath();
+                    user.setProfilePict(pathFoto);
+                    if(ControllerUser.updateProfilePict(user)){
+                        JOptionPane.showMessageDialog(null, "Update berhasil! Silahkan ReLogin");
+                        frame_Profile.setVisible(false);
+                        new LoginScreen();
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "No File Selected!!","Alert",JOptionPane.ERROR_MESSAGE);
+            }
                 break;
             default:
                 break;
         }
     }
+    public static BufferedImage loadImage(String ref) {
+        BufferedImage bimg = null;
+        try {
+            bimg = ImageIO.read(new File(ref));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bimg;
+    }
+    //Method untuk Resize Image
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        BufferedImage dimg = new BufferedImage(newW, newH,img.getType());
+        Graphics2D g = dimg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(img, 0, 0, newW, newH, 0, 0, w, h, null);
+        g.dispose();
+        return dimg;
+    } 
 }
