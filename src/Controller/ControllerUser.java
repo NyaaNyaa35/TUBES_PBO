@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
  */
 public class ControllerUser {
     static DatabaseHandler conn = new DatabaseHandler();
-//tambahin spasi, sama comment
+    //Get Semua user 
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
         conn.connect();
@@ -47,6 +47,8 @@ public class ControllerUser {
         }
         return (users);
     }
+    
+    //get semua person
     public static ArrayList<Person> getAllPerson() {
         ArrayList<Person> users = new ArrayList<>();
         conn.connect();
@@ -64,6 +66,8 @@ public class ControllerUser {
         }
         return (users);
     }
+    
+    //get user by Username
     public static User getUser(String Username) {
         conn.connect();
         String query = "SELECT * FROM user WHERE Username='" + Username + "'";
@@ -83,6 +87,8 @@ public class ControllerUser {
         }
         return (user);
     }
+    
+    //menginsert person
     public static boolean insertPerson(User user){
         conn.connect();
         String query_InsertToPerson = "INSERT INTO person VALUES (?,?)";
@@ -97,12 +103,13 @@ public class ControllerUser {
         }
         return(false);
     }
+    
+    //menginsert user baru
     public static boolean insertUser(User user) {
         conn.connect();
         String query_InsertToUser = "INSERT INTO user VALUES(?,?,?,?,?,?)";
         try{
             PreparedStatement stmt_2 = conn.con.prepareStatement(query_InsertToUser);
-            ArrayList<User> listUser = getAllUsers();
             stmt_2.setInt(1, User.countUser());
             stmt_2.setString(2, user.getUsername());
             stmt_2.setString(3, user.getNickname());
@@ -116,12 +123,16 @@ public class ControllerUser {
         }
         return(false);
     }
+    
+    //memanggil 2 void insert user dan memastikan agar dapat terinput dengan benar ke kedua tabel(person dan user)
     public static boolean insertNewUser(User user){
         boolean valid_1,valid_2;
         valid_1 = insertPerson(user);
         valid_2 = insertUser(user);
         return(valid_1 && valid_2);
     }
+    
+    //fungsi delete user by admin
     public static boolean deleteUser(String Username) {
         conn.connect();
 
@@ -135,6 +146,8 @@ public class ControllerUser {
             return (false);
         }
     }
+    
+    //fungsi recover password 
     public static boolean recoverPassword(String Username, String Password){
         conn.connect();
         String query = "Update person set Password = '" + Password +"' where Username = '" + Username+ "'";
@@ -147,19 +160,22 @@ public class ControllerUser {
             return(false);
         }
     }
-    public void LoginSuccess(String username, String Password){
-        JOptionPane.showMessageDialog(null, "Username = " + username + " password = " + Password);
-    }
+    
+    //mendapatkan tanggal sekarang
     public static String getTanggal() {  
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");  
         Date date = new Date();  
         return dateFormat.format(date);  
     }
+    
+    //mendapatkan waktu sekarang
     public static String getWaktu() {  
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");  
         Date date = new Date();  
         return dateFormat.format(date);  
     } 
+    
+    //mengecek apakah email yang diinput itu valid
     public static boolean isValidEmail(String email) {
         boolean validate;
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -170,6 +186,8 @@ public class ControllerUser {
         } else {validate = email.matches(emailPattern2);}
         return validate;
     }
+    
+    //get seluruh Nickname teman by Username
     public static ArrayList<Teman> getAllTeman(String username){
         conn.connect();
         ArrayList<Teman> listTeman = new ArrayList<>();
@@ -188,22 +206,11 @@ public class ControllerUser {
         }
         return listTeman;
     }
-    public static boolean searchUser(User user, String nick){
+    
+    //menambahkan Nickname teman kedalam tabel list_teman
+    public static boolean addTeman(User user,User user_teman){
         conn.connect();
-        User user_teman;
-        boolean valid = false;
-        String Username_teman = null;
-        ArrayList<User> listUser = getAllUsers();
-        for(int i = 0; i < listUser.size();i++){
-            if(nick.equals(listUser.get(i).getNickname())){
-                Username_teman = listUser.get(i).getUsername();
-                valid = true;
-                break;
-            }
-        }
-        if(valid){
-            user_teman = getUser(Username_teman);
-            ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
+        ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
             String query = "INSERT INTO list_teman VALUES (?,?,?)";
             int idTeman;
             if(listTeman == null){
@@ -221,9 +228,10 @@ public class ControllerUser {
             } catch (Exception ex){
                 ex.printStackTrace();
             }
-        }
         return false;
     }
+    
+    //menambahkan jumlah teman pada tabel user
     public static boolean tambahJumlahTeman(User user){
         conn.connect();
         ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
@@ -238,5 +246,153 @@ public class ControllerUser {
             e.printStackTrace();
             return (false);
         }
+    }
+    
+    //menambahkan dan mencari teman by nick
+    public static boolean addFriend(User user, String nick){
+        ArrayList<User> listUser = getAllUsers();
+        User user_teman = null;
+        boolean valid = false;
+        for(int i = 0; i < listUser.size();i++){
+            if(nick.equals(listUser.get(i).getNickname())){
+                user_teman = listUser.get(i);
+                valid = true;
+                break;
+            }
+        }
+        if(valid){
+            if(addTeman(user,user_teman)){
+                System.out.println("AddTeman oleh = " + user.getNickname() + "berhasil");
+                tambahJumlahTeman(user);
+                if(addTeman(user_teman,user)){
+                    System.out.println("AddTeman oleh = " + user_teman.getNickname() + "berhasil");
+                    tambahJumlahTeman(user_teman);
+                }
+            }
+        }
+        return false;
+    }
+    
+    //mengupdate nickname baru
+    public static boolean updateNickname(User user, String newNick){
+        conn.connect();
+        String query = "UPDATE user SET Nickname = '" + newNick +
+                "' WHERE Username = '" + user.getUsername() + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
+    
+    //mengupdate Nickname pada tabel Postingan
+    public static boolean updateNicknameList_in_Postingan(User user, String newNick){
+        conn.connect();
+        String query = "UPDATE postingan SET PostNickname = '" + newNick +
+                "' WHERE Username = '" + user.getUsername() + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
+    
+    //mengupdate Nickname pada tabel list_teman
+    public static boolean updateNicknameList_in_ListTeman(User user, String newNick){
+        conn.connect();
+        String query = "UPDATE list_teman SET Nickname_teman = '" + newNick +
+                "' WHERE Nickname_teman = '" + user.getNickname() + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
+    
+    //mengupdate ProfilePict user
+    public static boolean updateProfilePict(User user){
+        conn.connect();
+        String query = "UPDATE user SET ProfilePict = '" + user.getProfilePict() +
+                "' WHERE Username = '" + user.getUsername() + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
+    
+    //mengecek username didatabase (mencegah duplikat entry)
+    public static int cekDuplikatUsername(String Username){
+        conn.connect();
+        int total = 0;
+        String query = "SELECT Username FROM person WHERE Username = '" + Username + "'";
+        ArrayList<User> listUser = new ArrayList<>();
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                User user = new User();
+                user.setUsername(rs.getString("Username"));
+                listUser.add(user);
+            }
+            total = listUser.size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    
+    //mengecek nickname didatabase (mencegah duplikat entry)
+    public static int cekDuplikatNickname(String Nickname){
+        conn.connect();
+        int total = 0;
+        String query = "SELECT Nickname FROM user WHERE Nickname = '" + Nickname + "'";
+        ArrayList<User> listUser = new ArrayList<>();
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                User user = new User();
+                user.setNickname(rs.getString("Nickname"));
+                listUser.add(user);
+            }
+            total = listUser.size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    
+    //mengecek Email didatabase (mencegah duplikat entry)
+    public static int cekDuplikatEmail(String Email){
+        conn.connect();
+        int total = 0;
+        String query = "SELECT Email FROM user WHERE Email = '" + Email + "'";
+        ArrayList<User> listUser = new ArrayList<>();
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                User user = new User();
+                user.setEmail(rs.getString("Email"));
+                listUser.add(user);
+            }
+            total = listUser.size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
     }
 }
