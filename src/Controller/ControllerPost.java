@@ -104,18 +104,18 @@ public class ControllerPost {
         }       
         return false;
     }
-    public static boolean insertNewComments(Comment comment){
+    
+    public static boolean updateLikePost(Post post) {
         conn.connect();
-        String query_InsertToComment = "INSERT INTO comment VALUES(?,?,?)";
-        try{
-            PreparedStatement stmt = conn.con.prepareStatement(query_InsertToComment);
-            stmt.setString(1, comment.getIsiComment());
-            stmt.setString(2, comment.getNicknameComment());
-            stmt.setString(3, comment.getWaktuComment());
-            return true;
-        }catch(SQLException e){
+        String query = "UPDATE postingan SET Likes='" + post.getJumlahLike() + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
             e.printStackTrace();
+            return (false);
         }
-        return false;
     }
+
 }

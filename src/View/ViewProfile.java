@@ -39,6 +39,7 @@ public class ViewProfile extends JFrame implements ActionListener{
     }
     private void VP(User users,int counter_post){
         user = users;
+        counter = counter_post;
         frame_Profile = new JFrame("Your Profile");
         frame_Profile.setSize(400, 450);
         frame_Profile.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -159,6 +160,7 @@ public class ViewProfile extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(null,"See Friend Button");
                 break;
             case"View Post":
+                new ViewPost(user,counter);
                 break;
             default:
                 break;

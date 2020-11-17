@@ -49,13 +49,14 @@ public class TimeLine extends JFrame implements Interface{
     String Nicknamepost = "";
     String strCaption = "";
     Admin admin;
-    int counter;
+    int counter,idPost,likeCount;
     public TimeLine(Person person,int counter_post){
         if(person instanceof User){
             UserManager.getInstance().setUser((User) person);
             Action action = new Action();
             ArrayList<Post> listPost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
             counter = counter_post;
+            
             frame_TimeLine = new JFrame(Interface.namaApp);
             frame_TimeLine.setSize(600, 700);
             frame_TimeLine.setLocationRelativeTo(null);
@@ -112,25 +113,40 @@ public class TimeLine extends JFrame implements Interface{
             tempat_gambar.setBounds(panel_Gambar.getLocation().x+5, panel_Gambar.getLocation().y+5, 545, 415);
             tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
             
-            int jumlahLike = 0;
+            //int jumlahLike=0;
+            label_KumulatifLike = new JLabel(""+listPost.get(counter_post-1).getJumlahLike());
+            label_KumulatifLike.setBounds(65,555,50,30);
+            
+
+            Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
+            button_Like = new JButton(iconLike);
+            button_Like.setBounds(20, 540, 40, 40);
+            
+//            button_Like.addActionListener(actionEvent -> {
+                //likeCount++;
+                //label_KumulatifLike.setText(""+likeCount);
+//                likeCount += 1;
+//                label_KumulatifLike.setText(""+likeCount);
+//                listPost.get(counter_post-1).setJumlahLike(likeCount);
+//                boolean updateLike = ControllerPost.updateLikePost(listPost.get(counter_post-1));                               
+//            });
+            
             if(counter_post != 0){
-                jumlahLike = listPost.get(counter_post-1).getJumlahLike();
+                likeCount = listPost.get(counter_post-1).getJumlahLike();
                 Nicknamepost = listPost.get(counter_post-1).getPostNickname();
                 strCaption = listPost.get(counter_post-1).getCaption();
+                idPost = listPost.get(counter_post-1).getIdPost();
                 BufferedImage loadImg = loadImage(listPost.get(counter_post-1).getImagepath());
                 ImageIcon imageIcon = new ImageIcon(resize(loadImg,tempat_gambar.getWidth()-5, tempat_gambar.getHeight()-5));
                 tempat_gambar.setIcon(imageIcon); 
             }
+
+
             
-            Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
-            button_Like = new JButton(iconLike);
-            button_Like.setBounds(20, 540, 40, 40);
-        
             label_NicknamePoster = new JLabel(Nicknamepost);
             label_NicknamePoster.setBounds(65,540,100,20);
         
-            label_KumulatifLike = new JLabel(""+jumlahLike);
-            label_KumulatifLike.setBounds(65,555,50,30);
+
         
             label_Caption = new JLabel(strCaption);
             label_Caption.setBounds(25, 505, 550, 30);
@@ -241,7 +257,7 @@ public class TimeLine extends JFrame implements Interface{
                     break;
                 case"Comment":
                     frame_TimeLine.setVisible(false);
-                    new FrameComment(UserManager.getInstance().getUser().getListPost().get(WIDTH).getListComment());
+                    new FrameComment(UserManager.getInstance().getUser(),idPost,counter);
                     break;
                 case "ViewProfile":
                     frame_TimeLine.setVisible(false);
