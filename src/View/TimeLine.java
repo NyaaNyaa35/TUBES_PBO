@@ -6,6 +6,7 @@
 package View;
 
 import Controller.ControllerPost;
+import Controller.ControllerUser;
 import Controller.Interface;
 import Model.Admin;
 import Model.Person;
@@ -42,7 +43,7 @@ import javax.imageio.ImageIO;
 public class TimeLine extends JFrame implements Interface{
     JFrame frame_TimeLine;
     JButton button_Next,button_Prev,button_Upload,button_DeletePost,button_DeleteUser,
-            button_LogOut,button_SeeComment, button_Like, button_Profile;
+            button_LogOut,button_SeeComment, button_Like, button_Profile,button_Delete;
     JLabel label_NicknameUser,label_NicknamePoster,label_KumulatifLike, label_Caption,panel_Gambar,
             tempat_gambar;
     String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
@@ -52,9 +53,11 @@ public class TimeLine extends JFrame implements Interface{
     int counter,idPost,likeCount;
     public TimeLine(Person person,int counter_post){
         if(person instanceof User){
+            JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
             UserManager.getInstance().setUser((User) person);
             Action action = new Action();
             ArrayList<Post> listPost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
+            //ArrayList<Post> tambahanTeman = ControllerPost.getListPostByUser(ControllerUser.getAllTeman(UserManager.getInstance().getUser().getUsername()));
             counter = counter_post;
             
             frame_TimeLine = new JFrame(Interface.namaApp);
@@ -63,12 +66,14 @@ public class TimeLine extends JFrame implements Interface{
             frame_TimeLine.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
             label_NicknameUser = new JLabel(UserManager.getInstance().getUser().getNickname());
-            label_NicknameUser.setBounds(75, 20, 100, 30);
+            label_NicknameUser.setBounds(75, 20, 200, 30);
             label_NicknameUser.setFont(new Font("Serif",0,15));
         
             button_Profile = new JButton();
             button_Profile.setBounds(20, 10, 50, 50);
-            button_Profile.setIcon(new ImageIcon(UserManager.getInstance().getUser().getProfilePict()));
+            BufferedImage loadImgProfile = loadImage(UserManager.getInstance().getUser().getProfilePict());
+            ImageIcon imageIconProfile = new ImageIcon(resize(loadImgProfile,50,50)) ;
+            button_Profile.setIcon(imageIconProfile);
             button_Profile.setFocusPainted(false);
             button_Profile.setBorderPainted(false);
             button_Profile.setContentAreaFilled(false);
@@ -144,7 +149,7 @@ public class TimeLine extends JFrame implements Interface{
 
             
             label_NicknamePoster = new JLabel(Nicknamepost);
-            label_NicknamePoster.setBounds(65,540,100,20);
+            label_NicknamePoster.setBounds(65,540,200,20);
         
 
         
@@ -168,6 +173,7 @@ public class TimeLine extends JFrame implements Interface{
             frame_TimeLine.setVisible(true);
         } else if(person instanceof Admin){
             Action action = new Action();
+            ArrayList<Post> allpost = ControllerPost.getAllPost();
             frame_TimeLine = new JFrame(Interface.namaApp);
             frame_TimeLine.setSize(600, 700);
             frame_TimeLine.setLocationRelativeTo(null);
@@ -180,10 +186,17 @@ public class TimeLine extends JFrame implements Interface{
             button_Prev = new JButton("Prev Post");
             button_Prev.setBounds(20, 610, 100, 30);
             button_Prev.addActionListener(action);
+            if((counter_post-1) <= 0){
+                button_Prev.setEnabled(false);
+            }
         
             button_Next = new JButton("Next Post");
             button_Next.setBounds(460, 610, 100, 30);
+            int pembatas = allpost.size();
             button_Next.addActionListener(action);
+            if((counter_post+1) > (pembatas)){
+                button_Next.setEnabled(false);
+            }
         
             button_SeeComment = new JButton("Comment");
             button_SeeComment.setBounds(460, 545, 100, 30);
@@ -193,28 +206,48 @@ public class TimeLine extends JFrame implements Interface{
             button_LogOut.setBounds(460, 20, 100, 30);
             button_LogOut.addActionListener(action);
             
-            button_Upload = new JButton("DeletePost");
-            button_Upload.setBounds(240, 610, 100, 30);
-            button_Upload.addActionListener(action);
+            button_Delete = new JButton("DeletePost");
+            button_Delete.setBounds(240, 610, 100, 30);
+            button_Delete.addActionListener(action);
         
             
             panel_Gambar = new JLabel();
             panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             panel_Gambar.setBounds(20, 75, 550, 430);
             
-            label_NicknamePoster = new JLabel("Nickname Poster");
-            label_NicknamePoster.setBounds(65,540,100,20);
+            tempat_gambar = new JLabel();
+            tempat_gambar.setBounds(25, 80, 540, 420);
+
+            tempat_gambar.setBounds(panel_Gambar.getLocation().x+5, panel_Gambar.getLocation().y+5, 545, 415);
+            tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
+            
+            int jumlahLike = 0;
+            if(counter_post != 0){
+                jumlahLike = allpost.get(counter_post-1).getJumlahLike();
+                Nicknamepost = allpost.get(counter_post-1).getPostNickname();
+                strCaption = allpost.get(counter_post-1).getCaption();
+                BufferedImage loadImg = loadImage(allpost.get(counter_post-1).getImagepath());
+                ImageIcon imageIcon = new ImageIcon(resize(loadImg,tempat_gambar.getWidth()-5, tempat_gambar.getHeight()-5));
+                tempat_gambar.setIcon(imageIcon); 
+            }
+            
+            Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
+            button_Like = new JButton(iconLike);
+            button_Like.setBounds(20, 540, 40, 40);
         
-            int jumlahLike = UserManager.getInstance().getUser().getListPost().get(counter).getJumlahLike();
+            label_NicknamePoster = new JLabel(Nicknamepost);
+            label_NicknamePoster.setBounds(65,540,200,20);
+        
+            label_KumulatifLike = new JLabel(""+jumlahLike);
+            label_KumulatifLike.setBounds(65,555,50,30);
+        
+            label_Caption = new JLabel(strCaption);
+            label_Caption.setBounds(25, 505, 550, 30);
             
             label_KumulatifLike = new JLabel("Like = " + jumlahLike);
             label_KumulatifLike.setBounds(65,555,50,30);
         
-            String panjang = "" + test.length();
-        
-            label_Caption = new JLabel(test);
-            label_Caption.setBounds(25, 505, 550, 30);
-        
+            frame_TimeLine.add(button_Delete);
             frame_TimeLine.add(label_Caption);
             frame_TimeLine.add(label_KumulatifLike);
             frame_TimeLine.add(label_NicknamePoster);
@@ -258,10 +291,22 @@ public class TimeLine extends JFrame implements Interface{
                 case"Comment":
                     frame_TimeLine.setVisible(false);
                     new FrameComment(UserManager.getInstance().getUser(),idPost,counter);
+                    ArrayList<Post> listpost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
+                    new FrameComment(listpost.get(counter-1).getListComment());
                     break;
                 case "ViewProfile":
                     frame_TimeLine.setVisible(false);
                     new ViewProfile(UserManager.getInstance().getUser(),counter);
+                    break;
+                case "DeletePost":
+                    frame_TimeLine.setVisible(false);
+                    int status = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mendelete post ini?");
+                    if(status == JOptionPane.YES_OPTION){
+                        String passAdmin = JOptionPane.showInputDialog(null, "Masukkan password = ");
+                        if(passAdmin.equals(Interface.passAdmin)){
+                            ControllerPost.deletePost(0);
+                        }
+                    }
                     break;
                 default:
                     break;

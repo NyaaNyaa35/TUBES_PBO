@@ -103,7 +103,13 @@ public class LoginScreen extends JFrame implements ActionListener {
                         TimeLine timeLine = new TimeLine(admin,1);
                     } else if (user.Login(uname, pass)) {
                         frame.setVisible(false);
-                        user = ControllerUser.getUser(uname);
+                        ArrayList<User> listUser = ControllerUser.getAllUsers();
+                        for(int i = 0; i < listUser.size();i++){
+                            if(listUser.get(i).getUsername().equals(uname)){
+                                user = listUser.get(i);
+                                break;
+                            }
+                        }
                         ArrayList<Post> listPost = ControllerPost.getListPostByUser(uname);
                         if(!listPost.isEmpty()){
                             TimeLine timeLine = new TimeLine(user,1);
@@ -120,7 +126,7 @@ public class LoginScreen extends JFrame implements ActionListener {
                 break;
             case "To Regis Screen":
                 frame.setVisible(false);
-                RegisterScreen registerScreen = new RegisterScreen();
+                RegisterScreen registerScreen = new RegisterScreen("","","");
                 break;
             case "Recover Password":
                 frame.setVisible(false);
@@ -130,24 +136,4 @@ public class LoginScreen extends JFrame implements ActionListener {
                 break;
         }
     }
-    //INI PERCOBAAN HANS PATRICK JANGAN D GANGGU!!!! NGERTI GK KAU??!!
-    /*class KeyLis implements KeyListener{
-
-        @Override
-        public void keyTyped(KeyEvent ke) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void keyPressed(KeyEvent ke) {
-            if(ke.getKeyCode() == KeyEvent.VK_ENTER){
-                actionPerformed("Login");
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent ke) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    }*/
 }
