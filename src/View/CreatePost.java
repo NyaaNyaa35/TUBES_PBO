@@ -124,12 +124,12 @@ public class CreatePost extends JFrame implements ActionListener{
                 if(insertPost){
                     JOptionPane.showMessageDialog(null, "Upload Post Berhasil");
                     counter_post = ControllerPost.getListPostByUser(user_cadangan.getUsername()).size();
-            TimeLine timeLine = new TimeLine(user_cadangan, counter_post);
-                frame.setVisible(false);
-                framePreview.setVisible(false);
+                    TimeLine timeLine = new TimeLine(user_cadangan, counter_post);
+                    frame.setVisible(false);
+                    framePreview.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Upload Post Gagal");
-            CreatePost createPost = new CreatePost(user_cadangan, counter_post);
+                    CreatePost createPost = new CreatePost(user_cadangan, counter_post);
                 }
                 break;
             case "Re-Upload":

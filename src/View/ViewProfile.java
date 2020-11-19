@@ -191,6 +191,7 @@ public class ViewProfile extends JFrame implements ActionListener{
                 frame_Profile.setVisible(false);
                 break;
             case"View Post":
+                new ViewPost(user,counter);
                 break;
             case "Choose File":
             file_ProfilePict =  new JFileChooser();

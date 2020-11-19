@@ -11,10 +11,19 @@ import Model.Comment;
 import Model.Liker;
 import Model.Post;
 import Model.User;
+import Model.UserManager;
+import static View.TimeLine.loadImage;
+import static View.TimeLine.resize;
+import java.awt.Color;
+import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,15 +39,17 @@ import javax.swing.WindowConstants;
  */
 public class ViewPost extends JFrame{
     
-    ArrayList<Post> listPost = ControllerPost.getAllPost();
     JFrame frame;
     JButton button_Next,button_Prev,button_Upload,button_DeletePost,button_DeleteUser,
             button_LogOut,button_SeeComment, button_Like, button_Profile;
-    JLabel label_NicknameUser,label_NicknamePoster,label_KumulatifLike, label_Caption, postImage;
-    JPanel panel_Gambar;
-    String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
+    JLabel label_NicknameUser, postImage, panel_Gambar, tempat_gambar;
+    String Nicknamepost = "";
+    String strCaption = "";
+    int counter;
     
-    public ViewPost(User user) {
+    public ViewPost(User user,int counter_post) {
+        ArrayList<Post> listPost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
+        counter = counter_post;
         Action action = new Action();
         frame = new JFrame();
         frame.setSize(600, 700);
@@ -53,33 +64,62 @@ public class ViewPost extends JFrame{
         button_Prev.setBounds(20, 610, 100, 30);
         button_Prev.addActionListener(action);
         
+        if((counter_post-1) <= 0){
+            button_Prev.setEnabled(false);
+        }
+        
         button_Next = new JButton("Next Post");
         button_Next.setBounds(460, 610, 100, 30);
         button_Next.addActionListener(action);
+        int pembatas = listPost.size();
+        
+        if((counter_post+1) > (pembatas)){
+            button_Next.setEnabled(false);
+        } 
+        
+        panel_Gambar = new JLabel();
+        panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel_Gambar.setBounds(20, 75, 550, 430);
+            
+        tempat_gambar = new JLabel();
+        tempat_gambar.setBounds(25, 80, 540, 420);
+
+        tempat_gambar.setBounds(panel_Gambar.getLocation().x+5, panel_Gambar.getLocation().y+5, 545, 415);
+        tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
+        
+        int jumlahLike = 0;
+        if(counter_post != 0){
+            jumlahLike = listPost.get(counter_post-1).getJumlahLike();
+            Nicknamepost = listPost.get(counter_post-1).getPostNickname();
+            strCaption = listPost.get(counter_post-1).getCaption();
+            BufferedImage loadImg = loadImage(listPost.get(counter_post-1).getImagepath());
+            ImageIcon imageIcon = new ImageIcon(resize(loadImg,tempat_gambar.getWidth()-5, tempat_gambar.getHeight()-5));
+            tempat_gambar.setIcon(imageIcon); 
+        }        
         
         button_SeeComment = new JButton("Comment");
         button_SeeComment.setBounds(460, 545, 100, 30);
         button_SeeComment.addActionListener(action);
-        
-        label_NicknamePoster = new JLabel("Nickname Poster");
-        label_NicknamePoster.setBounds(65,540,100,20);
-        
-        label_KumulatifLike = new JLabel("99999+");
-        label_KumulatifLike.setBounds(65,555,50,30);
-        
-        label_Caption = new JLabel(test);
-        label_Caption.setBounds(25, 505, 550, 30);
             
         frame.add(label_NicknameUser);
         frame.add(button_Prev);
         frame.add(button_Next);
         frame.add(button_SeeComment);
-        frame.add(label_NicknamePoster);
-        frame.add(label_KumulatifLike);
-        frame.add(label_Caption);
+
         
         frame.setLayout(null);
         frame.setVisible(true);
+    }
+
+    private BufferedImage resize(BufferedImage img, int newW, int newH) {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        BufferedImage dimg = new BufferedImage(newW, newH,img.getType());
+        Graphics2D g = dimg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(img, 0, 0, newW, newH, 0, 0, w, h, null);
+        g.dispose();
+        return dimg;
     }
 
     class Action implements ActionListener{
@@ -88,9 +128,13 @@ public class ViewPost extends JFrame{
             String command = ae.getActionCommand();
             switch(command){
                 case"Prev Post":
-                    break;
+                    frame.setVisible(false);
+                    new ViewPost(UserManager.getInstance().getUser(), counter-1);
+                    break;                    
                 case"Next Post":
-                    break;
+                    frame.setVisible(false);
+                    new ViewPost(UserManager.getInstance().getUser(), counter+1);
+                    break;                    
                 case"Comment":
                     frame.setVisible(false);
                     //new FrameComment();

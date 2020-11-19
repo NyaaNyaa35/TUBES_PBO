@@ -5,6 +5,9 @@
  */
 package Model;
 
+import Controller.ControllerComment;
+import Controller.ControllerUser;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -48,5 +51,15 @@ public class Comment {
         this.waktuComment = waktuComment;
     }
     
+    public static int countComment(){
+        int count = 0;
+        ArrayList<Comment> listComment = ControllerComment.getAllComments();
+        if(listComment == null){
+            return 0;
+        }else {
+            count += listComment.size();
+        }
+        return count;
+    }
 
 }
