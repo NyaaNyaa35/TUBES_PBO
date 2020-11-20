@@ -16,6 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `admin` (
+  `id_Admin` int(11) NOT NULL AUTO_INCREMENT,
+  `Username` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id_Admin`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `comment`
 --
 
@@ -23,9 +46,12 @@ DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `comment` (
-  `isiComment` varchar(255) DEFAULT NULL,
-  `nicknameCommenter` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `idComment` int(11) NOT NULL,
+  `isiComment` varchar(100) DEFAULT NULL,
+  `nicknameCommentar` varchar(20) DEFAULT NULL,
+  `IdPostingan` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idComment`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -34,7 +60,33 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
+INSERT INTO `comment` VALUES (0,'Test','HansNotFound',0),(1,'test2','HansNotFound',0),(2,'test3','HansNotFound',0),(3,'test4','HansNotFound',0),(4,'eya','HansNotFound',1);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `friend_req`
+--
+
+DROP TABLE IF EXISTS `friend_req`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `friend_req` (
+  `idReq` int(11) NOT NULL,
+  `Username` varchar(20) DEFAULT NULL,
+  `Nickname_req` varchar(20) DEFAULT NULL,
+  `tanggal_req` date DEFAULT NULL,
+  PRIMARY KEY (`idReq`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `friend_req`
+--
+
+LOCK TABLES `friend_req` WRITE;
+/*!40000 ALTER TABLE `friend_req` DISABLE KEYS */;
+/*!40000 ALTER TABLE `friend_req` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -60,6 +112,33 @@ LOCK TABLES `liker` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `list_teman`
+--
+
+DROP TABLE IF EXISTS `list_teman`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `list_teman` (
+  `idTeman` int(11) NOT NULL,
+  `Username` varchar(20) DEFAULT NULL,
+  `Nickname_teman` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`idTeman`),
+  KEY `Username` (`Username`),
+  CONSTRAINT `list_teman_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `list_teman`
+--
+
+LOCK TABLES `list_teman` WRITE;
+/*!40000 ALTER TABLE `list_teman` DISABLE KEYS */;
+INSERT INTO `list_teman` VALUES (0,'test','HansNotFound');
+/*!40000 ALTER TABLE `list_teman` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `person`
 --
 
@@ -79,7 +158,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES ('Hans','123');
+INSERT INTO `person` VALUES ('Hans','123'),('test','123');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,13 +170,17 @@ DROP TABLE IF EXISTS `postingan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `postingan` (
-  `IdPostingan` int(3) DEFAULT NULL,
-  `Caption` varchar(255) DEFAULT NULL,
-  `GambarPost` varchar(255) DEFAULT NULL,
-  `Likes` int(3) DEFAULT NULL,
+  `IdPostingan` int(11) NOT NULL,
+  `Username` varchar(20) DEFAULT NULL,
+  `Caption` varchar(100) DEFAULT NULL,
+  `GambarPost` text DEFAULT NULL,
+  `Likes` int(11) DEFAULT NULL,
   `WaktuPost` date DEFAULT NULL,
-  `PostNickname` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `PostNickname` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`IdPostingan`),
+  KEY `Username` (`Username`),
+  CONSTRAINT `postingan_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,6 +189,7 @@ CREATE TABLE `postingan` (
 
 LOCK TABLES `postingan` WRITE;
 /*!40000 ALTER TABLE `postingan` DISABLE KEYS */;
+INSERT INTO `postingan` VALUES (0,'Hans','sc4','C:\\Users\\User\\Pictures\\Screenshots\\Screenshot (4).png',0,'2020-11-18','HansNotFound');
 /*!40000 ALTER TABLE `postingan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +206,7 @@ CREATE TABLE `user` (
   `Nickname` varchar(20) DEFAULT NULL,
   `Email` varchar(255) DEFAULT NULL,
   `JumlahTeman` int(11) DEFAULT NULL,
-  `ProfilePict` text DEFAULT NULL,
+  `ProfilePict` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_User`),
   KEY `Username` (`Username`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`Username`) REFERENCES `person` (`Username`)
@@ -135,7 +219,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Hans','HansNotFound','hans@gmail.com',0,'src/Image/default_profile_pict.png');
+INSERT INTO `user` VALUES (1,'Hans','HansNotFound','hans@gmail.com',0,'src/Image/default_profile_pict.png'),(2,'test','Test','test@gmail.com',1,'src/Image/default_profile_pict.png');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -148,4 +232,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-08 17:26:21
+-- Dump completed on 2020-11-20 11:26:42
