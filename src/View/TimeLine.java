@@ -229,6 +229,7 @@ public class TimeLine extends JFrame implements Interface{
                 jumlahLike = allpost.get(counter_post-1).getJumlahLike();
                 Nicknamepost = allpost.get(counter_post-1).getPostNickname();
                 strCaption = allpost.get(counter_post-1).getCaption();
+                idPost = allpost.get(counter_post - 1).getIdPost();
                 BufferedImage loadImg = loadImage(allpost.get(counter_post-1).getImagepath());
                 ImageIcon imageIcon = new ImageIcon(resize(loadImg,tempat_gambar.getWidth()-5, tempat_gambar.getHeight()-5));
                 tempat_gambar.setIcon(imageIcon); 
@@ -270,7 +271,7 @@ public class TimeLine extends JFrame implements Interface{
         @Override
         public void actionPerformed(ActionEvent ae) {
             String command = ae.getActionCommand();
-            ArrayList<Post> listpost = ControllerPost.getAllPost();
+            ArrayList<Post> listPost = ControllerPost.getAllPost();
             switch(command){
                 case"LogOut":
                     int tutup = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin LogOut?");
@@ -294,8 +295,7 @@ public class TimeLine extends JFrame implements Interface{
                     new CreatePost(UserManager.getInstance().getUser(), counter);
                     break;
                 case"Comment":
-                    frame_TimeLine.setVisible(false);
-                    new FrameComment(UserManager.getInstance().getUser(),listpost.get(counter-1).getIdPost(),(counter-1));
+                    new FrameComment(UserManager.getInstance().getUser(),idPost,(counter-1));
                     break;
 //                case"CommentAdmin":
 //                    frame_TimeLine.setVisible(false);
@@ -311,7 +311,6 @@ public class TimeLine extends JFrame implements Interface{
                     if(status == JOptionPane.YES_OPTION){
                         String passAdmin = JOptionPane.showInputDialog(null, "Masukkan password = ");
                         if(passAdmin.equals(Interface.passAdmin)){
-                            ArrayList<Post> listPost = ControllerPost.getAllPost();
                             if(ControllerPost.deletePost(listPost.get(counter-1).getIdPost())){
                                 JOptionPane.showMessageDialog(null, "Delete Berhasil!!");
                                 new TimeLine(admin,0);

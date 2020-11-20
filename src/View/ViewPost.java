@@ -170,6 +170,7 @@ public class ViewPost extends JFrame {
         @Override
         public void actionPerformed(ActionEvent ae) {
             String command = ae.getActionCommand();
+            ArrayList<Post> listPost = ControllerPost.getAllPost();
             switch (command) {
                 case "Prev Post":
                     frame.setVisible(false);
@@ -179,16 +180,14 @@ public class ViewPost extends JFrame {
                     frame.setVisible(false);
                     new ViewPost(UserManager.getInstance().getUser(), counter + 1);
                     break;
-                case "Comment":
-                    frame.setVisible(false);
-                    //new FrameComment();
+                case"Comment":
+                    new FrameComment(UserManager.getInstance().getUser(),idPost,(counter-1));
                     break;
                 case "DeletePost":
                     int status = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mendelete post ini?");
                     if(status == JOptionPane.YES_OPTION){
-                        String passAdmin = JOptionPane.showInputDialog(null, "Masukkan password = ");
-                        if(passAdmin.equals(ControllerUser.getPassword(user_global.getUsername()))){
-                            ArrayList<Post> listPost = ControllerPost.getAllPost();
+                        String pass = JOptionPane.showInputDialog(null, "Masukkan password = ");
+                        if(pass.equals(ControllerUser.getPassword(user_global.getUsername()))){
                             if(ControllerPost.deletePost(listPost.get(counter-1).getIdPost())){
                                 JOptionPane.showMessageDialog(null, "Delete Berhasil!!");
                                 frame.setVisible(false);
@@ -199,6 +198,7 @@ public class ViewPost extends JFrame {
                                 break;
                             }
                         } else {
+                            frame.setVisible(false);
                             JOptionPane.showMessageDialog(null, "Password Salah!! Anda akan dialihkan ke Login Screen","Error",JOptionPane.ERROR_MESSAGE);
                             new LoginScreen();
                             break;

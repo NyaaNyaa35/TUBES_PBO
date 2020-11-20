@@ -46,8 +46,8 @@ public class FrameComment extends JFrame implements ActionListener {
         DefaultListModel<String> l1 = new DefaultListModel<>();
 
         frame_Comment = new JFrame("Comment");
-        frame_Comment.setSize(300, 500);
         frame_Comment.setLocationRelativeTo(null);
+        frame_Comment.setSize(300, 500);
         frame_Comment.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         comments = new JTextField();
@@ -93,7 +93,6 @@ public class FrameComment extends JFrame implements ActionListener {
                     boolean insertComment = ControllerComment.insertNewComments(comment, IdPost);
                     if (insertComment) {
                         JOptionPane.showMessageDialog(null, "Comment berhasil di post");
-                        TimeLine timeLine = new TimeLine(containUser, counter);
                         frame_Comment.setVisible(false);
                         break;
                     } else {
