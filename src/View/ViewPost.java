@@ -45,7 +45,7 @@ public class ViewPost extends JFrame {
 
     JFrame frame;
     JButton button_Next, button_Prev, button_Upload, button_DeletePost, button_DeleteUser,
-            button_LogOut, button_SeeComment, button_Like, button_Profile;
+            button_LogOut, button_SeeComment, button_Like, button_Profile, button_mainmenu;
     JLabel label_NicknameUser, label_NicknamePoster, label_KumulatifLike, label_Caption, panel_Gambar,
             tempat_gambar;
     String Nicknamepost = "";
@@ -103,10 +103,10 @@ public class ViewPost extends JFrame {
         button_DeletePost = new JButton("DeletePost");
         button_DeletePost.setBounds(240, 610, 100, 30);
         button_DeletePost.addActionListener(action);
-
-        button_LogOut = new JButton("LogOut");
-        button_LogOut.setBounds(460, 20, 100, 30);
-        button_LogOut.addActionListener(action);
+        
+        button_mainmenu = new JButton("MainMenu");
+        button_mainmenu.setBounds(460, 20, 100, 30);
+        button_mainmenu.addActionListener(action);
 
         panel_Gambar = new JLabel();
         panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -147,7 +147,7 @@ public class ViewPost extends JFrame {
         frame.add(button_SeeComment);
         frame.add(button_Next);
         frame.add(button_Prev);
-        frame.add(button_LogOut);
+        frame.add(button_mainmenu);
         frame.add(button_DeletePost);
         frame.add(label_NicknameUser);
         frame.setLayout(null);
@@ -204,6 +204,10 @@ public class ViewPost extends JFrame {
                             break;
                         }
                     }
+                    break;
+                case "MainMenu":
+                    frame.setVisible(false);
+                    new TimeLine(user_global,1);
                     break;
                 default:
                     break;

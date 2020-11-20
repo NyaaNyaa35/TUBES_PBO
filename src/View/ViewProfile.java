@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.ControllerPost;
 import Model.User;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import Controller.ControllerUser;
+import Model.Post;
 import Model.Teman;
 import Model.UserManager;
 import static View.TimeLine.loadImage;
@@ -227,7 +229,12 @@ public class ViewProfile extends JFrame implements ActionListener{
                 break;
             case"View Post":
                 frame_Profile.setVisible(false);
-                new ViewPost(user,1);
+                ArrayList<Post> listPostByUser = ControllerPost.getListPostByUser(user.getUsername());
+                if(listPostByUser.isEmpty()){
+                    new ViewPost(user,0);
+                } else {
+                    new ViewPost(user,1);
+                }
                 break;
             case "Choose File":
             file_ProfilePict =  new JFileChooser();
