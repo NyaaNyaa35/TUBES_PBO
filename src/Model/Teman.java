@@ -10,8 +10,23 @@ package Model;
  * @author HansNotFound
  */
 public class Teman {
+    private int idTeman;
     private String Username_user;
     private String Nickname_teman;
+
+    @Override
+    public String toString() {
+        return "Teman{" + "idTeman=" + idTeman + ", Username_user=" + Username_user + ", Nickname_teman=" + Nickname_teman + '}';
+    }
+
+    public Teman() {
+    }
+
+    public Teman(int idTeman, String Username_user, String Nickname_teman) {
+        this.idTeman = idTeman;
+        this.Username_user = Username_user;
+        this.Nickname_teman = Nickname_teman;
+    }
 
     public String getUsername_user() {
         return Username_user;
@@ -27,5 +42,13 @@ public class Teman {
 
     public void setNickname_teman(String Nickname_teman) {
         this.Nickname_teman = Nickname_teman;
+    }
+
+    public int getIdTeman() {
+        return idTeman;
+    }
+
+    public void setIdTeman(int idTeman) {
+        this.idTeman = idTeman;
     }
 }

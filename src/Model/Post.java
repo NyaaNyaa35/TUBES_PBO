@@ -106,12 +106,12 @@ public class Post {
     }
     
     public static int countPost(){
-        int count = 0;
+        int count;
         ArrayList<Post> listPost = ControllerPost.getAllPost();
         if(listPost == null){
             return 0;
         }else {
-            count += listPost.size();
+            count = listPost.get(listPost.size()-1).getIdPost()+1;
         }
         return count;
     }

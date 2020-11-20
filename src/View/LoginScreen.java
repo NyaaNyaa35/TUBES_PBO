@@ -112,8 +112,10 @@ public class LoginScreen extends JFrame implements ActionListener {
                         }
                         ArrayList<Post> listPost = ControllerPost.getListPostByUser(uname);
                         if(!listPost.isEmpty()){
+                            JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
                             TimeLine timeLine = new TimeLine(user,1);
                         } else {
+                            JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
                             TimeLine timeLine = new TimeLine(user,0);
                         }
                     } else {

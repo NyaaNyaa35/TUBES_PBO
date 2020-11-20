@@ -18,11 +18,11 @@ import java.util.ArrayList;
  * @author HansNotFound
  */
 public class ControllerPost {
-    
+
     static DatabaseHandler conn = new DatabaseHandler();
-    
+
     public static ArrayList<Post> getAllPost() {
-    
+
         ArrayList<Post> posts = new ArrayList<>();
         conn.connect();
         String query = "SELECT * FROM postingan";
@@ -45,12 +45,12 @@ public class ControllerPost {
         }
         return (posts);
     }
-    
-    public static ArrayList<Post> getListPostByUser(String Username){
+
+    public static ArrayList<Post> getListPostByUser(String Username) {
         conn.connect();
         ArrayList<Post> listPost = new ArrayList<>();
         String query = "SELECT * FROM postingan WHERE Username='" + Username + "'";
-        try{
+        try {
             Statement stmt = conn.con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
@@ -64,17 +64,16 @@ public class ControllerPost {
                 post.setImagepath(rs.getString("GambarPost"));
                 listPost.add(post);
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return listPost;
     }
-    
-    
-    public static boolean deletePost(int idPost){
+
+    public static boolean deleteKoneksiComment(int idPost) {
         conn.connect();
 
-        String query = "DELETE FROM postingan WHERE idPost='" + idPost + "'";
+        String query = "DELETE FROM comment WHERE idPostingan='" + idPost + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -84,11 +83,27 @@ public class ControllerPost {
             return (false);
         }
     }
-    
-    public static boolean insertNewPost(Post post){
+
+    public static boolean deletePost(int idPost) {
+        conn.connect();
+        if (deleteKoneksiComment(idPost)) {
+            String query = "DELETE FROM postingan WHERE idPostingan='" + idPost + "'";
+            try {
+                Statement stmt = conn.con.createStatement();
+                stmt.executeUpdate(query);
+                return (true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return (false);
+            }
+        }
+        return false;
+    }
+
+    public static boolean insertNewPost(Post post) {
         conn.connect();
         String query_InsertNewPost = "INSERT INTO postingan VALUES(?,?,?,?,?,?,?)";
-        try{
+        try {
             PreparedStatement stmt = conn.con.prepareStatement(query_InsertNewPost);
             stmt.setInt(1, post.getIdPost());
             stmt.setString(2, post.getUsername_user());
@@ -98,13 +113,13 @@ public class ControllerPost {
             stmt.setString(6, post.getWaktuPost());
             stmt.setString(7, post.getPostNickname());
             stmt.executeUpdate();
-            return(true);
+            return (true);
         } catch (SQLException e) {
             e.printStackTrace();
-        }       
+        }
         return false;
     }
-    
+
     public static boolean updateLikePost(Post post) {
         conn.connect();
         String query = "UPDATE postingan SET Likes='" + post.getJumlahLike() + "'";

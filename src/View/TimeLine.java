@@ -1,3 +1,4 @@
+        
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -27,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import Model.Post;
+import Model.Teman;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -53,11 +55,19 @@ public class TimeLine extends JFrame implements Interface{
     int counter,idPost,likeCount;
     public TimeLine(Person person,int counter_post){
         if(person instanceof User){
-            JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
+            
             UserManager.getInstance().setUser((User) person);
             Action action = new Action();
             ArrayList<Post> listPost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
-            //ArrayList<Post> tambahanTeman = ControllerPost.getListPostByUser(ControllerUser.getAllTeman(UserManager.getInstance().getUser().getUsername()));
+            ArrayList<Teman> listTemanUser = ControllerUser.getTeman(UserManager.getInstance().getUser().getUsername());
+            ArrayList<Post> listAllPost = ControllerPost.getAllPost();
+            for(int i = 0; i < listTemanUser.size(); i++){
+                for(int j = 0 ; j <listAllPost.size(); j++){
+                    if(listAllPost.get(j).getPostNickname().equals(listTemanUser.get(i).getNickname_teman())){
+                        listPost.add(listAllPost.get(j));
+                    }
+                }
+            }
             counter = counter_post;
             
             frame_TimeLine = new JFrame(Interface.namaApp);
@@ -118,24 +128,7 @@ public class TimeLine extends JFrame implements Interface{
             tempat_gambar.setBounds(panel_Gambar.getLocation().x+5, panel_Gambar.getLocation().y+5, 545, 415);
             tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
             
-            //int jumlahLike=0;
-            label_KumulatifLike = new JLabel(""+listPost.get(counter_post-1).getJumlahLike());
-            label_KumulatifLike.setBounds(65,555,50,30);
-            
-
-            Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
-            button_Like = new JButton(iconLike);
-            button_Like.setBounds(20, 540, 40, 40);
-            
-//            button_Like.addActionListener(actionEvent -> {
-                //likeCount++;
-                //label_KumulatifLike.setText(""+likeCount);
-//                likeCount += 1;
-//                label_KumulatifLike.setText(""+likeCount);
-//                listPost.get(counter_post-1).setJumlahLike(likeCount);
-//                boolean updateLike = ControllerPost.updateLikePost(listPost.get(counter_post-1));                               
-//            });
-            
+            int jumlahLike = 0;
             if(counter_post != 0){
                 likeCount = listPost.get(counter_post-1).getJumlahLike();
                 Nicknamepost = listPost.get(counter_post-1).getPostNickname();
@@ -145,13 +138,18 @@ public class TimeLine extends JFrame implements Interface{
                 ImageIcon imageIcon = new ImageIcon(resize(loadImg,tempat_gambar.getWidth()-5, tempat_gambar.getHeight()-5));
                 tempat_gambar.setIcon(imageIcon); 
             }
-
-
+            
+            Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
+            button_Like = new JButton(iconLike);
+            button_Like.setBounds(20, 540, 40, 40);
+        
             
             label_NicknamePoster = new JLabel(Nicknamepost);
             label_NicknamePoster.setBounds(65,540,200,20);
         
-
+            label_KumulatifLike = new JLabel(""+jumlahLike);
+            label_KumulatifLike.setBounds(65,555,50,30);
+        
         
             label_Caption = new JLabel(strCaption);
             label_Caption.setBounds(25, 505, 550, 30);
@@ -172,6 +170,8 @@ public class TimeLine extends JFrame implements Interface{
             frame_TimeLine.setLayout(null);
             frame_TimeLine.setVisible(true);
         } else if(person instanceof Admin){
+            counter = counter_post;
+            admin = (Admin) person;
             Action action = new Action();
             ArrayList<Post> allpost = ControllerPost.getAllPost();
             frame_TimeLine = new JFrame(Interface.namaApp);
@@ -189,6 +189,7 @@ public class TimeLine extends JFrame implements Interface{
             if((counter_post-1) <= 0){
                 button_Prev.setEnabled(false);
             }
+            button_Prev.setActionCommand("Prev_admin");
         
             button_Next = new JButton("Next Post");
             button_Next.setBounds(460, 610, 100, 30);
@@ -197,10 +198,12 @@ public class TimeLine extends JFrame implements Interface{
             if((counter_post+1) > (pembatas)){
                 button_Next.setEnabled(false);
             }
+            button_Next.setActionCommand("Next_admin");
         
             button_SeeComment = new JButton("Comment");
             button_SeeComment.setBounds(460, 545, 100, 30);
             button_SeeComment.addActionListener(action);
+            button_SeeComment.setActionCommand("CommentAdmin");
             
             button_LogOut = new JButton("LogOut");
             button_LogOut.setBounds(460, 20, 100, 30);
@@ -247,6 +250,7 @@ public class TimeLine extends JFrame implements Interface{
             label_KumulatifLike = new JLabel("Like = " + jumlahLike);
             label_KumulatifLike.setBounds(65,555,50,30);
         
+            frame_TimeLine.add(tempat_gambar);
             frame_TimeLine.add(button_Delete);
             frame_TimeLine.add(label_Caption);
             frame_TimeLine.add(label_KumulatifLike);
@@ -266,10 +270,11 @@ public class TimeLine extends JFrame implements Interface{
         @Override
         public void actionPerformed(ActionEvent ae) {
             String command = ae.getActionCommand();
+            ArrayList<Post> listpost = ControllerPost.getAllPost();
             switch(command){
                 case"LogOut":
                     int tutup = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin LogOut?");
-                    if(tutup == 0){
+                    if(tutup == JOptionPane.YES_OPTION){
                         UserManager.getInstance().setUser(null);
                         JOptionPane.showMessageDialog(null, "Anda berhasil LogOut");
                         frame_TimeLine.setVisible(false);
@@ -290,10 +295,12 @@ public class TimeLine extends JFrame implements Interface{
                     break;
                 case"Comment":
                     frame_TimeLine.setVisible(false);
-                    new FrameComment(UserManager.getInstance().getUser(),idPost,counter);
-                    ArrayList<Post> listpost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
-                    new FrameComment(listpost.get(counter-1).getListComment());
+                    new FrameComment(UserManager.getInstance().getUser(),listpost.get(counter-1).getIdPost(),(counter-1));
                     break;
+//                case"CommentAdmin":
+//                    frame_TimeLine.setVisible(false);
+//                    new FrameComment(admin,listpost.get(counter-1).getIdPost(),(counter-1));
+//                    break;
                 case "ViewProfile":
                     frame_TimeLine.setVisible(false);
                     new ViewProfile(UserManager.getInstance().getUser(),counter);
@@ -304,9 +311,29 @@ public class TimeLine extends JFrame implements Interface{
                     if(status == JOptionPane.YES_OPTION){
                         String passAdmin = JOptionPane.showInputDialog(null, "Masukkan password = ");
                         if(passAdmin.equals(Interface.passAdmin)){
-                            ControllerPost.deletePost(0);
+                            ArrayList<Post> listPost = ControllerPost.getAllPost();
+                            if(ControllerPost.deletePost(listPost.get(counter-1).getIdPost())){
+                                JOptionPane.showMessageDialog(null, "Delete Berhasil!!");
+                                new TimeLine(admin,0);
+                                break;
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Delete Gagal!!","Error",JOptionPane.ERROR_MESSAGE);
+                                break;
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Password Salah!! Anda akan dialihkan ke Login Screen","Error",JOptionPane.ERROR_MESSAGE);
+                            new LoginScreen();
+                            break;
                         }
                     }
+                    break;
+                case "Next_admin":
+                    frame_TimeLine.setVisible(false);
+                    new TimeLine(admin,counter+1);
+                    break;
+                case "Prev_admin":
+                    frame_TimeLine.setVisible(false);
+                    new TimeLine(admin,counter-1);
                     break;
                 default:
                     break;

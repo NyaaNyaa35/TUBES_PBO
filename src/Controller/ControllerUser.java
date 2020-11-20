@@ -34,6 +34,7 @@ public class ControllerUser {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 User user = new User();
+                user.setIdUser(rs.getInt("user.id_User"));
                 user.setNickname(rs.getString("user.Nickname"));
                 user.setUsername(rs.getString("user.Username"));
                 user.setEmail(rs.getString("user.Email"));
@@ -65,6 +66,20 @@ public class ControllerUser {
             e.printStackTrace();
         }
         return (users);
+    }
+    
+    public static String getPassword(String username){
+        conn.connect();
+        String pass = "";
+        String query = "SELECT Password FROM person WHERE Username = '" + username +"'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            pass = rs.getString("Password");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pass;
     }
     
     //get user by Username
@@ -187,16 +202,38 @@ public class ControllerUser {
         return validate;
     }
     
-    //get seluruh Nickname teman by Username
-    public static ArrayList<Teman> getAllTeman(String username){
+    //get seluruh teman
+    public static ArrayList<Teman> getAllTeman(){
         conn.connect();
         ArrayList<Teman> listTeman = new ArrayList<>();
-        String query = "SELECT * FROM list_teman WHERE Username = '" + username + "'";
+        String query = "SELECT * FROM list_teman ";
         try {
             Statement stmt = conn.con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 Teman teman = new Teman();
+                teman.setIdTeman(rs.getInt("idTeman"));
+                teman.setNickname_teman(rs.getString("Nickname_teman"));
+                teman.setUsername_user(rs.getString("Username"));
+                listTeman.add(teman);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listTeman;
+    }
+    
+    //get seluruh Nickname teman by Username
+    public static ArrayList<Teman> getTeman(String Username){
+        conn.connect();
+        ArrayList<Teman> listTeman = new ArrayList<>();
+        String query = "SELECT * FROM list_teman Where Username = '" + Username + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                Teman teman = new Teman();
+                teman.setIdTeman(rs.getInt("idTeman"));
                 teman.setNickname_teman(rs.getString("Nickname_teman"));
                 teman.setUsername_user(rs.getString("Username"));
                 listTeman.add(teman);
@@ -210,17 +247,17 @@ public class ControllerUser {
     //menambahkan Nickname teman kedalam tabel list_teman
     public static boolean addTeman(User user,User user_teman){
         conn.connect();
-        ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
+        ArrayList<Teman> listAllTeman = getAllTeman();
             String query = "INSERT INTO list_teman VALUES (?,?,?)";
             int idTeman;
-            if(listTeman == null){
+            if(listAllTeman.isEmpty()){
                 idTeman = 0;
             } else {
-                idTeman = listTeman.size();
+                idTeman = listAllTeman.get(listAllTeman.size()-1).getIdTeman();
             }
             try{
                 PreparedStatement stmt = conn.con.prepareStatement(query);
-                stmt.setInt(1, idTeman);
+                stmt.setInt(1, idTeman+1);
                 stmt.setString(2, user.getUsername());
                 stmt.setString(3, user_teman.getNickname());
                 stmt.executeUpdate();
@@ -234,7 +271,7 @@ public class ControllerUser {
     //menambahkan jumlah teman pada tabel user
     public static boolean tambahJumlahTeman(User user){
         conn.connect();
-        ArrayList<Teman> listTeman = getAllTeman(user.getUsername());
+        ArrayList<Teman> listTeman = getTeman(user.getUsername());
         int totalTeman = listTeman.size();
         String query = "UPDATE user SET JumlahTeman = " + totalTeman +
                 " WHERE Username = '" + user.getUsername() + "'";
@@ -267,6 +304,7 @@ public class ControllerUser {
                 if(addTeman(user_teman,user)){
                     System.out.println("AddTeman oleh = " + user_teman.getNickname() + "berhasil");
                     tambahJumlahTeman(user_teman);
+                    return true;
                 }
             }
         }

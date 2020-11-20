@@ -60,7 +60,7 @@ public class MainMenuScreen extends JFrame implements Interface {
                 System.exit(0);
             } else if(ae.getSource()==button_Begin){
                 frame_Main.setVisible(false);
-                new RegisterScreen();
+                new RegisterScreen("","","");
             }
         }
         

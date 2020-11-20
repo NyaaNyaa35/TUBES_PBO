@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import Controller.ControllerUser;
+import Model.Teman;
 import Model.UserManager;
 import static View.TimeLine.loadImage;
 import static View.TimeLine.resize;
@@ -27,6 +28,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
@@ -175,23 +177,57 @@ public class ViewProfile extends JFrame implements ActionListener{
                 break;
             case"Add Friend":
                 String nick = JOptionPane.showInputDialog("Silahkan masukkan Nickname user = ");
-                if(ControllerUser.addFriend(user,nick)){
-                        JOptionPane.showMessageDialog(null, "Sekarang " +nick+ " sudah menjadi teman anda!");
-                        frame_Profile.setVisible(false);
-                        ViewProfile viewProfile = new ViewProfile(user, counter);
+                boolean userterdaftar = false;
+                boolean terdaftarsebagaiteman = false;
+                ArrayList<Teman> listAllTeman = ControllerUser.getAllTeman();
+                ArrayList<User> listAllUser = ControllerUser.getAllUsers();
+                for(int i = 0; i < listAllUser.size(); i++){
+                    if(listAllUser.get(i).getNickname().equals(nick)){
+                        userterdaftar = true;
+                        break;
+                    }
+                }
+                if(userterdaftar){
+                    for(int i = 0; i < listAllTeman.size(); i++){
+                        if(listAllTeman.get(i).getUsername_user().equals(user.getUsername())){
+                            if(listAllTeman.get(i).getNickname_teman().equals(nick)){
+                                terdaftarsebagaiteman = true;
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Silahkan cek kembali nickname yang anda masukkan",
                             "Error",JOptionPane.ERROR_MESSAGE);
+                    break;
                 }
+                
+                if(!terdaftarsebagaiteman){
+                    if(ControllerUser.addFriend(user,nick)){
+                        JOptionPane.showMessageDialog(null, "Sekarang " +nick+ " sudah menjadi teman anda!");
+                        frame_Profile.setVisible(false);
+                        ViewProfile viewProfile = new ViewProfile(user, counter);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Add Teman GAGAL!!",
+                            "Error",JOptionPane.ERROR_MESSAGE);
+                        break;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Nickname Tersebut sudah terdaftar sebagai teman",
+                            "Error",JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                
                 break;
             case"Friend Request":
                 break;
             case"SeeFriend":
-                new FrameListTeman(user);
+                //new FrameListTeman(user);
                 frame_Profile.setVisible(false);
                 break;
             case"View Post":
-                new ViewPost(user,counter);
+                frame_Profile.setVisible(false);
+                new ViewPost(user,1);
                 break;
             case "Choose File":
             file_ProfilePict =  new JFileChooser();

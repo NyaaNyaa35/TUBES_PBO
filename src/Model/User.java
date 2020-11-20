@@ -12,6 +12,7 @@ import Controller.ControllerUser;
  * @author HansNotFound
  */
 public class User extends Person{
+    private int idUser;
     private String nickname;
     private String email;
     private int jumlahTeman;
@@ -22,13 +23,16 @@ public class User extends Person{
     public User() {
     }
 
-    public User(String nickname, String email,int jumlahTeman,String profilePict,String username, String password) {
+    public User(int idUser, String nickname, String email, int jumlahTeman, String profilePict, String username, String password) {
         super(username, password);
+        this.idUser = idUser;
         this.nickname = nickname;
         this.email = email;
         this.jumlahTeman = jumlahTeman;
         this.profilePict = profilePict;
     }
+
+    
 
     public String getProfilePict() {
         return profilePict;
@@ -100,9 +104,17 @@ public class User extends Person{
         if(listUser == null){
             return 0;
         }else {
-            count += listUser.size();
+            count += listUser.get(listUser.size()-1).getIdUser()+1;
         }
         return count;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
     
 }
