@@ -18,13 +18,14 @@ public class Comment {
     private String nicknameComment;
     private String isiComment;
     private String waktuComment;
-    
+    private int idComment;
     public Comment() {
     }
 
-    public Comment(String nicknameComment, String isiComment) {
+    public Comment(String nicknameComment, String isiComment, int idComment) {
         this.nicknameComment = nicknameComment;
         this.isiComment = isiComment;
+        this.idComment = idComment;
     }
 
     public String getIsiComment() {
@@ -51,15 +52,23 @@ public class Comment {
         this.waktuComment = waktuComment;
     }
     
+
+    public int getIdComment() {
+        return idComment;
+    }
+
+    public void setIdComment(int idComment) {
+        this.idComment = idComment;
+    }
+
     public static int countComment(){
-        int count = 0;
+        int count;
         ArrayList<Comment> listComment = ControllerComment.getAllComments();
-        if(listComment == null){
+        if(listComment.isEmpty()){
             return 0;
-        }else {
-            count += listComment.size();
+        }else{
+            count = listComment.get(listComment.size()-1).getIdComment()+listComment.size();
         }
         return count;
     }
-
 }

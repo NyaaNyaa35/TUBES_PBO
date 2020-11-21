@@ -120,9 +120,9 @@ public class ControllerPost {
         return false;
     }
 
-    public static boolean updateLikePost(Post post) {
+    public static boolean updateLikePost(Post post,int idPost) {
         conn.connect();
-        String query = "UPDATE postingan SET Likes='" + post.getJumlahLike() + "'";
+        String query = "UPDATE postingan SET Likes='" + post.getJumlahLike() + "' WHERE IdPostingan='"+idPost+"'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
