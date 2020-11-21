@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.FriendRequest;
 import Model.Person;
 import Model.Teman;
 import Model.User;
@@ -432,5 +433,90 @@ public class ControllerUser {
             e.printStackTrace();
         }
         return total;
+    }
+    
+    //get seluruh Friend Request
+    public static ArrayList<FriendRequest> getAllRequest(){
+        conn.connect();
+        ArrayList<FriendRequest> listReq = new ArrayList<>();
+        String query = "SELECT * FROM friend_req";
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                FriendRequest req = new FriendRequest();
+                req.setIdReq(rs.getInt("idReq"));
+                req.setNickname_request(rs.getString("Nickname_req"));
+                req.setTanggal_request(rs.getString("tanggal_req"));
+                req.setUsername_user(rs.getString("Username"));
+                listReq.add(req);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listReq;
+    }
+    
+    //menambahkan ke friend request
+    public static boolean addRequest(String username,String nickname){
+        conn.connect();
+        ArrayList<FriendRequest> listReq = getAllRequest();
+            String query = "INSERT INTO friend_req VALUES (?,?,?,?)";
+            int idReq;
+            if(listReq.isEmpty()){
+                idReq = 0;
+            } else {
+                idReq = (listReq.get(listReq.size()-1).getIdReq())+1;
+            }
+            String tanggal = getTanggal() + " " + getWaktu();
+            try{
+                PreparedStatement stmt = conn.con.prepareStatement(query);
+                stmt.setInt(1, idReq);
+                stmt.setString(2, username);
+                stmt.setString(3, nickname);
+                stmt.setString(4, tanggal);
+                stmt.executeUpdate();
+                return true;
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+        return false;
+    }
+    
+    //get request per User
+    public static ArrayList<FriendRequest> getRequest(String username){
+        conn.connect();
+        ArrayList<FriendRequest> listReq = new ArrayList<>();
+        String query = "SELECT * FROM friend_req where Username = '" + username + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                FriendRequest req = new FriendRequest();
+                req.setIdReq(rs.getInt("idReq"));
+                req.setNickname_request(rs.getString("Nickname_req"));
+                req.setTanggal_request(rs.getString("tanggal_req"));
+                req.setUsername_user(rs.getString("Username"));
+                listReq.add(req);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listReq;
+    }
+    
+    //delete req 
+    public static boolean deleteReq(String username, String nickname) {
+        conn.connect();
+
+        String query = "DELETE FROM friend_req WHERE Username='" + username + "' and Nickname_req = '" + nickname + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
     }
 }

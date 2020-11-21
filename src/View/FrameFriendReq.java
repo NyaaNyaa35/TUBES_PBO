@@ -5,10 +5,15 @@
  */
 package View;
 
+import Controller.ControllerUser;
+import Model.FriendRequest;
+import Model.User;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,40 +32,29 @@ import javax.swing.event.ListSelectionListener;
  * @author HansNotFound
  */
 public class FrameFriendReq extends JFrame implements ListSelectionListener{
-    private JList list_request;
-    private JButton button_acc,button_back;
+    private JList<String> list_request;
+    private JButton button_acc;
     private JTextField TF_NicknameTerpilih;
     private JScrollPane scrollpane;
     private JPanel panel;
-    public FrameFriendReq(){
+    private User user_global;
+    public FrameFriendReq(User user){
         setTitle("Friend Request");
         setLocationRelativeTo(null);
         setSize(400, 255);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        showList();
+        showList(user);
         setVisible(true);
     }
-    private void showList(){
-        list_request = new JList();
-        list_request.setListData(new Object[]{
-            "Hans", "Patrick", 
-            "Eko", "Prasetyo", 
-            "Hans", "Patrick", 
-            "Eko", "Prasetyo", 
-            "Hans", "Patrick", 
-            "Eko", "Prasetyo", 
-            "Hans", "Patrick", 
-            "Eko", "Prasetyo","Hans Patrick Eko Prasetyo","Hans", "Patrick", 
-            "Eko", "Prasetyo", 
-            "Hans", "Patrick", 
-            "Eko", "Prasetyo", 
-            "Hans", "Patrick", 
-            "Eko", "Prasetyo", 
-            "Hans", "Patrick", 
-            "Eko", "Prasetyo","Hans Patrick Eko Prasetyo"
-        });
+    private void showList(User user){
+        user_global = user;
+        Action action = new Action();
+        ArrayList<FriendRequest> listReq = ControllerUser.getRequest(user.getUsername());
+        DefaultListModel<String> ll = new DefaultListModel<>();
+        for(int i = 0; i < listReq.size(); i++){
+            ll.addElement(listReq.get(i).getNickname_request());
+        }
+        list_request = new JList<>(ll);
         list_request.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        list_request.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         list_request.addListSelectionListener(this);
         
         scrollpane = new JScrollPane(list_request);
@@ -69,18 +63,14 @@ public class FrameFriendReq extends JFrame implements ListSelectionListener{
         panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         
-        button_back = new JButton("Back");
-        button_back.setLocation(getWidth(), getHeight()-235);
-        button_back.setPreferredSize(new Dimension(getWidth()-(getWidth()-70),30));
-        panel.add(button_back);
-        
         TF_NicknameTerpilih = new JTextField();
         TF_NicknameTerpilih.setEnabled(false);
-        TF_NicknameTerpilih.setPreferredSize(new Dimension(getWidth()-230, 30));
+        TF_NicknameTerpilih.setPreferredSize(new Dimension(getWidth()-150, 30));
         panel.add(TF_NicknameTerpilih);
         
         button_acc = new JButton("Accept");
-        button_acc.setPreferredSize(new Dimension(getWidth()-(getWidth()-90),30));
+        button_acc.setPreferredSize(new Dimension(getWidth()-(getWidth()-100),30));
+        button_acc.addActionListener(action);
         panel.add(button_acc);
         
         getContentPane().add(panel, "South");
@@ -102,10 +92,22 @@ public class FrameFriendReq extends JFrame implements ListSelectionListener{
                     String nickname = TF_NicknameTerpilih.getText();
                     if(nickname.equals("")){
                         JOptionPane.showMessageDialog(null, "Silahkan pilih nickname!","Error",JOptionPane.ERROR_MESSAGE);
+                        break;
                     } else {
-                        JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin menambahkan");
+                        int status = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin menambahkan");
+                        if(status==JOptionPane.YES_OPTION){
+                            if(ControllerUser.addFriend(user_global,nickname)){
+                                JOptionPane.showMessageDialog(null, "Sekarang " +nickname+ " sudah menjadi teman anda!");
+                                ControllerUser.deleteReq(user_global.getUsername(),nickname);
+                                getContentPane().setVisible(false);
+                                break;
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Add Teman GAGAL!!","Error",JOptionPane.ERROR_MESSAGE);
+                                break;
+                            }
+                        }
+                        break;
                     }
-                    break;
                 default:
                     break;
             }
