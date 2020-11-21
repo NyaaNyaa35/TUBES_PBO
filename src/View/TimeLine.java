@@ -6,10 +6,12 @@
  */
 package View;
 
+import Controller.ControllerLike;
 import Controller.ControllerPost;
 import Controller.ControllerUser;
 import Controller.Interface;
 import Model.Admin;
+import Model.Liker;
 import Model.Person;
 import Model.User;
 import Model.UserManager;
@@ -51,8 +53,9 @@ public class TimeLine extends JFrame implements Interface{
     String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
     String Nicknamepost = "";
     String strCaption = "";
+    String imagePath;
     Admin admin;
-    int counter,idPost,likeCount;
+    int counter,idPost,jumlahLike,totalLike;
     public TimeLine(Person person,int counter_post){
         if(person instanceof User){
             
@@ -61,6 +64,7 @@ public class TimeLine extends JFrame implements Interface{
             ArrayList<Post> listPost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
             ArrayList<Teman> listTemanUser = ControllerUser.getTeman(UserManager.getInstance().getUser().getUsername());
             ArrayList<Post> listAllPost = ControllerPost.getAllPost();
+            ArrayList<Liker> listLiker = ControllerLike.getAllLiker();
             for(int i = 0; i < listTemanUser.size(); i++){
                 for(int j = 0 ; j <listAllPost.size(); j++){
                     if(listAllPost.get(j).getPostNickname().equals(listTemanUser.get(i).getNickname_teman())){
@@ -128,9 +132,9 @@ public class TimeLine extends JFrame implements Interface{
             tempat_gambar.setBounds(panel_Gambar.getLocation().x+5, panel_Gambar.getLocation().y+5, 545, 415);
             tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
             
-            int jumlahLike = 0;
+//            int jumlahLike = 0;
             if(counter_post != 0){
-                likeCount = listPost.get(counter_post-1).getJumlahLike();
+                totalLike = listPost.get(counter_post-1).getJumlahLike();
                 Nicknamepost = listPost.get(counter_post-1).getPostNickname();
                 strCaption = listPost.get(counter_post-1).getCaption();
                 idPost = listPost.get(counter_post-1).getIdPost();
@@ -138,18 +142,29 @@ public class TimeLine extends JFrame implements Interface{
                 ImageIcon imageIcon = new ImageIcon(resize(loadImg,tempat_gambar.getWidth()-5, tempat_gambar.getHeight()-5));
                 tempat_gambar.setIcon(imageIcon); 
             }
+
+            label_KumulatifLike = new JLabel(""+totalLike);
+            label_KumulatifLike.setBounds(65,555,50,30);
             
             Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
-            button_Like = new JButton(iconLike);
+            button_Like = new JButton(iconLike);           
+            button_Like.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    button_Like.setEnabled(false);
+                    jumlahLike += 1;
+                    totalLike+=jumlahLike;
+                    listPost.get(counter_post-1).setJumlahLike(totalLike);
+                    label_KumulatifLike.setText(""+totalLike);
+                    ControllerPost.updateLikePost(listPost.get(counter_post-1),idPost);
+                }
+            });
             button_Like.setBounds(20, 540, 40, 40);
         
             
             label_NicknamePoster = new JLabel(Nicknamepost);
-            label_NicknamePoster.setBounds(65,540,200,20);
-        
-            label_KumulatifLike = new JLabel(""+jumlahLike);
-            label_KumulatifLike.setBounds(65,555,50,30);
-        
+            label_NicknamePoster.setBounds(65,540,200,20);      
+       
         
             label_Caption = new JLabel(strCaption);
             label_Caption.setBounds(25, 505, 550, 30);
@@ -237,6 +252,8 @@ public class TimeLine extends JFrame implements Interface{
             
             Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
             button_Like = new JButton(iconLike);
+            
+            button_Like.addActionListener(action);
             button_Like.setBounds(20, 540, 40, 40);
         
             label_NicknamePoster = new JLabel(Nicknamepost);

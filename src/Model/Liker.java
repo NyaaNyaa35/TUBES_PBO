@@ -11,7 +11,8 @@ package Model;
  */
 public class Liker {
     private String nicknameLike;
-
+    private int ngeLike;
+    
     public Liker() {
     }
 
@@ -29,5 +30,13 @@ public class Liker {
     @Override
     public String toString() {
         return "Liker{" + "nicknameLike=" + nicknameLike + '}';
+    }
+
+    public int isNgeLike() {
+        return ngeLike;
+    }
+
+    public void setNgeLike(int ngeLike) {
+        this.ngeLike = ngeLike;
     }
 }

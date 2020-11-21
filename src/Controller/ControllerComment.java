@@ -61,7 +61,7 @@ public class ControllerComment {
         String query_InsertToComment = "INSERT INTO comment VALUES(?,?,?,?)";
         try{
             PreparedStatement stmt = conn.con.prepareStatement(query_InsertToComment);
-            stmt.setInt(1, Comment.countComment());
+            stmt.setInt(1, comment.getIdComment());
             stmt.setString(2, comment.getIsiComment());
             stmt.setString(3, comment.getNicknameComment());
             stmt.setInt(4, idPost);
@@ -71,6 +71,20 @@ public class ControllerComment {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    public static boolean deleteComment(String comment) {
+        conn.connect();
+
+        String query = "DELETE FROM comment WHERE isiComment='" + comment + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
     }
     
 }
