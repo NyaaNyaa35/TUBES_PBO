@@ -48,7 +48,6 @@ public class FrameComment extends JFrame implements ActionListener {
         frame_Comment = new JFrame("Comment");
         frame_Comment.setLocationRelativeTo(null);
         frame_Comment.setSize(300, 500);
-        frame_Comment.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         comments = new JTextField();
         comments.setBounds(30, 50, 100, 30);

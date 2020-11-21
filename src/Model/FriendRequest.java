@@ -12,10 +12,21 @@ import java.util.Date;
  * @author HansNotFound
  */
 public class FriendRequest {
+    private int idReq;
+
     private String Username_user;
     private String Nickname_request;
-    private Date Tanggal_request;
+    private String Tanggal_request;
 
+    public FriendRequest(int idReq, String Username_user, String Nickname_request, String Tanggal_request) {
+        this.idReq = idReq;
+        this.Username_user = Username_user;
+        this.Nickname_request = Nickname_request;
+        this.Tanggal_request = Tanggal_request;
+    }
+
+    public FriendRequest() {
+    }
     public String getUsername_user() {
         return Username_user;
     }
@@ -32,12 +43,20 @@ public class FriendRequest {
         this.Nickname_request = Nickname_request;
     }
 
-    public Date getTanggal_request() {
+    public String getTanggal_request() {
         return Tanggal_request;
     }
 
-    public void setTanggal_request(Date Tanggal_request) {
+    public void setTanggal_request(String Tanggal_request) {
         this.Tanggal_request = Tanggal_request;
+    }
+
+    public int getIdReq() {
+        return idReq;
+    }
+
+    public void setIdReq(int idReq) {
+        this.idReq = idReq;
     }
     
     

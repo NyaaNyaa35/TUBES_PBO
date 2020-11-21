@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import Controller.ControllerUser;
+import Model.FriendRequest;
 import Model.Post;
 import Model.Teman;
 import Model.UserManager;
@@ -183,9 +184,11 @@ public class ViewProfile extends JFrame implements ActionListener{
                 boolean terdaftarsebagaiteman = false;
                 ArrayList<Teman> listAllTeman = ControllerUser.getAllTeman();
                 ArrayList<User> listAllUser = ControllerUser.getAllUsers();
+                User user_teman = null;
                 for(int i = 0; i < listAllUser.size(); i++){
                     if(listAllUser.get(i).getNickname().equals(nick)){
                         userterdaftar = true;
+                        user_teman = listAllUser.get(i);
                         break;
                     }
                 }
@@ -203,29 +206,41 @@ public class ViewProfile extends JFrame implements ActionListener{
                             "Error",JOptionPane.ERROR_MESSAGE);
                     break;
                 }
-                
+                boolean requestTelahaAda = false;
                 if(!terdaftarsebagaiteman){
-                    if(ControllerUser.addFriend(user,nick)){
-                        JOptionPane.showMessageDialog(null, "Sekarang " +nick+ " sudah menjadi teman anda!");
-                        frame_Profile.setVisible(false);
-                        ViewProfile viewProfile = new ViewProfile(user, counter);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Add Teman GAGAL!!",
-                            "Error",JOptionPane.ERROR_MESSAGE);
-                        break;
+                    ArrayList<FriendRequest> listReq = ControllerUser.getAllRequest();
+                    for(int i = 0; i < listReq.size(); i++){
+                        if(user_teman.getUsername().equals(listReq.get(i).getUsername_user()) && user.getNickname().equals(listReq.get(i).getNickname_request())){
+                            requestTelahaAda = true;
+                            break;
+                        }
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Nickname Tersebut sudah terdaftar sebagai teman",
                             "Error",JOptionPane.ERROR_MESSAGE);
                     break;
                 }
+                if(!requestTelahaAda){
+                    if(ControllerUser.addRequest(user_teman.getUsername(),user.getNickname())){
+                        frame_Profile.setVisible(false);
+                        ViewProfile viewProfile = new ViewProfile(user, counter);
+                        JOptionPane.showMessageDialog(null, "Request telah terkirim!!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Add Teman GAGAL!!",
+                            "Error",JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Request telah dikirim ke Nickname tersebut",
+                            "Error",JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
                 
-                break;
             case"Friend Request":
+                new FrameFriendReq(user);
                 break;
             case"SeeFriend":
-                //new FrameListTeman(user);
-                frame_Profile.setVisible(false);
+                new SeeFriend(user);
                 break;
             case"View Post":
                 frame_Profile.setVisible(false);

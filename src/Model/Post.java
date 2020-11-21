@@ -108,7 +108,7 @@ public class Post {
     public static int countPost(){
         int count;
         ArrayList<Post> listPost = ControllerPost.getAllPost();
-        if(listPost == null){
+        if(listPost.isEmpty()){
             return 0;
         }else {
             count = listPost.get(listPost.size()-1).getIdPost()+1;
