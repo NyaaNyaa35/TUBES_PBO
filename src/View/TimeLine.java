@@ -38,7 +38,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-
 /**
  *
  * @author HansNotFound
@@ -48,7 +47,7 @@ public class TimeLine extends JFrame implements Interface {
     JFrame frame_TimeLine;
     JButton button_Next, button_Prev, button_Upload, button_DeletePost, button_DeleteUser,
             button_LogOut, button_SeeComment, button_Like, button_Profile, button_Delete, button_KumulatifLike;
-    JLabel label_NicknameUser, label_NicknamePoster, label_Caption, panel_Gambar,label_KumulatifLike,
+    JLabel label_NicknameUser, label_NicknamePoster, label_Caption, panel_Gambar, label_KumulatifLike,
             tempat_gambar;
     String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
     String Nicknamepost = "";
@@ -80,7 +79,7 @@ public class TimeLine extends JFrame implements Interface {
             frame_TimeLine.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
             label_NicknameUser = new JLabel(UserManager.getInstance().getUser().getNickname());
-            label_NicknameUser.setBounds(75, 20, frame_TimeLine.getWidth()-(frame_TimeLine.getWidth()-200), frame_TimeLine.getHeight()-(frame_TimeLine.getHeight()-30));
+            label_NicknameUser.setBounds(75, 20, frame_TimeLine.getWidth() - (frame_TimeLine.getWidth() - 200), frame_TimeLine.getHeight() - (frame_TimeLine.getHeight() - 30));
             label_NicknameUser.setFont(new Font("Serif", 0, 15));
 
             button_Profile = new JButton();
@@ -144,8 +143,7 @@ public class TimeLine extends JFrame implements Interface {
                 tempat_gambar.setIcon(imageIcon);
                 button_SeeComment.setEnabled(true);
             }
-            
-            
+
             Icon iconLove = new ImageIcon("src/Image/loveimage.png");
 
             button_KumulatifLike = new JButton(iconLove);
@@ -156,16 +154,16 @@ public class TimeLine extends JFrame implements Interface {
             button_KumulatifLike.setOpaque(false);
             button_KumulatifLike.setActionCommand("seeLiker");
             button_KumulatifLike.addActionListener(action);
-            
-            label_KumulatifLike = new JLabel(""+totalLike);
+
+            label_KumulatifLike = new JLabel("" + totalLike);
             label_KumulatifLike.setBounds(100, 555, 50, 30);
-            
+
             Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
             button_Like = new JButton(iconLike);
             button_Like.setActionCommand("Like");
             button_Like.addActionListener(action);
             button_Like.setBounds(20, 540, 40, 40);
-            if (cekLike > 0 || counter_post ==0) {
+            if (cekLike > 0 || counter_post == 0) {
                 button_Like.setEnabled(false);
             }
 
@@ -284,8 +282,8 @@ public class TimeLine extends JFrame implements Interface {
             button_KumulatifLike.setOpaque(false);
             button_KumulatifLike.setActionCommand("seeLiker");
             button_KumulatifLike.addActionListener(action);
-            
-            label_KumulatifLike = new JLabel(""+totalLike);
+
+            label_KumulatifLike = new JLabel("" + totalLike);
             label_KumulatifLike.setBounds(65, 555, 50, 30);
 
             frame_TimeLine.add(button_DeleteUser);
@@ -336,10 +334,9 @@ public class TimeLine extends JFrame implements Interface {
                 case "Comment":
                     new FrameComment(UserManager.getInstance().getUser(), idPost, (counter - 1));
                     break;
-//                case"CommentAdmin":
-//                    frame_TimeLine.setVisible(false);
-//                    new FrameComment(admin,listpost.get(counter-1).getIdPost(),(counter-1));
-//                    break;
+                case "CommentAdmin":
+                    new FrameComment(admin, idPost, (counter - 1));
+                    break;
                 case "ViewProfile":
                     frame_TimeLine.setVisible(false);
                     new ViewProfile(UserManager.getInstance().getUser(), counter);

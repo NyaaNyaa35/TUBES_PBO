@@ -51,6 +51,8 @@ public class ViewProfile extends JFrame implements ActionListener {
     int counter;
     File fileFoto;
     String pathFoto, oldNick;
+    FrameFriendReq frameFriendReq = null;
+    SeeFriend seeFriend = null;
 
     public ViewProfile(User users, int counter_post) {
         VP(users, counter_post);
