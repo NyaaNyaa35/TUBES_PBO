@@ -284,7 +284,7 @@ public class ViewProfile extends JFrame implements ActionListener {
                     int option = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mengganti gambar profile anda?");
                     if (option == JOptionPane.YES_OPTION) {
                         fileFoto = file_ProfilePict.getSelectedFile();
-                        String defaultParent = "src/Image/";
+                        String defaultParent = "src/Image/Profile_Pict_EXAMPLE_LOL";
                         String getName = fileFoto.getName();
                         System.out.println(getName);
                         pathFoto = defaultParent + getName;
