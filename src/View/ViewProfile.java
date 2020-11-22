@@ -31,6 +31,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
@@ -76,7 +77,7 @@ public class ViewProfile extends JFrame implements ActionListener {
         button_PickFile = new JButton("Choose File");
         button_PickFile.setBounds(130, 60, 100, 30);
         button_PickFile.addActionListener(this);
-        button_PickFile.setEnabled(false);
+//        button_PickFile.setEnabled(false);
 
         label_KeteranganPict = new JLabel();
         label_KeteranganPict.setBounds(20, 120, 380, 20);
@@ -283,7 +284,10 @@ public class ViewProfile extends JFrame implements ActionListener {
                     int option = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mengganti gambar profile anda?");
                     if (option == JOptionPane.YES_OPTION) {
                         fileFoto = file_ProfilePict.getSelectedFile();
-                        pathFoto = fileFoto.getAbsolutePath();
+                        String defaultParent = "src/Image/";
+                        String getName = fileFoto.getName();
+                        System.out.println(getName);
+                        pathFoto = defaultParent + getName;
                         user.setProfilePict(pathFoto);
                         if (ControllerUser.updateProfilePict(user)) {
                             JOptionPane.showMessageDialog(null, "Update berhasil! Silahkan ReLogin");
