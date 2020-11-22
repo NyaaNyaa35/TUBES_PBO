@@ -101,7 +101,7 @@ public class User extends Person{
     public static int countUser(){
         int count = 0;
         ArrayList<User> listUser = ControllerUser.getAllUsers();
-        if(listUser == null){
+        if(listUser.isEmpty()){
             return 0;
         }else {
             count += listUser.get(listUser.size()-1).getIdUser()+1;

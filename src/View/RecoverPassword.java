@@ -75,14 +75,14 @@ public class RecoverPassword extends JFrame implements ActionListener{
             case "Change Password" :
              String pass1 = password_1.getText();
              String pass2 = password_2.getText();
-            if (pass1 == null ? pass2 == null : pass1.equals(pass2) ) {
+            if (!("".equals(pass1)) && !("".equals(pass2)) && (pass1.equals(pass2)) ) {
                 if(ControllerUser.recoverPassword(user_get.getUsername(),pass1)){
                     JOptionPane.showMessageDialog(null, "Berhasil, Anda Akan dialihkan ke LoginScreen!");
                     frame.setVisible(false);
                     new LoginScreen();
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Passwprd doesnt same hehe",
+                JOptionPane.showMessageDialog(this, "Password doesnt same hehe",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
             break;

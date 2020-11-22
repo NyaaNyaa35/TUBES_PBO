@@ -5,7 +5,6 @@ package View;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import Controller.ControllerUser;
 import Model.User;
 import java.awt.Color;
@@ -20,16 +19,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
 /**
  *
  * @author Davjd
  */
 public class FormRecover extends JFrame implements ActionListener {
+
     JLabel label_IsiForm, label_Username, label_Email, label_Nickname;
     JTextField tf_Username, tf_Email, tf_Nickname;
     JButton button_verify, button_back;
     JFrame frame;
- 
+
     public FormRecover() {
         frame = new JFrame("Isi Form Recover Password");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -41,7 +42,7 @@ public class FormRecover extends JFrame implements ActionListener {
 
         label_Username = new JLabel("Username");
         label_Email = new JLabel("Email");
-        label_Nickname = new JLabel("NIckname");
+        label_Nickname = new JLabel("Nickname");
         tf_Username = new JTextField();
         tf_Email = new JTextField();
         tf_Nickname = new JTextField();
@@ -73,34 +74,41 @@ public class FormRecover extends JFrame implements ActionListener {
         frame.setLayout(null);
         frame.setVisible(true);
     }
-    
-    
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
-        switch(command){
-            case "Verify" :
-             String uname = tf_Username.getText();
-             String nname = tf_Nickname.getText();
-             String email = tf_Email.getText();
-             ArrayList<User> listUser = ControllerUser.getAllUsers();
-             for(int i = 0; i < listUser.size() ; i++){
-                 if(uname.equals(listUser.get(i).getUsername())){
-                     if(nname.equals(listUser.get(i).getNickname())){
-                         if(email.equals(listUser.get(i).getEmail())){
-                            JOptionPane.showMessageDialog(null, "Verified");
-                            frame.setVisible(false);
-                            new RecoverPassword(listUser.get(i));
-                            break;
-                         }
-                     }
-                 } else {
-                     JOptionPane.showMessageDialog(this, "Not Verified",
-                     "Error", JOptionPane.ERROR_MESSAGE);
-                     break;
-                 }
-             }
-            break;
+        switch (command) {
+            case "Verify":
+                String uname = tf_Username.getText();
+                String nname = tf_Nickname.getText();
+                String email = tf_Email.getText();
+                boolean valid = false;
+                ArrayList<User> listUser = ControllerUser.getAllUsers();
+                if (uname.equals("") || nname.equals("") || email.equals("")) {
+                JOptionPane.showMessageDialog(this, "Data tidak boleh kosong!!!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    for (int i = 0; i < listUser.size(); i++) {
+                        if (uname.equals(listUser.get(i).getUsername())) {
+                            if (nname.equals(listUser.get(i).getNickname())) {
+                                if (email.equals(listUser.get(i).getEmail())) {
+                                    JOptionPane.showMessageDialog(null, "Verified");
+                                    frame.setVisible(false);
+                                    valid = true;
+                                    new RecoverPassword(listUser.get(i));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if(!valid){
+                    JOptionPane.showMessageDialog(this, "Not Verified",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+                break;
             case "Back to MainMenu":
                 frame.setVisible(false);
                 new MainMenuScreen();
