@@ -23,11 +23,13 @@ import Controller.ControllerUser;
 import Model.UserManager;
 import static View.TimeLine.loadImage;
 import static View.TimeLine.resize;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javafx.animation.Timeline;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 
 /**
@@ -39,7 +41,7 @@ public class CreatePost extends JFrame implements ActionListener {
     JFrame frame, framePreview;
     JButton chooseFile, upload, confirm_yes, confirm_no;
     JTextField caption;
-    JLabel lCaption, previewPhotos, tempat_gambar;
+    JLabel lCaption, previewPhotos, panel_Gambar, tempat_gambar;
     JFileChooser choosePhotos;
     File photos;
     String pathPhotos;
@@ -81,10 +83,10 @@ public class CreatePost extends JFrame implements ActionListener {
 
         frame.setLayout(null);
         frame.setVisible(true);
-        
-        framePreview = new JFrame();
+
+        framePreview = new JFrame("Preview Photos");
         framePreview.setLocationRelativeTo(null);
-        framePreview.setSize(500, 500);
+        framePreview.setSize(500, 450);
         framePreview.setVisible(false);
     }
 
@@ -99,27 +101,29 @@ public class CreatePost extends JFrame implements ActionListener {
                 post.setIdPost(Post.countPost());
                 post.setUsername_user(user_cadangan.getUsername());
 
-                previewPhotos = new JLabel();
-                previewPhotos.setBounds(20, 75, 550, 430);
+                panel_Gambar = new JLabel();
+                panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                panel_Gambar.setBounds(20, 10, 440, 320);
 
                 tempat_gambar = new JLabel();
-                tempat_gambar.setBounds(25, 80, 540, 420);
+                tempat_gambar.setBounds(25, 15, 450, 310);
 
-                tempat_gambar.setBounds(previewPhotos.getLocation().x + 5, previewPhotos.getLocation().y + 5, 545, 415);
+                tempat_gambar.setBounds(panel_Gambar.getLocation().x + 5, panel_Gambar.getLocation().y + 5, 435, 310);
                 tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
-                BufferedImage loadImgProfile = loadImage(pathPhotos);
-                ImageIcon preview = new ImageIcon(resize(loadImgProfile, previewPhotos.getWidth() - 10, previewPhotos.getHeight() - 10));
-                previewPhotos.setIcon(preview);
+                BufferedImage loadImg = loadImage(pathPhotos);
+                ImageIcon imageIcon = new ImageIcon(resize(loadImg, tempat_gambar.getWidth() - 5, tempat_gambar.getHeight() - 5));
+                tempat_gambar.setIcon(imageIcon);
 
                 confirm_yes = new JButton("Confirm");
-                confirm_yes.setBounds(10, 450, 100, 30);
+                confirm_yes.setBounds(20, 350, 100, 50);
                 confirm_yes.addActionListener(this);
 
                 confirm_no = new JButton("Re-Upload");
-                confirm_no.setBounds(320, 450, 100, 30);
+                confirm_no.setBounds(362, 350, 100, 50);
                 confirm_no.addActionListener(this);
-
-                framePreview.add(previewPhotos);
+                
+                framePreview.add(panel_Gambar);
+                framePreview.add(tempat_gambar);
                 framePreview.add(confirm_yes);
                 framePreview.add(confirm_no);
 
