@@ -20,6 +20,7 @@ import javax.swing.WindowConstants;
 import Controller.ControllerUser;
 import Model.Admin;
 import Model.Post;
+import Model.Teman;
 import Model.User;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -111,12 +112,24 @@ public class LoginScreen extends JFrame implements ActionListener {
                             }
                         }
                         ArrayList<Post> listPost = ControllerPost.getListPostByUser(uname);
-                        if(!listPost.isEmpty()){
+                        if(listPost.isEmpty()){
                             JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
-                            TimeLine timeLine = new TimeLine(user,1);
+                            ArrayList<Teman> listTeman = ControllerUser.getTeman(uname);
+                            ArrayList<Post> listPostTeman = new ArrayList<>();
+                            ArrayList<Post> listAllPost = ControllerPost.getAllPost();
+                            for(int i = 0; i < listTeman.size(); i++){
+                                if(listTeman.get(i).getNickname_teman().equals(listAllPost.get(i).getPostNickname())){
+                                    listPostTeman.add(listAllPost.get(i));
+                                }
+                            }
+                            if(listPostTeman.isEmpty()){
+                                TimeLine timeLine = new TimeLine(user,0);
+                            } else {
+                                TimeLine timeLine = new TimeLine(user,1);
+                            }
                         } else {
                             JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
-                            TimeLine timeLine = new TimeLine(user,0);
+                            TimeLine timeLine = new TimeLine(user,1);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Incorrect login or password",

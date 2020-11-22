@@ -446,6 +446,21 @@ public class ControllerUser {
             return (false);
         }
     }
+    
+    //mengupdate Nickname pada tabel friend_req
+    public static boolean updateNicknameList_in_friend_req(String oldNick, String newNick) {
+        conn.connect();
+        String query = "UPDATE friend_req SET Nickname_req = '" + newNick
+                + "' WHERE Nickname_req = '" + oldNick + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
 
     //mengupdate Nickname pada tabel list_teman
     public static boolean updateNicknameList_in_ListTeman(User user, String newNick) {
