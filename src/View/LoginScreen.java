@@ -98,38 +98,42 @@ public class LoginScreen extends JFrame implements ActionListener {
                 String pass = passwordfield.getText();
                 Admin admin = new Admin();
                 User user = new User();
+                ArrayList<Post> listAllPost = ControllerPost.getAllPost();
                 if (!uname.equals("") && !pass.equals("")) {
                     if (admin.Login(uname, pass)) {
                         frame.setVisible(false);
-                        TimeLine timeLine = new TimeLine(admin,1);
+                        if (listAllPost.isEmpty()) {
+                            TimeLine timeLine = new TimeLine(admin, 0);
+                        } else {
+                            TimeLine timeLine = new TimeLine(admin, 1);
+                        }
                     } else if (user.Login(uname, pass)) {
                         frame.setVisible(false);
                         ArrayList<User> listUser = ControllerUser.getAllUsers();
-                        for(int i = 0; i < listUser.size();i++){
-                            if(listUser.get(i).getUsername().equals(uname)){
+                        for (int i = 0; i < listUser.size(); i++) {
+                            if (listUser.get(i).getUsername().equals(uname)) {
                                 user = listUser.get(i);
                                 break;
                             }
                         }
                         ArrayList<Post> listPost = ControllerPost.getListPostByUser(uname);
-                        if(listPost.isEmpty()){
-                            JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
+                        if (listPost.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!", "Alert", JOptionPane.ERROR_MESSAGE);
                             ArrayList<Teman> listTeman = ControllerUser.getTeman(uname);
                             ArrayList<Post> listPostTeman = new ArrayList<>();
-                            ArrayList<Post> listAllPost = ControllerPost.getAllPost();
-                            for(int i = 0; i < listTeman.size(); i++){
-                                if(listTeman.get(i).getNickname_teman().equals(listAllPost.get(i).getPostNickname())){
+                            for (int i = 0; i < listTeman.size(); i++) {
+                                if (listTeman.get(i).getNickname_teman().equals(listAllPost.get(i).getPostNickname())) {
                                     listPostTeman.add(listAllPost.get(i));
                                 }
                             }
-                            if(listPostTeman.isEmpty()){
-                                TimeLine timeLine = new TimeLine(user,0);
+                            if (listPostTeman.isEmpty()) {
+                                TimeLine timeLine = new TimeLine(user, 0);
                             } else {
-                                TimeLine timeLine = new TimeLine(user,1);
+                                TimeLine timeLine = new TimeLine(user, 1);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(null,"Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!","Alert",JOptionPane.ERROR_MESSAGE);
-                            TimeLine timeLine = new TimeLine(user,1);
+                            JOptionPane.showMessageDialog(null, "Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!", "Alert", JOptionPane.ERROR_MESSAGE);
+                            TimeLine timeLine = new TimeLine(user, 1);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Incorrect login or password",
@@ -141,11 +145,11 @@ public class LoginScreen extends JFrame implements ActionListener {
                 break;
             case "To Regis Screen":
                 frame.setVisible(false);
-                RegisterScreen registerScreen = new RegisterScreen("","","");
+                RegisterScreen registerScreen = new RegisterScreen("", "", "");
                 break;
             case "Recover Password":
                 frame.setVisible(false);
-        FormRecover formRecover = new FormRecover();
+                FormRecover formRecover = new FormRecover();
                 break;
             default:
                 break;

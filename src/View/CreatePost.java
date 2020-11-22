@@ -20,108 +20,128 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import Controller.ControllerPost;
 import Controller.ControllerUser;
+import Model.UserManager;
+import static View.TimeLine.loadImage;
+import static View.TimeLine.resize;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import javafx.animation.Timeline;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author NealsonW
  */
-public class CreatePost extends JFrame implements ActionListener{
-    
-    JFrame frame,framePreview;
-    JButton chooseFile,upload,confirm_yes,confirm_no;
+public class CreatePost extends JFrame implements ActionListener {
+
+    JFrame frame, framePreview;
+    JButton chooseFile, upload, confirm_yes, confirm_no;
     JTextField caption;
-    JLabel lCaption,previewPhotos;
+    JLabel lCaption, previewPhotos, tempat_gambar;
     JFileChooser choosePhotos;
     File photos;
     String pathPhotos;
     int idPost;
-    String postNickname,tanggalPost="";
+    String postNickname, tanggalPost = "";
     User user_cadangan;
     Post post = new Post();
     int counter_post;
+
     public CreatePost(User user, int counter) {
         counter_post = counter;
         user_cadangan = user;
         frame = new JFrame("Create Post");
-        frame.setSize(600,400);
+        frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
+
         postNickname = user.getNickname();
-        
+
         tanggalPost += ControllerUser.getTanggal() + " " + ControllerUser.getWaktu();
 
         chooseFile = new JButton("Choose File...");
         chooseFile.setBounds(40, 40, 120, 30);
         chooseFile.addActionListener(this);
-        
+
         lCaption = new JLabel("Caption");
         caption = new JTextField();
         lCaption.setBounds(40, 100, 50, 30);
         caption.setBounds(40, 125, 500, 100);
-        
+
         upload = new JButton("Upload");
-        upload.setBounds(445,300,80,30);
+        upload.setBounds(445, 300, 80, 30);
         upload.addActionListener(this);
-        
-        
+
         frame.add(chooseFile);
         frame.add(lCaption);
         frame.add(caption);
         frame.add(upload);
-        
 
         frame.setLayout(null);
         frame.setVisible(true);
+        
+        framePreview = new JFrame();
+        framePreview.setLocationRelativeTo(null);
+        framePreview.setSize(500, 500);
+        framePreview.setVisible(false);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input = ae.getActionCommand();   
-        switch(input){
+        String input = ae.getActionCommand();
+        switch (input) {
             case "Upload":
                 post.setCaption(caption.getText());
                 post.setPostNickname(postNickname);
                 post.setWaktuPost(tanggalPost);
                 post.setIdPost(Post.countPost());
                 post.setUsername_user(user_cadangan.getUsername());
-                
-                framePreview = new JFrame();
-                framePreview.setSize(500, 500);
-                framePreview.setLocationRelativeTo(null);
-                framePreview.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
-                
-                previewPhotos = new JLabel(new ImageIcon(pathPhotos));
-                previewPhotos.setBounds(10, 10, 200, 300);
-                
+
+                previewPhotos = new JLabel();
+                previewPhotos.setBounds(20, 75, 550, 430);
+
+                tempat_gambar = new JLabel();
+                tempat_gambar.setBounds(25, 80, 540, 420);
+
+                tempat_gambar.setBounds(previewPhotos.getLocation().x + 5, previewPhotos.getLocation().y + 5, 545, 415);
+                tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
+                BufferedImage loadImgProfile = loadImage(pathPhotos);
+                ImageIcon preview = new ImageIcon(resize(loadImgProfile, previewPhotos.getWidth() - 10, previewPhotos.getHeight() - 10));
+                previewPhotos.setIcon(preview);
+
                 confirm_yes = new JButton("Confirm");
-                confirm_yes.setBounds(10, 350, 100, 50);
+                confirm_yes.setBounds(10, 450, 100, 30);
                 confirm_yes.addActionListener(this);
-                
+
                 confirm_no = new JButton("Re-Upload");
-                confirm_no.setBounds(320, 350, 100, 50);
+                confirm_no.setBounds(320, 450, 100, 30);
                 confirm_no.addActionListener(this);
-                
-                framePreview.add(previewPhotos); 
+
+                framePreview.add(previewPhotos);
                 framePreview.add(confirm_yes);
                 framePreview.add(confirm_no);
-                
-                framePreview.setLayout(null);                 
-                framePreview.setVisible(true);             
-                
+
+                framePreview.setLayout(null);
+                framePreview.setVisible(true);
+
                 break;
             case "Choose File...":
-                choosePhotos = new JFileChooser();
-                choosePhotos.showOpenDialog(null);
-                photos = choosePhotos.getSelectedFile();
-                pathPhotos = photos.getAbsolutePath();
-                post.setImagepath(pathPhotos);
-                break;
+                if (framePreview.isVisible()) {
+                    JOptionPane.showMessageDialog(null, "Tutup Frame Preview terlebih dahulu!!", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                } else {
+                    choosePhotos = new JFileChooser();
+                    choosePhotos.showOpenDialog(null);
+                    photos = choosePhotos.getSelectedFile();
+                    pathPhotos = photos.getAbsolutePath();
+                    post.setImagepath(pathPhotos);
+                    break;
+                }
             case "Confirm":
                 boolean insertPost = ControllerPost.insertNewPost(post);
-                if(insertPost){
+                if (insertPost) {
                     JOptionPane.showMessageDialog(null, "Upload Post Berhasil");
                     counter_post = ControllerPost.getListPostByUser(user_cadangan.getUsername()).size();
                     new TimeLine(user_cadangan, counter_post);
@@ -134,10 +154,31 @@ public class CreatePost extends JFrame implements ActionListener{
                 break;
             case "Re-Upload":
                 framePreview.setVisible(false);
-                break;        
+                break;
             default:
                 break;
         }
     }
-    
+
+    public static BufferedImage loadImage(String ref) {
+        BufferedImage bimg = null;
+        try {
+            bimg = ImageIO.read(new File(ref));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bimg;
+    }
+
+    //Method untuk Resize Image
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        BufferedImage dimg = new BufferedImage(newW, newH, img.getType());
+        Graphics2D g = dimg.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(img, 0, 0, newW, newH, 0, 0, w, h, null);
+        g.dispose();
+        return dimg;
+    }
 }
