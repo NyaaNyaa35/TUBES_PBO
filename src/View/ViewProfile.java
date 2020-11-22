@@ -151,7 +151,7 @@ public class ViewProfile extends JFrame implements ActionListener{
         switch(command){
             case"Back":
                 frame_Profile.setVisible(false);
-        TimeLine timeLine = new TimeLine(user, counter);
+        TimeLine timeLine = new TimeLine(user, 0);
                 break;
             case"Save":
                 String newNickname = TF_Nickname.getText();

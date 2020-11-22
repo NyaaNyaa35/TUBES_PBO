@@ -123,7 +123,7 @@ public class RegisterScreen extends JFrame implements ActionListener {
                 if(ControllerUser.isValidEmail(Email)){
                     if(!listUser.isEmpty()){
                         int cekUsername = ControllerUser.cekDuplikatUsername(Username);
-                        int cekNickname = ControllerUser.cekDuplikatUsername(Nickname);
+                        int cekNickname = ControllerUser.cekDuplikatNickname(Nickname);
                         int cekEmail = ControllerUser.cekDuplikatEmail(Email);
                         if(cekUsername == 0 && cekNickname == 0 && cekEmail == 0){
                             valid = true;

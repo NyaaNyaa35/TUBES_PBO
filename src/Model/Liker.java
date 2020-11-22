@@ -11,14 +11,8 @@ package Model;
  */
 public class Liker {
     private String nicknameLike;
-    private int ngeLike;
+    private int idPost;
     
-    public Liker() {
-    }
-
-    public Liker(String nicknameLike) {
-        this.nicknameLike = nicknameLike;
-    }
 
     public String getNicknameLike() {
         return nicknameLike;
@@ -27,16 +21,12 @@ public class Liker {
     public void setNicknameLike(String nicknameLike) {
         this.nicknameLike = nicknameLike;
     }
-    @Override
-    public String toString() {
-        return "Liker{" + "nicknameLike=" + nicknameLike + '}';
+
+    public int getIdPost() {
+        return idPost;
     }
 
-    public int isNgeLike() {
-        return ngeLike;
-    }
-
-    public void setNgeLike(int ngeLike) {
-        this.ngeLike = ngeLike;
+    public void setIdPost(int idPost) {
+        this.idPost = idPost;
     }
 }

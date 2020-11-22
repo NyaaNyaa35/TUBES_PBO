@@ -6,6 +6,7 @@
 package View;
 
 import Controller.ControllerUser;
+import Model.Liker;
 import Model.Teman;
 import Model.User;
 import java.util.ArrayList;
@@ -19,22 +20,21 @@ import javax.swing.ListSelectionModel;
  *
  * @author HansNotFound
  */
-public class SeeFriend extends JFrame{
+public class FrameLiker extends JFrame{
     JList<String> listUser;
     JScrollPane sc;
-    public SeeFriend(User user){
-        setTitle("Friend List");
+    public FrameLiker(ArrayList<Liker> listLiker){
+        setTitle("List Liker");
         setLocationRelativeTo(null);
         setSize(250,150);
-        friendList(user);
+        seeLiker(listLiker);
         setVisible(true);
     }
     
-    private void friendList(User user){
-        ArrayList<Teman> listTeman = ControllerUser.getTeman(user.getUsername());
+    private void seeLiker(ArrayList<Liker> listLiker){
         DefaultListModel<String> lm = new DefaultListModel<>();
-        for(int i = 0; i < listTeman.size(); i++){
-            lm.addElement(listTeman.get(i).getNickname_teman());
+        for(int i = 0; i < listLiker.size(); i++){
+            lm.addElement(listLiker.get(i).getNicknameLike());
         }
         listUser = new JList<>(lm);
         listUser.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

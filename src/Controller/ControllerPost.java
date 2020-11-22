@@ -84,17 +84,33 @@ public class ControllerPost {
         }
     }
 
+    public static boolean deleteKoneksiLike(int idPost) {
+        conn.connect();
+
+        String query = "DELETE FROM liker WHERE idPostingan='" + idPost + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
+
     public static boolean deletePost(int idPost) {
         conn.connect();
         if (deleteKoneksiComment(idPost)) {
-            String query = "DELETE FROM postingan WHERE idPostingan='" + idPost + "'";
-            try {
-                Statement stmt = conn.con.createStatement();
-                stmt.executeUpdate(query);
-                return (true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return (false);
+            if (deleteKoneksiLike(idPost)) {
+                String query = "DELETE FROM postingan WHERE idPostingan='" + idPost + "'";
+                try {
+                    Statement stmt = conn.con.createStatement();
+                    stmt.executeUpdate(query);
+                    return (true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return (false);
+                }
             }
         }
         return false;
@@ -120,9 +136,9 @@ public class ControllerPost {
         return false;
     }
 
-    public static boolean updateLikePost(Post post,int idPost) {
+    public static boolean updateLikePost(Post post, int idPost) {
         conn.connect();
-        String query = "UPDATE postingan SET Likes='" + post.getJumlahLike() + "' WHERE IdPostingan='"+idPost+"'";
+        String query = "UPDATE postingan SET Likes='" + post.getJumlahLike() + "' WHERE IdPostingan='" + idPost + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -132,5 +148,28 @@ public class ControllerPost {
             return (false);
         }
     }
-
+    
+    //get 1 post doang
+    public static Post getPost(int idPost) {
+        Post post = new Post();
+        conn.connect();
+        String query = "SELECT * FROM postingan WHERE idPostingan = "+ idPost;
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                post.setIdPost(rs.getInt("IdPostingan"));
+                post.setUsername_user(rs.getString("Username"));
+                post.setCaption(rs.getString("Caption"));
+                post.setPostNickname(rs.getString("PostNickname"));
+                post.setJumlahLike(rs.getInt("Likes"));
+                post.setWaktuPost(rs.getString("WaktuPost"));
+                post.setImagepath(rs.getString("GambarPost"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (post);
+    }
+    
 }

@@ -24,7 +24,9 @@ import javax.swing.JOptionPane;
  * @author HansNotFound
  */
 public class ControllerUser {
+
     static DatabaseHandler conn = new DatabaseHandler();
+
     //Get Semua user 
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
@@ -49,7 +51,7 @@ public class ControllerUser {
         }
         return (users);
     }
-    
+
     //get semua person
     public static ArrayList<Person> getAllPerson() {
         ArrayList<Person> users = new ArrayList<>();
@@ -68,11 +70,11 @@ public class ControllerUser {
         }
         return (users);
     }
-    
-    public static String getPassword(String username){
+
+    public static String getPassword(String username) {
         conn.connect();
         String pass = "";
-        String query = "SELECT Password FROM person WHERE Username = '" + username +"'";
+        String query = "SELECT Password FROM person WHERE Username = '" + username + "'";
         try {
             Statement stmt = conn.con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -82,7 +84,7 @@ public class ControllerUser {
         }
         return pass;
     }
-    
+
     //get user by Username
     public static User getUser(String Username) {
         conn.connect();
@@ -103,9 +105,30 @@ public class ControllerUser {
         }
         return (user);
     }
-    
+
+    //get user by Nickname
+    public static User getUserNick(String Nickname) {
+        conn.connect();
+        String query = "SELECT * FROM user WHERE Nickname='" + Nickname + "'";
+        User user = new User();
+        try {
+            Statement stmt = conn.con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                user.setNickname(rs.getString("Nickname"));
+                user.setUsername(rs.getString("Username"));
+                user.setEmail(rs.getString("Email"));
+                user.setJumlahTeman(rs.getInt("JumlahTeman"));
+                user.setProfilePict(rs.getString("ProfilePict"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (user);
+    }
+
     //menginsert person
-    public static boolean insertPerson(User user){
+    public static boolean insertPerson(User user) {
         conn.connect();
         String query_InsertToPerson = "INSERT INTO person VALUES (?,?)";
         try {
@@ -113,18 +136,18 @@ public class ControllerUser {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
             stmt.executeUpdate();
-            return(true);
+            return (true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return(false);
+        return (false);
     }
-    
+
     //menginsert user baru
     public static boolean insertUser(User user) {
         conn.connect();
         String query_InsertToUser = "INSERT INTO user VALUES(?,?,?,?,?,?)";
-        try{
+        try {
             PreparedStatement stmt_2 = conn.con.prepareStatement(query_InsertToUser);
             stmt_2.setInt(1, User.countUser());
             stmt_2.setString(2, user.getUsername());
@@ -133,26 +156,26 @@ public class ControllerUser {
             stmt_2.setInt(5, user.getJumlahTeman());
             stmt_2.setString(6, user.getProfilePict());
             stmt_2.executeUpdate();
-            return(true);
+            return (true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return(false);
+        return (false);
     }
-    
+
     //memanggil 2 void insert user dan memastikan agar dapat terinput dengan benar ke kedua tabel(person dan user)
-    public static boolean insertNewUser(User user){
-        boolean valid_1,valid_2;
+    public static boolean insertNewUser(User user) {
+        boolean valid_1, valid_2;
         valid_1 = insertPerson(user);
         valid_2 = insertUser(user);
-        return(valid_1 && valid_2);
+        return (valid_1 && valid_2);
     }
-    
+
     //fungsi delete user by admin
     public static boolean deleteUser(String Username) {
         conn.connect();
 
-        String query = "DELETE FROM person WHERE Username='" + Username + "'";
+        String query = "DELETE FROM user WHERE Username='" + Username + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -162,49 +185,117 @@ public class ControllerUser {
             return (false);
         }
     }
-    
-    //fungsi recover password 
-    public static boolean recoverPassword(String Username, String Password){
+
+    //fungsi delete person by admin
+    public static boolean deletePerson(String Username, String Nickname) {
         conn.connect();
-        String query = "Update person set Password = '" + Password +"' where Username = '" + Username+ "'";
-        try{
+        if (deleteKoneksiTeman(Username, Nickname)) {
+            if (deleteKoneksiReq(Nickname)) {
+                if (deleteUser(Username)) {
+                    String query = "DELETE FROM person WHERE Username='" + Username + "'";
+                    try {
+                        Statement stmt = conn.con.createStatement();
+                        stmt.executeUpdate(query);
+                        return (true);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return (false);
+                    }
+                }
+            }
+        }
+        return (false);
+    }
+
+    //fungsi koneksi teman by Nickname
+    public static boolean deleteKoneksiTeman(String Username, String Nickname) {
+        conn.connect();
+        if (deleteKoneksiTeman2(Username)) {
+            String query = "DELETE FROM list_teman WHERE Nickname_teman='" + Nickname + "'";
+            try {
+                Statement stmt = conn.con.createStatement();
+                stmt.executeUpdate(query);
+                return (true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return (false);
+            }
+        }
+        return (false);
+    }
+
+    //fungsi koneksi teman by Username
+    public static boolean deleteKoneksiTeman2(String Username) {
+        conn.connect();
+        String query = "DELETE FROM list_teman WHERE Username='" + Username + "'";
+        try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
-            return(true);
-        } catch (SQLException ex){
-            ex.printStackTrace();
-            return(false);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
         }
     }
-    
-    //mendapatkan tanggal sekarang
-    public static String getTanggal() {  
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");  
-        Date date = new Date();  
-        return dateFormat.format(date);  
+
+    //fungsi delete koneksi dari friend_req by admin
+    public static boolean deleteKoneksiReq(String Nickname) {
+        conn.connect();
+        String query = "DELETE FROM friend_req WHERE Nickname_req='" + Nickname + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
     }
-    
+
+    //fungsi recover password 
+    public static boolean recoverPassword(String Username, String Password) {
+        conn.connect();
+        String query = "Update person set Password = '" + Password + "' where Username = '" + Username + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return (false);
+        }
+    }
+
+    //mendapatkan tanggal sekarang
+    public static String getTanggal() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
     //mendapatkan waktu sekarang
-    public static String getWaktu() {  
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");  
-        Date date = new Date();  
-        return dateFormat.format(date);  
-    } 
-    
+    public static String getWaktu() {
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
     //mengecek apakah email yang diinput itu valid
     public static boolean isValidEmail(String email) {
         boolean validate;
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         String emailPattern2 = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+\\.+[a-z]+";
- 
+
         if (email.matches(emailPattern)) {
             validate = true;
-        } else {validate = email.matches(emailPattern2);}
+        } else {
+            validate = email.matches(emailPattern2);
+        }
         return validate;
     }
-    
+
     //get seluruh teman
-    public static ArrayList<Teman> getAllTeman(){
+    public static ArrayList<Teman> getAllTeman() {
         conn.connect();
         ArrayList<Teman> listTeman = new ArrayList<>();
         String query = "SELECT * FROM list_teman ";
@@ -223,9 +314,9 @@ public class ControllerUser {
         }
         return listTeman;
     }
-    
+
     //get seluruh Nickname teman by Username
-    public static ArrayList<Teman> getTeman(String Username){
+    public static ArrayList<Teman> getTeman(String Username) {
         conn.connect();
         ArrayList<Teman> listTeman = new ArrayList<>();
         String query = "SELECT * FROM list_teman Where Username = '" + Username + "'";
@@ -244,38 +335,38 @@ public class ControllerUser {
         }
         return listTeman;
     }
-    
+
     //menambahkan Nickname teman kedalam tabel list_teman
-    public static boolean addTeman(User user,User user_teman){
+    public static boolean addTeman(User user, User user_teman) {
         conn.connect();
         ArrayList<Teman> listAllTeman = getAllTeman();
-            String query = "INSERT INTO list_teman VALUES (?,?,?)";
-            int idTeman;
-            if(listAllTeman.isEmpty()){
-                idTeman = 0;
-            } else {
-                idTeman = listAllTeman.get(listAllTeman.size()-1).getIdTeman();
-            }
-            try{
-                PreparedStatement stmt = conn.con.prepareStatement(query);
-                stmt.setInt(1, idTeman+1);
-                stmt.setString(2, user.getUsername());
-                stmt.setString(3, user_teman.getNickname());
-                stmt.executeUpdate();
-                return true;
-            } catch (Exception ex){
-                ex.printStackTrace();
-            }
+        String query = "INSERT INTO list_teman VALUES (?,?,?)";
+        int idTeman;
+        if (listAllTeman.isEmpty()) {
+            idTeman = 0;
+        } else {
+            idTeman = listAllTeman.get(listAllTeman.size() - 1).getIdTeman();
+        }
+        try {
+            PreparedStatement stmt = conn.con.prepareStatement(query);
+            stmt.setInt(1, idTeman + 1);
+            stmt.setString(2, user.getUsername());
+            stmt.setString(3, user_teman.getNickname());
+            stmt.executeUpdate();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return false;
     }
-    
+
     //menambahkan jumlah teman pada tabel user
-    public static boolean tambahJumlahTeman(User user){
+    public static boolean tambahJumlahTeman(User user) {
         conn.connect();
         ArrayList<Teman> listTeman = getTeman(user.getUsername());
         int totalTeman = listTeman.size();
-        String query = "UPDATE user SET JumlahTeman = " + totalTeman +
-                " WHERE Username = '" + user.getUsername() + "'";
+        String query = "UPDATE user SET JumlahTeman = " + totalTeman
+                + " WHERE Username = '" + user.getUsername() + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -285,24 +376,38 @@ public class ControllerUser {
             return (false);
         }
     }
-    
+//mengupdate Nickname pada tabel Postingan
+    public static boolean updateJumlahTeman(String Nickname) {
+        conn.connect();
+        User userteman = getUserNick(Nickname);
+        String query = "UPDATE user SET JumlahTeman = '" + (userteman.getJumlahTeman()-1)
+                + "' WHERE Nickname = '" + Nickname + "'";
+        try {
+            Statement stmt = conn.con.createStatement();
+            stmt.executeUpdate(query);
+            return (true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (false);
+        }
+    }
     //menambahkan dan mencari teman by nick
-    public static boolean addFriend(User user, String nick){
+    public static boolean addFriend(User user, String nick) {
         ArrayList<User> listUser = getAllUsers();
         User user_teman = null;
         boolean valid = false;
-        for(int i = 0; i < listUser.size();i++){
-            if(nick.equals(listUser.get(i).getNickname())){
+        for (int i = 0; i < listUser.size(); i++) {
+            if (nick.equals(listUser.get(i).getNickname())) {
                 user_teman = listUser.get(i);
                 valid = true;
                 break;
             }
         }
-        if(valid){
-            if(addTeman(user,user_teman)){
+        if (valid) {
+            if (addTeman(user, user_teman)) {
                 System.out.println("AddTeman oleh = " + user.getNickname() + "berhasil");
                 tambahJumlahTeman(user);
-                if(addTeman(user_teman,user)){
+                if (addTeman(user_teman, user)) {
                     System.out.println("AddTeman oleh = " + user_teman.getNickname() + "berhasil");
                     tambahJumlahTeman(user_teman);
                     return true;
@@ -311,12 +416,12 @@ public class ControllerUser {
         }
         return false;
     }
-    
+
     //mengupdate nickname baru
-    public static boolean updateNickname(User user, String newNick){
+    public static boolean updateNickname(User user, String newNick) {
         conn.connect();
-        String query = "UPDATE user SET Nickname = '" + newNick +
-                "' WHERE Username = '" + user.getUsername() + "'";
+        String query = "UPDATE user SET Nickname = '" + newNick
+                + "' WHERE Username = '" + user.getUsername() + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -326,12 +431,12 @@ public class ControllerUser {
             return (false);
         }
     }
-    
+
     //mengupdate Nickname pada tabel Postingan
-    public static boolean updateNicknameList_in_Postingan(User user, String newNick){
+    public static boolean updateNicknameList_in_Postingan(User user, String newNick) {
         conn.connect();
-        String query = "UPDATE postingan SET PostNickname = '" + newNick +
-                "' WHERE Username = '" + user.getUsername() + "'";
+        String query = "UPDATE postingan SET PostNickname = '" + newNick
+                + "' WHERE Username = '" + user.getUsername() + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -341,12 +446,12 @@ public class ControllerUser {
             return (false);
         }
     }
-    
+
     //mengupdate Nickname pada tabel list_teman
-    public static boolean updateNicknameList_in_ListTeman(User user, String newNick){
+    public static boolean updateNicknameList_in_ListTeman(User user, String newNick) {
         conn.connect();
-        String query = "UPDATE list_teman SET Nickname_teman = '" + newNick +
-                "' WHERE Nickname_teman = '" + user.getNickname() + "'";
+        String query = "UPDATE list_teman SET Nickname_teman = '" + newNick
+                + "' WHERE Nickname_teman = '" + user.getNickname() + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -356,12 +461,12 @@ public class ControllerUser {
             return (false);
         }
     }
-    
+
     //mengupdate ProfilePict user
-    public static boolean updateProfilePict(User user){
+    public static boolean updateProfilePict(User user) {
         conn.connect();
-        String query = "UPDATE user SET ProfilePict = '" + user.getProfilePict() +
-                "' WHERE Username = '" + user.getUsername() + "'";
+        String query = "UPDATE user SET ProfilePict = '" + user.getProfilePict()
+                + "' WHERE Username = '" + user.getUsername() + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);
@@ -371,9 +476,9 @@ public class ControllerUser {
             return (false);
         }
     }
-    
+
     //mengecek username didatabase (mencegah duplikat entry)
-    public static int cekDuplikatUsername(String Username){
+    public static int cekDuplikatUsername(String Username) {
         conn.connect();
         int total = 0;
         String query = "SELECT Username FROM person WHERE Username = '" + Username + "'";
@@ -392,9 +497,9 @@ public class ControllerUser {
         }
         return total;
     }
-    
+
     //mengecek nickname didatabase (mencegah duplikat entry)
-    public static int cekDuplikatNickname(String Nickname){
+    public static int cekDuplikatNickname(String Nickname) {
         conn.connect();
         int total = 0;
         String query = "SELECT Nickname FROM user WHERE Nickname = '" + Nickname + "'";
@@ -413,9 +518,9 @@ public class ControllerUser {
         }
         return total;
     }
-    
+
     //mengecek Email didatabase (mencegah duplikat entry)
-    public static int cekDuplikatEmail(String Email){
+    public static int cekDuplikatEmail(String Email) {
         conn.connect();
         int total = 0;
         String query = "SELECT Email FROM user WHERE Email = '" + Email + "'";
@@ -434,9 +539,9 @@ public class ControllerUser {
         }
         return total;
     }
-    
+
     //get seluruh Friend Request
-    public static ArrayList<FriendRequest> getAllRequest(){
+    public static ArrayList<FriendRequest> getAllRequest() {
         conn.connect();
         ArrayList<FriendRequest> listReq = new ArrayList<>();
         String query = "SELECT * FROM friend_req";
@@ -456,35 +561,35 @@ public class ControllerUser {
         }
         return listReq;
     }
-    
+
     //menambahkan ke friend request
-    public static boolean addRequest(String username,String nickname){
+    public static boolean addRequest(String username, String nickname) {
         conn.connect();
         ArrayList<FriendRequest> listReq = getAllRequest();
-            String query = "INSERT INTO friend_req VALUES (?,?,?,?)";
-            int idReq;
-            if(listReq.isEmpty()){
-                idReq = 0;
-            } else {
-                idReq = (listReq.get(listReq.size()-1).getIdReq())+1;
-            }
-            String tanggal = getTanggal() + " " + getWaktu();
-            try{
-                PreparedStatement stmt = conn.con.prepareStatement(query);
-                stmt.setInt(1, idReq);
-                stmt.setString(2, username);
-                stmt.setString(3, nickname);
-                stmt.setString(4, tanggal);
-                stmt.executeUpdate();
-                return true;
-            } catch (Exception ex){
-                ex.printStackTrace();
-            }
+        String query = "INSERT INTO friend_req VALUES (?,?,?,?)";
+        int idReq;
+        if (listReq.isEmpty()) {
+            idReq = 0;
+        } else {
+            idReq = (listReq.get(listReq.size() - 1).getIdReq()) + 1;
+        }
+        String tanggal = getTanggal() + " " + getWaktu();
+        try {
+            PreparedStatement stmt = conn.con.prepareStatement(query);
+            stmt.setInt(1, idReq);
+            stmt.setString(2, username);
+            stmt.setString(3, nickname);
+            stmt.setString(4, tanggal);
+            stmt.executeUpdate();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return false;
     }
-    
+
     //get request per User
-    public static ArrayList<FriendRequest> getRequest(String username){
+    public static ArrayList<FriendRequest> getRequest(String username) {
         conn.connect();
         ArrayList<FriendRequest> listReq = new ArrayList<>();
         String query = "SELECT * FROM friend_req where Username = '" + username + "'";
@@ -504,7 +609,7 @@ public class ControllerUser {
         }
         return listReq;
     }
-    
+
     //delete req 
     public static boolean deleteReq(String username, String nickname) {
         conn.connect();

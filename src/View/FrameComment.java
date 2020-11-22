@@ -6,7 +6,9 @@
 package View;
 
 import Controller.ControllerComment;
+import Controller.ControllerPost;
 import Model.Comment;
+import Model.Post;
 import Model.User;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -30,49 +32,54 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author HansNotFound
  */
-public class FrameComment implements ActionListener,ListSelectionListener{
-
+public class FrameComment implements ActionListener, ListSelectionListener {
+    
     JFrame frame_Comment;
     JTextField comments;
-    JButton submit,delete;
+    JButton submit, delete;
     User containUser;
     String nicknameUser, isiComment;
     int IdPost, counter;
     Comment comment = new Comment();
     JList<String> list;
     JScrollPane scrollBar;
-    public FrameComment(User users, int idPost, int counter_post) {
 
+    public FrameComment(User users, int idPost, int counter_post) {
+        
         containUser = users;
         nicknameUser = users.getNickname();
         IdPost = idPost;
         counter = counter_post;
         ArrayList<Comment> listComment = ControllerComment.getListCommentByIDPost(IdPost);
         DefaultListModel<String> l1 = new DefaultListModel<>();
-
+        Post user_yang_ngepost = ControllerPost.getPost(idPost);
         frame_Comment = new JFrame("Comment");
         frame_Comment.setLocationRelativeTo(null);
         frame_Comment.setSize(380, 350);
-
+        
         comments = new JTextField();
         comments.setBounds(30, 50, 300, 30);
-
+        
         submit = new JButton("PostComment");
         submit.setBounds(180, 80, 150, 30);
         submit.addActionListener(this);
-
+        
         delete = new JButton("Delete");
         delete.setEnabled(false);
         delete.setBounds(30, 80, 100, 30);
         delete.addActionListener(this);
         
-        for (int i = 0; i < listComment.size(); i++) {
-            l1.addElement(listComment.get(i).getNicknameComment()+"   "+listComment.get(i).getIsiComment());
+        if (!user_yang_ngepost.getUsername_user().equals(users.getUsername())) {
+            delete.setVisible(false);
         }
-
+        
+        for (int i = 0; i < listComment.size(); i++) {
+            l1.addElement(listComment.get(i).getNicknameComment() + "   " + listComment.get(i).getIsiComment());
+        }
+        
         list = new JList<>(l1);
         list.setBounds(30, 130, 300, 160);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);      
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);        
         list.addListSelectionListener(this);
         
         scrollBar = new JScrollPane(list);
@@ -86,7 +93,7 @@ public class FrameComment implements ActionListener,ListSelectionListener{
         frame_Comment.setLayout(null);
         frame_Comment.setVisible(true);
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
@@ -99,7 +106,7 @@ public class FrameComment implements ActionListener,ListSelectionListener{
                 } else {
                     comment.setIsiComment(isiComment);
                     comment.setNicknameComment(nicknameUser);
-                    comment.setIdComment(Comment.countComment()); 
+                    comment.setIdComment(Comment.countComment());                    
                     boolean insertComment = ControllerComment.insertNewComments(comment, IdPost);
                     if (insertComment) {
                         JOptionPane.showMessageDialog(null, "Comment berhasil di post");
@@ -113,20 +120,20 @@ public class FrameComment implements ActionListener,ListSelectionListener{
             case "Delete":
                 String isiComment = (String) list.getSelectedValue();
                 boolean deleteComment = ControllerComment.deleteComment(isiComment);
-                if(deleteComment){
+                if (deleteComment) {
                     JOptionPane.showMessageDialog(null, "Comment berhasil di hilangkan!");
                     break;
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Comment gagal di hilangkan");
                     break;
-                }                
+                }            
         }
     }
-
+    
     @Override
     public void valueChanged(ListSelectionEvent lse) {
-        if(list.getSelectedIndex() > -1){
-             delete.setEnabled(true);
+        if (list.getSelectedIndex() > -1) {
+            delete.setEnabled(true);
         }
     }
 }

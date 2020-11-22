@@ -67,7 +67,7 @@ public class Comment {
         if(listComment.isEmpty()){
             return 0;
         }else{
-            count = listComment.get(listComment.size()-1).getIdComment()+listComment.size();
+            count = listComment.get(listComment.size()-1).getIdComment()+1;
         }
         return count;
     }

@@ -46,6 +46,7 @@ public class ControllerComment {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 Comment comment = new Comment();
+                comment.setIdComment(rs.getInt("idComment"));
                 comment.setIsiComment(rs.getString("isiComment"));
                 comment.setNicknameComment(rs.getString("nicknameCommentar"));
                 comments.add(comment);
