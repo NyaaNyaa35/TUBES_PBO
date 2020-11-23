@@ -5,11 +5,13 @@
  */
 package View;
 
+import Controller.ControllerComment;
 import Controller.ControllerLike;
 import Controller.ControllerPost;
 import Controller.ControllerUser;
 import Controller.Interface;
 import Model.Admin;
+import Model.Comment;
 import Model.Liker;
 import Model.Person;
 import Model.User;
@@ -38,6 +40,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 /**
  *
  * @author HansNotFound
@@ -46,14 +56,18 @@ public class TimeLine extends JFrame implements Interface {
 
     JFrame frame_TimeLine;
     JButton button_Next, button_Prev, button_Upload, button_DeletePost, button_DeleteUser,
-            button_LogOut, button_SeeComment, button_Like, button_Profile, button_Delete, button_KumulatifLike;
-    JLabel label_NicknameUser, label_NicknamePoster, label_Caption, panel_Gambar, label_KumulatifLike,
+            button_LogOut, button_SeeComment, button_Like, button_Profile, button_Delete, button_KumulatifLike, submit, delete;
+    JLabel label_NicknameUser, label_NicknamePoster, label_Caption, panel_Gambar,label_KumulatifLike,
             tempat_gambar;
     String test = "Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick Eko Prasetyo Hans Patrick";
+    JTextField comments;
     String Nicknamepost = "";
     String strCaption = "";
-    String imagePath;
+    String imagePath, nicknameUser, isiComment;
     Admin admin;
+    Comment comment = new Comment();
+    JList<String> list;
+    JFrame frame_Comment = new JFrame("Comment");
     int counter, idPost, jumlahLike, totalLike, cekLike = 0;
 
     public TimeLine(Person person, int counter_post) {
@@ -303,7 +317,11 @@ public class TimeLine extends JFrame implements Interface {
         }
     }
 
-    class Action implements ActionListener {
+
+
+
+
+    class Action implements ActionListener,ListSelectionListener {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
@@ -322,17 +340,57 @@ public class TimeLine extends JFrame implements Interface {
                 case "Prev Post":
                     frame_TimeLine.setVisible(false);
                     new TimeLine(UserManager.getInstance().getUser(), counter - 1);
+                    frame_Comment.setVisible(false);
                     break;
                 case "Next Post":
                     frame_TimeLine.setVisible(false);
                     new TimeLine(UserManager.getInstance().getUser(), counter + 1);
+                    frame_Comment.setVisible(false);
                     break;
                 case "UploadPost":
                     frame_TimeLine.setVisible(false);
                     new CreatePost(UserManager.getInstance().getUser(), counter);
                     break;
                 case "Comment":
-                    new FrameComment(UserManager.getInstance().getUser(), idPost, (counter - 1));
+                    ArrayList<Comment> listComment = ControllerComment.getListCommentByIDPost(idPost);
+                    DefaultListModel<String> l1 = new DefaultListModel<>();
+                    Post user_yang_ngepost = ControllerPost.getPost(idPost);
+
+                    frame_Comment.setLocationRelativeTo(null);
+                    frame_Comment.setSize(380, 350);
+
+                    comments = new JTextField();
+                    comments.setBounds(30, 50, 300, 30);
+
+                    submit = new JButton("PostComment");
+                    submit.setBounds(180, 80, 150, 30);
+                    submit.addActionListener(this);
+
+                    delete = new JButton("Delete");
+                    delete.setEnabled(false);
+                    delete.setBounds(30, 80, 100, 30);
+                    delete.addActionListener(this);
+
+                    if (!user_yang_ngepost.getUsername_user().equals(UserManager.getInstance().getUser().getUsername())) {
+                        delete.setVisible(false);
+                    }
+
+                    for (int i = 0; i < listComment.size(); i++) {
+                        l1.addElement(listComment.get(i).getNicknameComment() + "   " + listComment.get(i).getIsiComment());
+                    }
+
+                    list = new JList<>(l1);
+                    list.setBounds(30, 130, 300, 160);
+                    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);        
+                    list.addListSelectionListener(this);
+        
+                    frame_Comment.add(delete);
+                    frame_Comment.add(comments);
+                    frame_Comment.add(submit);
+                    frame_Comment.add(list);
+
+                    frame_Comment.setLayout(null);
+                    frame_Comment.setVisible(true);
                     break;
                 case "CommentAdmin":
                     new FrameComment(admin, idPost, (counter - 1));
@@ -388,9 +446,50 @@ public class TimeLine extends JFrame implements Interface {
                     ArrayList<Liker> listLiker = ControllerLike.getLiker(idPost);
                     new FrameLiker(listLiker);
                     break;
+                case "PostComment":
+                    isiComment = comments.getText();
+                    if (isiComment.equals("")) {
+                        JOptionPane.showMessageDialog(null, "Comment masih kosong!!", "Error", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    } else {
+                        comment.setIsiComment(isiComment);
+                        comment.setNicknameComment(UserManager.getInstance().getUser().getNickname());
+                        comment.setIdComment(Comment.countComment());                    
+                        boolean insertComment = ControllerComment.insertNewComments(comment, idPost);
+                        if (insertComment) {
+                            JOptionPane.showMessageDialog(null, "Comment berhasil di post");
+                            frame_Comment.setVisible(false);
+                            frame_TimeLine.setVisible(false);
+                            new TimeLine(UserManager.getInstance().getUser(),counter);
+                            break;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Comment gagal di post");
+                            break;
+                        }
+                    }
+                case "Delete":
+                    String isiComment = (String) list.getSelectedValue();
+                    boolean deleteComment = ControllerComment.deleteComment(isiComment);
+                    if (deleteComment) {
+                        JOptionPane.showMessageDialog(null, "Comment berhasil di hilangkan!");
+                        frame_Comment.setVisible(false);
+                        frame_TimeLine.setVisible(false);
+                        new TimeLine(UserManager.getInstance().getUser(),counter);
+                        break;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Comment gagal di hilangkan");
+                        break;
+                    }                      
                 default:
                     break;
             }
+        }
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            if (list.getSelectedIndex() > -1) {
+                delete.setEnabled(true);
+            }  
         }
     }
 
