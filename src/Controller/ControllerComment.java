@@ -76,8 +76,8 @@ public class ControllerComment {
     
     public static boolean deleteComment(String comment) {
         conn.connect();
-
-        String query = "DELETE FROM comment WHERE isiComment='" + comment + "'";
+        String[] isiComment = comment.split("   ");
+        String query = "DELETE FROM comment WHERE isiComment='" + isiComment[1] + "'";
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);

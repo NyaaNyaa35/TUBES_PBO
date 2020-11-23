@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.ControllerComment;
 import Controller.ControllerPost;
 import Controller.ControllerUser;
 import Controller.Interface;
@@ -27,15 +28,20 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -45,14 +51,18 @@ public class ViewPost extends JFrame {
 
     JFrame frame;
     JButton button_Next, button_Prev, button_Upload, button_DeletePost, button_DeleteUser,
-            button_LogOut, button_SeeComment, button_Like, button_Profile, button_mainmenu;
+            button_LogOut, button_SeeComment, button_Like, button_Profile, button_mainmenu, submit,delete;
     JLabel label_NicknameUser, label_NicknamePoster, label_KumulatifLike, label_Caption, panel_Gambar,
             tempat_gambar;
     String Nicknamepost = "";
     String strCaption = "";
+    String isiComment;
     int counter,idPost,likeCount;
     User user_global;
-
+    JList list;
+    JTextField comments;
+    Comment comment = new Comment();
+    JFrame frame_Comment = new JFrame("Comment");
     public ViewPost(User user, int counter_post) {
         UserManager.getInstance().setUser(user);
         ArrayList<Post> listPost = ControllerPost.getListPostByUser(UserManager.getInstance().getUser().getUsername());
@@ -165,7 +175,7 @@ public class ViewPost extends JFrame {
         return dimg;
     }
 
-    class Action implements ActionListener {
+    class Action implements ActionListener,ListSelectionListener {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
@@ -181,7 +191,45 @@ public class ViewPost extends JFrame {
                     new ViewPost(UserManager.getInstance().getUser(), counter + 1);
                     break;
                 case"Comment":
-                    new FrameComment(UserManager.getInstance().getUser(),idPost,(counter-1));
+                    ArrayList<Comment> listComment = ControllerComment.getListCommentByIDPost(idPost);
+                    DefaultListModel<String> l1 = new DefaultListModel<>();
+                    Post user_yang_ngepost = ControllerPost.getPost(idPost);
+
+                    frame_Comment.setLocationRelativeTo(null);
+                    frame_Comment.setSize(380, 350);
+
+                    comments = new JTextField();
+                    comments.setBounds(30, 50, 300, 30);
+
+                    submit = new JButton("PostComment");
+                    submit.setBounds(180, 80, 150, 30);
+                    submit.addActionListener(this);
+
+                    delete = new JButton("Delete");
+                    delete.setEnabled(false);
+                    delete.setBounds(30, 80, 100, 30);
+                    delete.addActionListener(this);
+
+                    if (!user_yang_ngepost.getUsername_user().equals(UserManager.getInstance().getUser().getUsername())) {
+                        delete.setVisible(false);
+                    }
+
+                    for (int i = 0; i < listComment.size(); i++) {
+                        l1.addElement(listComment.get(i).getNicknameComment() + "   " + listComment.get(i).getIsiComment());
+                    }
+
+                    list = new JList<>(l1);
+                    list.setBounds(30, 130, 300, 160);
+                    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);        
+                    list.addListSelectionListener(this);
+        
+                    frame_Comment.add(delete);
+                    frame_Comment.add(comments);
+                    frame_Comment.add(submit);
+                    frame_Comment.add(list);
+
+                    frame_Comment.setLayout(null);
+                    frame_Comment.setVisible(true);
                     break;
                 case "DeletePost":
                     int status = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mendelete post ini?");
@@ -209,9 +257,50 @@ public class ViewPost extends JFrame {
                     frame.setVisible(false);
                     new TimeLine(user_global,1);
                     break;
+                case "PostComment":
+                    isiComment = comments.getText();
+                    if (isiComment.equals("")) {
+                        JOptionPane.showMessageDialog(null, "Comment masih kosong!!", "Error", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    } else {
+                        comment.setIsiComment(isiComment);
+                        comment.setNicknameComment(UserManager.getInstance().getUser().getNickname());
+                        comment.setIdComment(Comment.countComment());                    
+                        boolean insertComment = ControllerComment.insertNewComments(comment, idPost);
+                        if (insertComment) {
+                            JOptionPane.showMessageDialog(null, "Comment berhasil di post");
+                            frame_Comment.setVisible(false);
+                            frame.setVisible(false);
+                            new ViewPost(UserManager.getInstance().getUser(),counter);
+                            break;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Comment gagal di post");
+                            break;
+                        }
+                    }
+                case "Delete":
+                    String isiComment = (String) list.getSelectedValue();
+                    boolean deleteComment = ControllerComment.deleteComment(isiComment);
+                    if (deleteComment) {
+                        JOptionPane.showMessageDialog(null, "Comment berhasil di hilangkan!");
+                        frame_Comment.setVisible(false);
+                        frame.setVisible(false);
+                        new ViewPost(UserManager.getInstance().getUser(),counter);
+                        break;
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Comment gagal di hilangkan");
+                        break;
+                    }                      
                 default:
                     break;
             }
+        }
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            if (list.getSelectedIndex() > -1) {
+                delete.setEnabled(true);
+            }  
         }
     }
 }

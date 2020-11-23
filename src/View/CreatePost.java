@@ -180,4 +180,7 @@ public class CreatePost extends JFrame implements ActionListener{
         return dimg;
     }
     
+    public void closeFrame(){
+        frame.setVisible(false);
+    }
 }
