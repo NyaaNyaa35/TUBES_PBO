@@ -93,7 +93,7 @@ public class TimeLine extends JFrame implements Interface {
             frame_TimeLine.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
             label_NicknameUser = new JLabel(UserManager.getInstance().getUser().getNickname());
-            label_NicknameUser.setBounds(75, 20, 200, 30);
+            label_NicknameUser.setBounds(75, 20, frame_TimeLine.getWidth() - (frame_TimeLine.getWidth() - 200), frame_TimeLine.getHeight() - (frame_TimeLine.getHeight() - 30));
             label_NicknameUser.setFont(new Font("Serif", 0, 15));
 
             button_Profile = new JButton();
@@ -126,6 +126,7 @@ public class TimeLine extends JFrame implements Interface {
             button_SeeComment = new JButton("Comment");
             button_SeeComment.setBounds(460, 545, 100, 30);
             button_SeeComment.addActionListener(action);
+            button_SeeComment.setEnabled(false);
 
             button_Upload = new JButton("UploadPost");
             button_Upload.setBounds(240, 610, 100, 30);
@@ -154,9 +155,9 @@ public class TimeLine extends JFrame implements Interface {
                 BufferedImage loadImg = loadImage(listPost.get(counter_post - 1).getImagepath());
                 ImageIcon imageIcon = new ImageIcon(resize(loadImg, tempat_gambar.getWidth() - 5, tempat_gambar.getHeight() - 5));
                 tempat_gambar.setIcon(imageIcon);
+                button_SeeComment.setEnabled(true);
             }
-            
-            
+
             Icon iconLove = new ImageIcon("src/Image/loveimage.png");
 
             button_KumulatifLike = new JButton(iconLove);
@@ -167,16 +168,16 @@ public class TimeLine extends JFrame implements Interface {
             button_KumulatifLike.setOpaque(false);
             button_KumulatifLike.setActionCommand("seeLiker");
             button_KumulatifLike.addActionListener(action);
-            
-            label_KumulatifLike = new JLabel(""+totalLike);
+
+            label_KumulatifLike = new JLabel("" + totalLike);
             label_KumulatifLike.setBounds(100, 555, 50, 30);
-            
+
             Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
             button_Like = new JButton(iconLike);
             button_Like.setActionCommand("Like");
             button_Like.addActionListener(action);
             button_Like.setBounds(20, 540, 40, 40);
-            if (cekLike > 0 || counter_post ==0) {
+            if (cekLike > 0 || counter_post == 0) {
                 button_Like.setEnabled(false);
             }
 
@@ -237,6 +238,7 @@ public class TimeLine extends JFrame implements Interface {
             button_SeeComment.setBounds(460, 545, 100, 30);
             button_SeeComment.addActionListener(action);
             button_SeeComment.setActionCommand("CommentAdmin");
+            button_SeeComment.setEnabled(false);
 
             button_DeleteUser = new JButton("List User");
             button_DeleteUser.setBounds(245, 20, 100, 30);
@@ -249,6 +251,7 @@ public class TimeLine extends JFrame implements Interface {
             button_Delete = new JButton("DeletePost");
             button_Delete.setBounds(240, 610, 100, 30);
             button_Delete.addActionListener(action);
+            button_Delete.setEnabled(false);
 
             panel_Gambar = new JLabel();
             panel_Gambar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -260,7 +263,6 @@ public class TimeLine extends JFrame implements Interface {
             tempat_gambar.setBounds(panel_Gambar.getLocation().x + 5, panel_Gambar.getLocation().y + 5, 545, 415);
             tempat_gambar.setAlignmentY(CENTER_ALIGNMENT);
 
-            int jumlahLike = 0;
             if (counter_post != 0) {
                 jumlahLike = allpost.get(counter_post - 1).getJumlahLike();
                 Nicknamepost = allpost.get(counter_post - 1).getPostNickname();
@@ -269,6 +271,8 @@ public class TimeLine extends JFrame implements Interface {
                 BufferedImage loadImg = loadImage(allpost.get(counter_post - 1).getImagepath());
                 ImageIcon imageIcon = new ImageIcon(resize(loadImg, tempat_gambar.getWidth() - 5, tempat_gambar.getHeight() - 5));
                 tempat_gambar.setIcon(imageIcon);
+                button_Delete.setEnabled(true);
+                button_SeeComment.setEnabled(true);
             }
 
             Icon iconLike = new ImageIcon("src/Image/Like_Image.png");
@@ -278,13 +282,23 @@ public class TimeLine extends JFrame implements Interface {
             button_Like.setBounds(20, 540, 40, 40);
 
             label_NicknamePoster = new JLabel(Nicknamepost);
-            label_NicknamePoster.setBounds(65, 540, 200, 20);
+            label_NicknamePoster.setBounds(30, 540, 200, 20);
 
             label_Caption = new JLabel(strCaption);
             label_Caption.setBounds(25, 505, 550, 30);
 
-            button_KumulatifLike = new JButton("Like = " + jumlahLike);
-            button_KumulatifLike.setBounds(65, 555, 50, 30);
+            Icon iconLove = new ImageIcon("src/Image/loveimage.png");
+            button_KumulatifLike = new JButton(iconLove);
+            button_KumulatifLike.setBounds(30, 555, 30, 30);
+            button_KumulatifLike.setFocusPainted(false);
+            button_KumulatifLike.setBorderPainted(false);
+            button_KumulatifLike.setContentAreaFilled(false);
+            button_KumulatifLike.setOpaque(false);
+            button_KumulatifLike.setActionCommand("seeLiker");
+            button_KumulatifLike.addActionListener(action);
+
+            label_KumulatifLike = new JLabel("" + totalLike);
+            label_KumulatifLike.setBounds(65, 555, 50, 30);
 
             frame_TimeLine.add(button_DeleteUser);
             frame_TimeLine.add(tempat_gambar);
@@ -378,10 +392,9 @@ public class TimeLine extends JFrame implements Interface {
                     frame_Comment.setLayout(null);
                     frame_Comment.setVisible(true);
                     break;
-//                case"CommentAdmin":
-//                    frame_TimeLine.setVisible(false);
-//                    new FrameComment(admin,listpost.get(counter-1).getIdPost(),(counter-1));
-//                    break; 
+                case "CommentAdmin":
+                    new FrameComment(admin, idPost, (counter - 1));
+                    break;
                 case "ViewProfile":
                     frame_TimeLine.setVisible(false);
                     new ViewProfile(UserManager.getInstance().getUser(), counter);

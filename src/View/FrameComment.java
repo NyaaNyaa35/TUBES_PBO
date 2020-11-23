@@ -7,7 +7,9 @@ package View;
 
 import Controller.ControllerComment;
 import Controller.ControllerPost;
+import Model.Admin;
 import Model.Comment;
+import Model.Person;
 import Model.Post;
 import Model.User;
 import java.awt.Color;
@@ -33,7 +35,7 @@ import javax.swing.event.ListSelectionListener;
  * @author HansNotFound
  */
 public class FrameComment implements ActionListener, ListSelectionListener {
-    
+
     JFrame frame_Comment;
     JTextField comments;
     JButton submit, delete;
@@ -43,57 +45,92 @@ public class FrameComment implements ActionListener, ListSelectionListener {
     Comment comment = new Comment();
     JList<String> list;
     JScrollPane scrollBar;
+    User users;
+    Admin admin;
 
-    public FrameComment(User users, int idPost, int counter_post) {
-        
-        containUser = users;
-        nicknameUser = users.getNickname();
-        IdPost = idPost;
-        counter = counter_post;
-        ArrayList<Comment> listComment = ControllerComment.getListCommentByIDPost(IdPost);
-        DefaultListModel<String> l1 = new DefaultListModel<>();
-        Post user_yang_ngepost = ControllerPost.getPost(idPost);
-        frame_Comment = new JFrame("Comment");
-        frame_Comment.setLocationRelativeTo(null);
-        frame_Comment.setSize(380, 350);
-        
-        comments = new JTextField();
-        comments.setBounds(30, 50, 300, 30);
-        
-        submit = new JButton("PostComment");
-        submit.setBounds(180, 80, 150, 30);
-        submit.addActionListener(this);
-        
-        delete = new JButton("Delete");
-        delete.setEnabled(false);
-        delete.setBounds(30, 80, 100, 30);
-        delete.addActionListener(this);
-        
-        if (!user_yang_ngepost.getUsername_user().equals(users.getUsername())) {
-            delete.setVisible(false);
+    public FrameComment(Person person, int idPost, int counter_post) {
+
+        if (person instanceof User) {
+            users = (User) person;
+            containUser = users;
+            nicknameUser = users.getNickname();
+            IdPost = idPost;
+            counter = counter_post;
+            ArrayList<Comment> listComment = ControllerComment.getListCommentByIDPost(IdPost);
+            DefaultListModel<String> l1 = new DefaultListModel<>();
+            Post user_yang_ngepost = ControllerPost.getPost(idPost);
+            frame_Comment = new JFrame("Comment");
+            frame_Comment.setLocationRelativeTo(null);
+            frame_Comment.setSize(380, 350);
+
+            comments = new JTextField();
+            comments.setBounds(30, 50, 300, 30);
+
+            submit = new JButton("PostComment");
+            submit.setBounds(180, 80, 150, 30);
+            submit.addActionListener(this);
+
+            delete = new JButton("Delete");
+            delete.setEnabled(false);
+            delete.setBounds(30, 80, 100, 30);
+            delete.addActionListener(this);
+
+            if (!user_yang_ngepost.getUsername_user().equals(users.getUsername())) {
+                delete.setVisible(false);
+            }
+
+            for (int i = 0; i < listComment.size(); i++) {
+                l1.addElement(listComment.get(i).getNicknameComment() + "   " + listComment.get(i).getIsiComment());
+            }
+
+            list = new JList<>(l1);
+            list.setBounds(30, 130, 300, 160);
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.addListSelectionListener(this);
+
+            scrollBar = new JScrollPane(list);
+            frame_Comment.getContentPane().add(scrollBar);
+
+            frame_Comment.add(delete);
+            frame_Comment.add(comments);
+            frame_Comment.add(submit);
+            frame_Comment.add(list);
+
+            frame_Comment.setLayout(null);
+            frame_Comment.setVisible(true);
+        } else if (person instanceof Admin) {
+            admin = (Admin) person;
+            IdPost = idPost;
+            counter = counter_post;
+            ArrayList<Comment> listComment = ControllerComment.getListCommentByIDPost(IdPost);
+            DefaultListModel<String> l1 = new DefaultListModel<>();
+            Post user_yang_ngepost = ControllerPost.getPost(idPost);
+            frame_Comment = new JFrame("Comment");
+            frame_Comment.setLocationRelativeTo(null);
+            frame_Comment.setSize(380, 350);
+
+            for (int i = 0; i < listComment.size(); i++) {
+                l1.addElement(listComment.get(i).getNicknameComment() + "   " + listComment.get(i).getIsiComment());
+            }
+            delete = new JButton("Delete");
+            delete.setBounds(30, 10, 100, 30);
+            delete.addActionListener(this);
+            
+            list = new JList<>(l1);
+            list.setBounds(30, 50, 300, 230);
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.addListSelectionListener(this);
+
+            scrollBar = new JScrollPane(list);
+            frame_Comment.getContentPane().add(scrollBar);
+            frame_Comment.add(delete);
+            frame_Comment.add(list);
+            
+            frame_Comment.setLayout(null);
+            frame_Comment.setVisible(true);
         }
-        
-        for (int i = 0; i < listComment.size(); i++) {
-            l1.addElement(listComment.get(i).getNicknameComment() + "   " + listComment.get(i).getIsiComment());
-        }
-        
-        list = new JList<>(l1);
-        list.setBounds(30, 130, 300, 160);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);        
-        list.addListSelectionListener(this);
-        
-        scrollBar = new JScrollPane(list);
-        frame_Comment.getContentPane().add(scrollBar);
-        
-        frame_Comment.add(delete);
-        frame_Comment.add(comments);
-        frame_Comment.add(submit);
-        frame_Comment.add(list);
-        
-        frame_Comment.setLayout(null);
-        frame_Comment.setVisible(true);
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
@@ -106,7 +143,7 @@ public class FrameComment implements ActionListener, ListSelectionListener {
                 } else {
                     comment.setIsiComment(isiComment);
                     comment.setNicknameComment(nicknameUser);
-                    comment.setIdComment(Comment.countComment());                    
+                    comment.setIdComment(Comment.countComment());
                     boolean insertComment = ControllerComment.insertNewComments(comment, IdPost);
                     if (insertComment) {
                         JOptionPane.showMessageDialog(null, "Comment berhasil di post");
@@ -126,10 +163,10 @@ public class FrameComment implements ActionListener, ListSelectionListener {
                 } else {
                     JOptionPane.showMessageDialog(null, "Comment gagal di hilangkan");
                     break;
-                }            
+                }
         }
     }
-    
+
     @Override
     public void valueChanged(ListSelectionEvent lse) {
         if (list.getSelectedIndex() > -1) {

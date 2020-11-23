@@ -39,7 +39,6 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (2,'Klee','HansNotFound35',4),(3,'Kawaii Klee','HansNotFound35',5),(4,'Klee THOLLOL','Test',4);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +90,6 @@ CREATE TABLE `liker` (
 
 LOCK TABLES `liker` WRITE;
 /*!40000 ALTER TABLE `liker` DISABLE KEYS */;
-INSERT INTO `liker` VALUES ('Test',4),('Test',7),('Hance',7),('Ance',7),('Ance',4),('Ance',6),('Ance',5),('THOLLOL',4),('THOLLOL',6);
 /*!40000 ALTER TABLE `liker` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +116,6 @@ CREATE TABLE `list_teman` (
 
 LOCK TABLES `list_teman` WRITE;
 /*!40000 ALTER TABLE `list_teman` DISABLE KEYS */;
-INSERT INTO `list_teman` VALUES (1,'Hans','Test'),(2,'test','HansNotFound'),(3,'123','HansNotFound'),(4,'Hans','Hance'),(5,'1234','Test'),(6,'test','Ance'),(7,'123','Ance'),(8,'1234','Hance'),(9,'Hans','Ance'),(10,'1234','HansNotFound');
 /*!40000 ALTER TABLE `list_teman` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +139,6 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES ('123','123'),('1234','1234'),('Hans','123'),('test','123');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,7 +169,6 @@ CREATE TABLE `postingan` (
 
 LOCK TABLES `postingan` WRITE;
 /*!40000 ALTER TABLE `postingan` DISABLE KEYS */;
-INSERT INTO `postingan` VALUES (4,'test','HAHA','C:\\Users\\HansNotFound\\Documents\\Kawaii_test_foto.jpg',6,'2020-11-19','Test'),(5,'123','Hance#1','C:\\Users\\HansNotFound\\Downloads\\1109311.jpg',1,'2020-11-19','Hance'),(6,'test','BAPAK','C:\\Users\\HansNotFound\\Documents\\Tanda_tangan_bapak.png',3,'2020-11-20','Test'),(7,'1234','asdawsd','C:\\Users\\HansNotFound\\Documents\\Kawaii_test_foto.jpg',3,'2020-11-20','Ance');
 /*!40000 ALTER TABLE `postingan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -203,7 +198,6 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Hans','HansNotFound','hans@gmail.com',3,'src/Image/default_profile_pict.png'),(2,'test','Test','test@gmail.com',2,'src/Image/default_profile_pict.png'),(3,'123','Hance','123@gmail.com',2,'src/Image/default_profile_pict.png'),(4,'1234','Ance','1234@gmail.com',3,'src/Image/default_profile_pict.png');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -216,4 +210,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-11-22 12:31:09
+-- Dump completed on 2020-11-22 12:45:38
