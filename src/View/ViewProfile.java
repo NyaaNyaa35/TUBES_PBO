@@ -26,6 +26,8 @@ import Model.Teman;
 import Model.UserManager;
 import static View.TimeLine.loadImage;
 import static View.TimeLine.resize;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -34,6 +36,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -41,7 +50,7 @@ import javax.imageio.ImageIO;
  */
 public class ViewProfile extends JFrame implements ActionListener {
 
-    JFrame frame_Profile;
+    JFrame frame_Profile, frame_friendList = new JFrame(), frame_friendReq = new JFrame();
     JLabel label_Nickname, label_Email, label_ProfilePict, label_KeteranganPict;
     JFileChooser file_ProfilePict;
     JButton button_back, button_RecoverPassword, button_Save, button_seeTeman,
@@ -52,8 +61,15 @@ public class ViewProfile extends JFrame implements ActionListener {
     int counter;
     File fileFoto;
     String pathFoto, oldNick;
-    FrameFriendReq frameFriendReq = null;
-    SeeFriend seeFriend = null;
+    JList<String> listUser;
+    JScrollPane sc;
+    JList<String> list_request;
+    JButton button_acc;
+    JTextField TF_NicknameTerpilih;
+    JScrollPane scrollpane;
+    JPanel panel;
+    User user_global;
+    String[] kolom = {"Nickname User"};
 
     public ViewProfile(User users, int counter_post) {
         VP(users, counter_post);
@@ -151,6 +167,71 @@ public class ViewProfile extends JFrame implements ActionListener {
         frame_Profile.setVisible(true);
     }
 
+    void seeFriend(User user) {
+        frame_friendList.setLocationRelativeTo(null);
+        frame_friendList.setSize(300, 155);
+        frame_friendList.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame_friendList.setTitle("Friend List");
+        frame_friendList.setVisible(true);
+
+        ArrayList<Teman> listTeman = ControllerUser.getTeman(user.getUsername());
+        DefaultListModel<String> lm = new DefaultListModel<>();
+        for (int i = 0; i < listTeman.size(); i++) {
+            lm.addElement(listTeman.get(i).getNickname_teman());
+        }
+        listUser = new JList<>(lm);
+        listUser.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        sc = new JScrollPane(listUser);
+        frame_friendList.add(sc);
+    }
+
+    void FriendReq(User user) {
+        frame_friendReq.setLocationRelativeTo(null);
+        frame_friendReq.setSize(400, 255);
+        frame_friendReq.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame_friendReq.setTitle("Friend Request");
+        user_global = user;
+        ListEvent le = new ListEvent();
+        ArrayList<FriendRequest> listReq = ControllerUser.getRequest(user.getUsername());
+        DefaultListModel<String> ll = new DefaultListModel<>();
+        for (int i = 0; i < listReq.size(); i++) {
+            ll.addElement(listReq.get(i).getNickname_request());
+        }
+        list_request = new JList<>(ll);
+        list_request.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list_request.addListSelectionListener(le);
+
+        scrollpane = new JScrollPane(list_request);
+        frame_friendReq.add(scrollpane);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+        TF_NicknameTerpilih = new JTextField();
+        TF_NicknameTerpilih.setEnabled(false);
+        TF_NicknameTerpilih.setPreferredSize(new Dimension(getWidth() - 150, 30));
+        panel.add(TF_NicknameTerpilih);
+
+        button_acc = new JButton("Accept");
+        button_acc.setPreferredSize(new Dimension(getWidth() - (getWidth() - 100), 30));
+        button_acc.addActionListener(this);
+        panel.add(button_acc);
+
+        frame_friendReq.add(panel, "South");
+        frame_friendReq.setVisible(true);
+    }
+
+    class ListEvent implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            if (list_request.getSelectedIndex() > -1) {
+                TF_NicknameTerpilih.setText(list_request.getSelectedValue().toString());
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
@@ -169,11 +250,17 @@ public class ViewProfile extends JFrame implements ActionListener {
                     }
                     if (listPostTeman.isEmpty()) {
                         TimeLine timeLine = new TimeLine(user, 0);
+                        frame_friendReq.setVisible(false);
+                        frame_friendList.setVisible(false);
                     } else {
                         TimeLine timeLine = new TimeLine(user, 1);
+                        frame_friendReq.setVisible(false);
+                        frame_friendList.setVisible(false);
                     }
                 } else {
                     TimeLine timeLine = new TimeLine(user, 1);
+                    frame_friendReq.setVisible(false);
+                    frame_friendList.setVisible(false);
                 }
                 break;
             case "Save":
@@ -190,6 +277,8 @@ public class ViewProfile extends JFrame implements ActionListener {
                                         JOptionPane.showMessageDialog(null, "Vertified!, Silahkan ReLogin!", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
                                         frame_Profile.setVisible(false);
                                         new LoginScreen();
+                                        frame_friendReq.setVisible(false);
+                                        frame_friendList.setVisible(false);
                                     }
 
                                 }
@@ -203,6 +292,8 @@ public class ViewProfile extends JFrame implements ActionListener {
             case "Recover Password":
                 frame_Profile.setVisible(false);
                 FormRecover formRecover = new FormRecover();
+                frame_friendReq.setVisible(false);
+                frame_friendList.setVisible(false);
                 break;
             case "Add Friend":
                 String nick = JOptionPane.showInputDialog("Silahkan masukkan Nickname user = ");
@@ -250,6 +341,8 @@ public class ViewProfile extends JFrame implements ActionListener {
                     if (ControllerUser.addRequest(user_teman.getUsername(), user.getNickname())) {
                         frame_Profile.setVisible(false);
                         ViewProfile viewProfile = new ViewProfile(user, counter);
+                        frame_friendReq.setVisible(false);
+                        frame_friendList.setVisible(false);
                         JOptionPane.showMessageDialog(null, "Request telah terkirim!!");
                     } else {
                         JOptionPane.showMessageDialog(null, "Add Teman GAGAL!!",
@@ -263,10 +356,10 @@ public class ViewProfile extends JFrame implements ActionListener {
                 }
 
             case "Friend Request":
-                new FrameFriendReq(user);
+                FriendReq(user);
                 break;
             case "SeeFriend":
-                new SeeFriend(user);
+                seeFriend(user);
                 break;
             case "View Post":
                 frame_Profile.setVisible(false);
@@ -276,6 +369,8 @@ public class ViewProfile extends JFrame implements ActionListener {
                 } else {
                     new ViewPost(user, 1);
                 }
+                frame_friendReq.setVisible(false);
+                frame_friendList.setVisible(false);
                 break;
             case "Choose File":
                 file_ProfilePict = new JFileChooser();
@@ -284,7 +379,8 @@ public class ViewProfile extends JFrame implements ActionListener {
                     int option = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mengganti gambar profile anda?");
                     if (option == JOptionPane.YES_OPTION) {
                         fileFoto = file_ProfilePict.getSelectedFile();
-                        String defaultParent = "src/Image/Profile_Pict_EXAMPLE_LOL";
+                        String defaultParent = "src/Image/Profile_Pict_EXAMPLE_LOL/";
+//                        String defaultParent = fileFoto.getParent();
                         String getName = fileFoto.getName();
                         System.out.println(getName);
                         pathFoto = defaultParent + getName;
@@ -293,12 +389,34 @@ public class ViewProfile extends JFrame implements ActionListener {
                             JOptionPane.showMessageDialog(null, "Update berhasil! Silahkan ReLogin");
                             frame_Profile.setVisible(false);
                             new LoginScreen();
+                            frame_friendReq.setVisible(false);
+                            frame_friendList.setVisible(false);
                         }
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "No File Selected!!", "Alert", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
+            case "Accept":
+                String nickname = TF_NicknameTerpilih.getText();
+                if (nickname.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Silahkan pilih nickname!", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                } else {
+                    int statuss = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin menambahkan");
+                    if (statuss == JOptionPane.YES_OPTION) {
+                        if (ControllerUser.addFriend(user_global, nickname)) {
+                            JOptionPane.showMessageDialog(null, "Sekarang " + nickname + " sudah menjadi teman anda!");
+                            ControllerUser.deleteReq(user_global.getUsername(), nickname);
+                            frame_friendList.setVisible(false);
+                            break;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Add Teman GAGAL!!", "Error", JOptionPane.ERROR_MESSAGE);
+                            break;
+                        }
+                    }
+                    break;
+                }
             default:
                 break;
         }

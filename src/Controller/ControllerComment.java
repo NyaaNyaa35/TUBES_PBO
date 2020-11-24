@@ -19,6 +19,8 @@ import java.util.ArrayList;
  * @author User
  */
 public class ControllerComment {
+    
+    //mengambil data comment base on idPost
     public static ArrayList<Comment> getListCommentByIDPost(int idPost){
         conn.connect();
         ArrayList<Comment> listComment = new ArrayList<>();
@@ -37,6 +39,8 @@ public class ControllerComment {
         }
         return listComment;
     }
+    
+    //mengambil semua data comment dari tabel 
     public static ArrayList<Comment> getAllComments() {
         ArrayList<Comment> comments = new ArrayList<>();
         conn.connect();
@@ -56,7 +60,8 @@ public class ControllerComment {
         }
         return (comments);
     }
-        
+    
+    //memasukkan data comment baru ke database tabel comment
     public static boolean insertNewComments(Comment comment, int idPost){
         conn.connect();
         String query_InsertToComment = "INSERT INTO comment VALUES(?,?,?,?)";
@@ -74,10 +79,12 @@ public class ControllerComment {
         return false;
     }
     
+    //delete data comment dari tabel comment
     public static boolean deleteComment(String comment) {
         conn.connect();
-        String[] isiComment = comment.split("   ");
-        String query = "DELETE FROM comment WHERE isiComment='" + isiComment[1] + "'";
+        String[] kata = comment.split("   ");
+        String query = "DELETE FROM comment WHERE isiComment='" + kata[1] + "'";
+        System.out.println(kata[1]);
         try {
             Statement stmt = conn.con.createStatement();
             stmt.executeUpdate(query);

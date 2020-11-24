@@ -78,7 +78,9 @@ public class ControllerUser {
         try {
             Statement stmt = conn.con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            pass = rs.getString("Password");
+            while(rs.next()){
+                pass = rs.getString("Password");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
