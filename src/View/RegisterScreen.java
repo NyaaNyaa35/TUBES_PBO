@@ -145,31 +145,33 @@ public class RegisterScreen extends JFrame implements ActionListener {
                                 new RegisterScreen(Username, Nickname, Email);
                                 break;
                             }
-                        } else {
-                            boolean insert_berhasil;
-                            if (valid || listUser.isEmpty()) {
-                                User user = new User();
-                                user.setNickname(Nickname);
-                                user.setUsername(Username);
-                                user.setPassword(Password);
-                                user.setJumlahTeman(0);
-                                user.setProfilePict(pathDefaultProfilePict);
-                                user.setEmail(Email);
-                                insert_berhasil = ControllerUser.insertNewUser(user);
-                                if (insert_berhasil) {
-                                    JOptionPane.showMessageDialog(null, "Register Berhasil, Anda akan dialihkan ke Login Screen!");
-                                    frame.setVisible(false);
-                                    new LoginScreen();
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Register Gagal!");
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Register tidak valid!");
-                            }
                         }
-
+                        boolean insert_berhasil;
+                        if (valid) {
+                            User user = new User();
+                            user.setNickname(Nickname);
+                            user.setUsername(Username);
+                            user.setPassword(Password);
+                            user.setJumlahTeman(0);
+                            user.setProfilePict(pathDefaultProfilePict);
+                            user.setEmail(Email);
+                            insert_berhasil = ControllerUser.insertNewUser(user);
+                            if (insert_berhasil) {
+                                JOptionPane.showMessageDialog(null, "Register Berhasil, Anda akan dialihkan ke Login Screen!");
+                                frame.setVisible(false);
+                                new LoginScreen();
+                                break;
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Register Gagal!");
+                                break;
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Register tidak valid!");
+                            break;
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Email tidak valid!");
+                        break;
                     }
                 }
                 break;
@@ -182,3 +184,4 @@ public class RegisterScreen extends JFrame implements ActionListener {
         }
     }
 }
+

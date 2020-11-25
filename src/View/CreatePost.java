@@ -24,6 +24,7 @@ import Model.UserManager;
 import static View.TimeLine.loadImage;
 import static View.TimeLine.resize;
 import java.awt.Color;
+import static java.awt.Component.CENTER_ALIGNMENT;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -39,7 +40,7 @@ import javax.swing.JOptionPane;
 public class CreatePost extends JFrame implements ActionListener {
 
     JFrame frame, framePreview;
-    JButton chooseFile, upload, confirm_yes, confirm_no;
+    JButton chooseFile, upload, confirm_yes, confirm_no,button_back;
     JTextField caption;
     JLabel lCaption, previewPhotos, panel_Gambar, tempat_gambar;
     JFileChooser choosePhotos;
@@ -75,7 +76,12 @@ public class CreatePost extends JFrame implements ActionListener {
         upload = new JButton("Upload");
         upload.setBounds(445, 300, 80, 30);
         upload.addActionListener(this);
+        
+        button_back = new JButton("Back");
+        button_back.setBounds(100, 300, 80, 30);
+        button_back.addActionListener(this);
 
+        frame.add(button_back);
         frame.add(chooseFile);
         frame.add(lCaption);
         frame.add(caption);
@@ -158,6 +164,11 @@ public class CreatePost extends JFrame implements ActionListener {
                 break;
             case "Re-Upload":
                 framePreview.setVisible(false);
+                break;
+            case "Back":
+                frame.setVisible(false);
+                framePreview.setVisible(false);
+                new TimeLine(UserManager.getInstance().getUser(),counter_post);
                 break;
             default:
                 break;

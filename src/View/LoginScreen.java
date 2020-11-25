@@ -118,7 +118,6 @@ public class LoginScreen extends JFrame implements ActionListener {
                         }
                         ArrayList<Post> listPost = ControllerPost.getListPostByUser(uname);
                         if (listPost.isEmpty()) {
-                            JOptionPane.showMessageDialog(null, "Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!", "Alert", JOptionPane.ERROR_MESSAGE);
                             ArrayList<Teman> listTeman = ControllerUser.getTeman(uname);
                             ArrayList<Post> listPostTeman = new ArrayList<>();
                             for (int i = 0; i < listTeman.size(); i++) {
@@ -132,7 +131,6 @@ public class LoginScreen extends JFrame implements ActionListener {
                                 TimeLine timeLine = new TimeLine(user, 1);
                             }
                         } else {
-                            JOptionPane.showMessageDialog(null, "Maaf mengganti ProfilePict akan di ditiadakan untuk periode tertentu!!", "Alert", JOptionPane.ERROR_MESSAGE);
                             TimeLine timeLine = new TimeLine(user, 1);
                         }
                     } else {
