@@ -43,6 +43,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
 
 /**
  *
@@ -206,7 +208,9 @@ public class ViewProfile extends JFrame implements ActionListener {
         frame_friendReq.add(scrollpane);
 
         panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 70, 10));
+        Border padding = BorderFactory.createEmptyBorder(0, 20, 0, 0);
+        panel.setBorder(padding);
 
         TF_NicknameTerpilih = new JTextField();
         TF_NicknameTerpilih.setEnabled(false);
