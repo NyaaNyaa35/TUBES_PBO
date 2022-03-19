@@ -18,15 +18,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import java.sql.Connection;
 
 /**
  *
  * @author HansNotFound
  */
 public class ControllerUser {
-
+    private Connection dbCon;
     static DatabaseHandler conn = new DatabaseHandler();
 
+    public ControllerUser(Connection c)
+    {
+        dbCon = c;
+    }
     //Get Semua user 
     public static ArrayList<User> getAllUsers() {
         ArrayList<User> users = new ArrayList<>();
