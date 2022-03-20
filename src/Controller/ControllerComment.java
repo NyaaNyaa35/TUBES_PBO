@@ -8,6 +8,7 @@ package Controller;
 import static Controller.ControllerPost.conn;
 import Model.Comment;
 import Model.Post;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +20,14 @@ import java.util.ArrayList;
  * @author User
  */
 public class ControllerComment {
+    
+    private Connection dbCon;
+    static DatabaseHandler conn = new DatabaseHandler();
+    
+    public ControllerComment(Connection c)
+    {
+        dbCon = c;
+    }
     
     //mengambil data comment base on idPost
     public static ArrayList<Comment> getListCommentByIDPost(int idPost){

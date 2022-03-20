@@ -8,6 +8,7 @@ package Controller;
 import static Controller.ControllerPost.conn;
 import Model.Comment;
 import Model.Liker;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +20,13 @@ import java.util.ArrayList;
  * @author User
  */
 public class ControllerLike {
+    private Connection dbCon;
+    static DatabaseHandler conn = new DatabaseHandler();
     
+    public ControllerLike(Connection c)
+    {
+        dbCon = c;
+    }
     //menambahkan list like di database jika user me-like post
     public static boolean insertNewLiker(Liker liker){
         conn.connect();
