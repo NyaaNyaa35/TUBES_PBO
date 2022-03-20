@@ -1,12 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
- */
 package Controller;
 
 import Model.Liker;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.Before;
+
+public class ControllerLikeTest {
+    private java.sql.Connection dbCon;
 import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,10 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author HansWasTaken
- */
 public class ControllerLikeTest {
     private java.sql.Connection dbCon;
     
@@ -42,14 +40,42 @@ public class ControllerLikeTest {
             new AssertionError("Koneksi ke DB Gagal");
         }
     }
-    
-    @After
-    public void tearDown() {
-    }
+   
+    @Test
+    public void testGetLiker() {
+        String nicknameLiker = "test3";
+        String nicknameLiker2 = "test2";
+        int idPost = 1;
+        
+        
+        ControllerLike cLike = new ControllerLike(dbCon);
+        
+        if(cLike.checkLike(nicknameLiker,idPost) == 0 && cLike.checkLike(nicknameLiker2,idPost) == 0){
+            Liker likerPost = new Liker();
+            likerPost.setNicknameLike(nicknameLiker);
+            likerPost.setIdPost(idPost);
+            cLike.insertNewLiker(likerPost);
+            likerPost.setNicknameLike(nicknameLiker2);
+            likerPost.setIdPost(idPost);
+            cLike.insertNewLiker(likerPost);
 
-    /**
-     * Test of insertNewLiker method, of class ControllerLike.
-     */
+            cLike.updateLike(idPost);
+            
+            try{
+                int expected = 2;
+                int result = cLike.getLiker(idPost).size();
+                System.out.print(expected+","+result);
+                assertEquals(expected,result);
+                expected = result;
+            }catch(Exception e){
+                fail("result gagal");
+            }
+        } else {
+            fail("gagal");
+        }
+ 
+    }
+    
     @Test
     public void testInsertNewLiker() {
         System.out.println("Test case insertNewLiker");
@@ -70,6 +96,7 @@ public class ControllerLikeTest {
             fail("The test failed");
         }
     }
+  
     @Test
     public void testCheckLike() {
         System.out.println("Test case checkLike");
