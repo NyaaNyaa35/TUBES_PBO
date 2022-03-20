@@ -14,8 +14,9 @@ class ControllerPostTest {
     @Test
     void updateLikePostTest(){
         var conPost = new ControllerPost();
-        var postLikeUpdated = conPost.getPost(7);
+        var postLikeUpdated = conPost.getPost(8);
 
-        assertNotNull(conPost.updateLikePost(postLikeUpdated,7));
+        postLikeUpdated.setJumlahLike(4);
+        assertNotNull(conPost.updateLikePost(postLikeUpdated,8));
     }
 }
