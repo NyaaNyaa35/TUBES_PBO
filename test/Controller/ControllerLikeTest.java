@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
 import Model.Liker;
@@ -12,12 +7,19 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
-/**
- *
- * @author Nealson William
- */
 public class ControllerLikeTest {
     private java.sql.Connection dbCon;
+import java.util.ArrayList;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ControllerLikeTest {
+    private java.sql.Connection dbCon;
+    
     @Before
     public void setUp(){
         String url = "jdbc:mysql://localhost/tubespbo";
@@ -38,8 +40,7 @@ public class ControllerLikeTest {
             new AssertionError("Koneksi ke DB Gagal");
         }
     }
-    
-    
+   
     @Test
     public void testGetLiker() {
         String nicknameLiker = "test3";
@@ -75,4 +76,39 @@ public class ControllerLikeTest {
  
     }
     
+    @Test
+    public void testInsertNewLiker() {
+        System.out.println("Test case insertNewLiker");
+        
+        // Declare new object
+        Liker liker = new Liker();
+        
+        //fill the object
+        String nicknameLiker = "testing";
+        liker.setIdPost(0);
+        liker.setNicknameLike(nicknameLiker);
+        //try the test if failed show the message
+        try{
+            boolean result = ControllerLike.insertNewLiker(liker);
+            assertTrue(result);
+        } catch (Exception ex){
+            System.out.println("Exception Error = " + ex.getMessage());
+            fail("The test failed");
+        }
+    }
+  
+    @Test
+    public void testCheckLike() {
+        System.out.println("Test case checkLike");
+        String nick = "testing kedua";
+        int idPost = 2;
+        int expResult = 1;
+        try{
+            int result = ControllerLike.checkLike(nick, idPost);
+            assertEquals(expResult, result);
+        } catch (Exception ex){
+            System.out.println("Exception Error = " + ex.getMessage());
+            fail("The test failed");
+        }
+    }
 }
